@@ -76,7 +76,9 @@ extern ecma_property_t* \
 ecma_builtin_ ## lowercase_name ## _try_to_instantiate_property (ecma_object_t *obj_p, \
                                                                  ecma_string_t *prop_name_p); \
 extern void \
-ecma_builtin_ ## lowercase_name ## _sort_property_names (void);
+ecma_builtin_ ## lowercase_name ## _sort_property_names (void); \
+extern void \
+ecma_builtin_ ## lowercase_name ## _init_properties (ecma_object_t *obj_p);
 #include "ecma-builtins.inc.h"
 
 

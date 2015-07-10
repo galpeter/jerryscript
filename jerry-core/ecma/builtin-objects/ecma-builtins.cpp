@@ -228,12 +228,17 @@ ecma_instantiate_builtin (ecma_builtin_id_t id) /**< built-in id */
         prototype_obj_p = ecma_builtin_objects[object_prototype_builtin_id]; \
         JERRY_ASSERT (prototype_obj_p != NULL); \
       } \
-      \
+      /* It is possible that the current prototype already initialized this object. */ \
+      if(ecma_builtin_objects[builtin_id] != NULL) \
+      { \
+        break; \
+      } \
       ecma_object_t *builtin_obj_p = ecma_builtin_init_object (builtin_id, \
                                                                prototype_obj_p, \
                                                                object_type, \
                                                                is_extensible); \
       ecma_builtin_objects[builtin_id] = builtin_obj_p; \
+      ecma_builtin_ ## lowercase_name ## _init_properties (builtin_obj_p); \
       \
       break; \
     }

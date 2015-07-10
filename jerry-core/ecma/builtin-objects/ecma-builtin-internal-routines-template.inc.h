@@ -27,6 +27,8 @@
 
 #define SORT_PROPERTY_NAMES_ROUTINE_NAME(builtin_underscored_id) \
   PASTE (PASTE (ecma_builtin_, builtin_underscored_id), _sort_property_names)
+#define INIT_PROPERTIES_ROUTINE_NAME(builtin_underscored_id) \
+  PASTE (PASTE (ecma_builtin_, builtin_underscored_id), _init_properties)
 #define TRY_TO_INSTANTIATE_PROPERTY_ROUTINE_NAME(builtin_underscored_id) \
   PASTE (PASTE (ecma_builtin_, builtin_underscored_id), _try_to_instantiate_property)
 #define DISPATCH_ROUTINE_ROUTINE_NAME(builtin_underscored_id) \
@@ -88,6 +90,170 @@ SORT_PROPERTY_NAMES_ROUTINE_NAME (BUILTIN_UNDERSCORED_ID) (void)
   }
   while (swapped);
 } /* SORT_PROPERTY_NAMES_ROUTINE_NAME */
+
+
+static void
+init_property_by_id_for_builtin (ecma_object_t *obj_p, lit_magic_string_id_t id, int32_t index)
+{
+#define OBJECT_ID(builtin_id) const ecma_builtin_id_t builtin_object_id = builtin_id;
+#include BUILTIN_INC_HEADER_NAME
+
+  JERRY_ASSERT (ecma_builtin_is (obj_p, builtin_object_id));
+
+  if (index == -1)
+  {
+    return;
+  }
+
+  JERRY_ASSERT (index >= 0 && (uint32_t) index < sizeof (uint64_t) * JERRY_BITSINBYTE);
+
+  uint32_t bit;
+  ecma_internal_property_id_t mask_prop_id;
+
+  if (index >= 32)
+  {
+    mask_prop_id = ECMA_INTERNAL_PROPERTY_NON_INSTANTIATED_BUILT_IN_MASK_32_63;
+    bit = (uint32_t) 1u << (index - 32);
+  }
+  else
+  {
+    mask_prop_id = ECMA_INTERNAL_PROPERTY_NON_INSTANTIATED_BUILT_IN_MASK_0_31;
+    bit = (uint32_t) 1u << index;
+  }
+
+  ecma_property_t *mask_prop_p = ecma_find_internal_property (obj_p, mask_prop_id);
+  if (mask_prop_p == NULL)
+  {
+    mask_prop_p = ecma_create_internal_property (obj_p, mask_prop_id);
+    mask_prop_p->u.internal_property.value = 0;
+  }
+
+  uint32_t bit_mask = mask_prop_p->u.internal_property.value;
+
+  if (bit_mask & bit)
+  {
+    return;
+  }
+
+  bit_mask |= bit;
+
+  mask_prop_p->u.internal_property.value = bit_mask;
+
+  ecma_value_t value = ecma_make_simple_value (ECMA_SIMPLE_VALUE_EMPTY);
+  ecma_property_writable_value_t writable;
+  ecma_property_enumerable_value_t enumerable;
+  ecma_property_configurable_value_t configurable;
+
+  JERRY_ASSERT ((uint16_t) id == id);
+  switch (id)
+  {
+
+#define ROUTINE(name, c_function_name, args_number, length_prop_value) case name: \
+    { \
+      ecma_object_t *func_obj_p = ecma_builtin_make_function_object_for_routine (builtin_object_id, \
+                                                                                 id, \
+                                                                                 length_prop_value); \
+      \
+      writable = ECMA_PROPERTY_WRITABLE; \
+      enumerable = ECMA_PROPERTY_NOT_ENUMERABLE; \
+      configurable = ECMA_PROPERTY_CONFIGURABLE; \
+      \
+      value = ecma_make_object_value (func_obj_p); \
+      \
+      break; \
+    }
+
+#define OBJECT_VALUE(name, obj_getter, prop_writable, prop_enumerable, prop_configurable) case name: \
+    { \
+      value = ecma_make_object_value (obj_getter); \
+      writable = prop_writable; \
+      enumerable = prop_enumerable; \
+      configurable = prop_configurable; \
+      break; \
+    }
+
+
+#define SIMPLE_VALUE(name, simple_value, prop_writable, prop_enumerable, prop_configurable) case name: \
+    { \
+      value = ecma_make_simple_value (simple_value); \
+      \
+      writable = prop_writable; \
+      enumerable = prop_enumerable; \
+      configurable = prop_configurable; \
+      \
+      break; \
+   }
+
+#define NUMBER_VALUE(name, number_value, prop_writable, prop_enumerable, prop_configurable) case name: \
+    { \
+      ecma_number_t *num_p = ecma_alloc_number (); \
+      *num_p = number_value; \
+      \
+      value = ecma_make_number_value (num_p); \
+      \
+      writable = prop_writable; \
+      enumerable = prop_enumerable; \
+      configurable = prop_configurable; \
+      \
+      break; \
+    }
+#define STRING_VALUE(name, magic_string_id, prop_writable, prop_enumerable, prop_configurable) case name: \
+    { \
+      ecma_string_t *magic_string_p = ecma_get_magic_string (magic_string_id); \
+      \
+      value = ecma_make_string_value (magic_string_p); \
+      \
+      writable = prop_writable; \
+      enumerable = prop_enumerable; \
+      configurable = prop_configurable; \
+      \
+      break; \
+    }
+
+#include BUILTIN_INC_HEADER_NAME
+
+    default:
+    {
+      return;
+    }
+  }
+
+  ecma_string_t *prop_name_p = ecma_get_magic_string (id);
+
+  ecma_property_t *prop_p = ecma_create_named_data_property (obj_p,
+                                                             prop_name_p,
+                                                             writable,
+                                                             enumerable,
+                                                             configurable);
+
+  ecma_named_data_property_assign_value (obj_p, prop_p, value);
+
+  ecma_deref_ecma_string (prop_name_p);
+
+  ecma_free_value (value, true);
+}
+
+void
+INIT_PROPERTIES_ROUTINE_NAME (BUILTIN_UNDERSCORED_ID) (ecma_object_t *obj_p)
+{
+#define OBJECT_ID(builtin_id) const ecma_builtin_id_t builtin_object_id = builtin_id;
+#include BUILTIN_INC_HEADER_NAME
+
+  JERRY_ASSERT (ecma_builtin_is (obj_p, builtin_object_id));
+  const ecma_length_t property_numbers = (ecma_length_t) (sizeof (ecma_builtin_property_names) /
+                                                          sizeof (ecma_builtin_property_names[0]));
+
+
+  for (ecma_length_t i = 0; i < property_numbers; i++)
+  {
+    lit_magic_string_id_t id = ecma_builtin_property_names[i];
+    int32_t index;
+    index = ecma_builtin_bin_search_for_magic_string_id_in_array (ecma_builtin_property_names,
+                                                                  property_numbers,
+                                                                  id);
+    init_property_by_id_for_builtin (obj_p, id, index);
+  }
+}
 
 /**
  * If the property's name is one of built-in properties of the built-in object
