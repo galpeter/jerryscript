@@ -23,19 +23,20 @@ for (i = 0; i < array.length; i++) {
 
 var obj = {};
 var arr1 = ["Apple", 6, "Peach"];
-var arr2 = [obj, "Cherry", "Grape"];
+var arr2 = [obj, "Cherry", "Grape", 88];
 
 var new_array = arr1.concat(arr2, obj, 1);
 
-assert(new_array.length === 8);
+assert(new_array.length === 9);
 assert(new_array[0] === "Apple");
 assert(new_array[1] === 6);
 assert(new_array[2] === "Peach");
 assert(new_array[3] === obj);
 assert(new_array[4] === "Cherry");
 assert(new_array[5] === "Grape");
-assert(new_array[6] === obj);
-assert(new_array[7] === 1);
+assert(new_array[6] === 88);
+assert(new_array[7] === obj);
+assert(new_array[8] === 1);
 
 // Checking behavior when unable to get length
 var obj = { concat : Array.prototype.concat }
