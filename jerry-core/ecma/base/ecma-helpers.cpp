@@ -342,6 +342,37 @@ ecma_get_lex_env_outer_reference (const ecma_object_t *object_p) /**< lexical en
                            outer_reference_cp);
 } /* ecma_get_lex_env_outer_reference */
 
+
+/**
+ * Get the last property of an object.
+ *
+ * @returns ecma_property_t - the last property of an object or NULL if there is no property.
+ */
+static ecma_property_t*
+ecma_get_last_property (const ecma_object_t *object_p) /** < object */
+{
+  JERRY_ASSERT (object_p != NULL);
+  ecma_property_t *last_property_p = NULL;
+
+  for (ecma_property_t *property_p = ecma_get_property_list (object_p);
+       property_p != NULL;
+       )
+  {
+    ecma_property_t *next_prop = ECMA_GET_POINTER (ecma_property_t, property_p->next_property_p);
+    if (next_prop == NULL)
+    {
+      last_property_p = property_p;
+      break;
+    }
+    else
+    {
+      property_p = next_prop;
+    }
+  }
+
+  return last_property_p;
+} /* ecma_get_last_property */
+
 /**
  * Get object's/lexical environment's property list.
  */
@@ -527,8 +558,20 @@ ecma_create_named_data_property (ecma_object_t *obj_p, /**< object */
   ecma_set_named_data_property_value (prop_p, ecma_make_simple_value (ECMA_SIMPLE_VALUE_UNDEFINED));
 
   ecma_property_t *list_head_p = ecma_get_property_list (obj_p);
-  ECMA_SET_POINTER (prop_p->next_property_p, list_head_p);
-  ecma_set_property_list (obj_p, prop_p);
+
+  ecma_property_t *last_property_p = ecma_get_last_property (obj_p);
+
+  if (last_property_p == NULL)
+  {
+    ECMA_SET_POINTER (prop_p->next_property_p, list_head_p);
+    ecma_set_property_list (obj_p, prop_p);
+  }
+  else
+  {
+    JERRY_ASSERT (ECMA_GET_POINTER(ecma_property_t, last_property_p->next_property_p) == NULL);
+    ECMA_SET_POINTER (last_property_p->next_property_p, prop_p);
+    prop_p->next_property_p = 0;
+  }
 
   ecma_lcache_invalidate (obj_p, name_p, NULL);
 
@@ -569,8 +612,20 @@ ecma_create_named_accessor_property (ecma_object_t *obj_p, /**< object */
   ECMA_SET_NON_NULL_POINTER (prop_p->u.named_accessor_property.getter_setter_pair_cp, getter_setter_pointers_p);
 
   ecma_property_t *list_head_p = ecma_get_property_list (obj_p);
-  ECMA_SET_POINTER (prop_p->next_property_p, list_head_p);
-  ecma_set_property_list (obj_p, prop_p);
+
+  ecma_property_t *last_property_p = ecma_get_last_property (obj_p);
+
+  if (last_property_p == NULL)
+  {
+    ECMA_SET_POINTER (prop_p->next_property_p, list_head_p);
+    ecma_set_property_list (obj_p, prop_p);
+  }
+  else
+  {
+    JERRY_ASSERT (ECMA_GET_POINTER(ecma_property_t, last_property_p->next_property_p) == NULL);
+    ECMA_SET_POINTER (last_property_p->next_property_p, prop_p);
+    prop_p->next_property_p = 0;
+  }
 
   /*
    * Should be performed after linking the property into object's property list, because the setters assert that.
