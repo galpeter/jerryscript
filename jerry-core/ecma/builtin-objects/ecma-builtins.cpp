@@ -655,6 +655,33 @@ ecma_builtin_dispatch_routine (ecma_builtin_id_t builtin_object_id, /**< built-i
   JERRY_UNREACHABLE ();
 } /* ecma_builtin_dispatch_routine */
 
+void
+ecma_builtin__sort_property_names (lit_magic_string_id_t ecma_builtin_property_names[], ecma_length_t count)
+{
+
+  bool swapped;
+
+  do
+  {
+    swapped = false;
+
+    for (ecma_length_t i = 1;
+         i <  count; //(sizeof (ecma_builtin_property_names) / sizeof (ecma_builtin_property_names[0]));
+         i++)
+    {
+      if (ecma_builtin_property_names[i] < ecma_builtin_property_names[i - 1])
+      {
+        lit_magic_string_id_t id_temp = ecma_builtin_property_names[i - 1];
+        ecma_builtin_property_names[i - 1] = ecma_builtin_property_names[i];
+        ecma_builtin_property_names[i] = id_temp;
+
+        swapped = true;
+      }
+    }
+  }
+  while (swapped);
+}
+
 /**
  * Binary search for magic string identifier in array.
  *
