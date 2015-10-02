@@ -66,8 +66,9 @@ static lit_magic_string_id_t ecma_builtin_property_names[] =
 void
 SORT_PROPERTY_NAMES_ROUTINE_NAME (BUILTIN_UNDERSCORED_ID) (void)
 {
-  ecma_builtin__sort_property_names (ecma_builtin_property_names, (sizeof (ecma_builtin_property_names) / sizeof (ecma_builtin_property_names[0])));
+//  ecma_builtin__sort_property_names (ecma_builtin_property_names, (sizeof (ecma_builtin_property_names) / sizeof (ecma_builtin_property_names[0])));
 /*
+
   bool swapped;
 
   do

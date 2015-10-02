@@ -655,6 +655,7 @@ ecma_builtin_dispatch_routine (ecma_builtin_id_t builtin_object_id, /**< built-i
   JERRY_UNREACHABLE ();
 } /* ecma_builtin_dispatch_routine */
 
+/*
 void
 ecma_builtin__sort_property_names (lit_magic_string_id_t ecma_builtin_property_names[], ecma_length_t count)
 {
@@ -681,6 +682,7 @@ ecma_builtin__sort_property_names (lit_magic_string_id_t ecma_builtin_property_n
   }
   while (swapped);
 }
+*/
 
 /**
  * Binary search for magic string identifier in array.
@@ -697,6 +699,12 @@ ecma_builtin_bin_search_for_magic_string_id_in_array (const lit_magic_string_id_
                                                                                        in the array */
                                                       lit_magic_string_id_t key) /**< value to search for */
 {
+ for (int32_t i = 0; i < (int32_t)array_length; i++)
+ {
+   if (ids[i] == key) return i;
+ }
+
+#if 0
 #ifndef JERRY_NDEBUG
   /* For binary search the values should be sorted */
   for (ecma_length_t id_index = 1;
@@ -729,7 +737,7 @@ ecma_builtin_bin_search_for_magic_string_id_in_array (const lit_magic_string_id_
       min = mid + 1;
     }
   }
-
+#endif
   return -1;
 } /* ecma_builtin_bin_search_for_magic_string_id_in_array */
 

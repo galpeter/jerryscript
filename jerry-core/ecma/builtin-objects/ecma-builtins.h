@@ -38,8 +38,10 @@ typedef enum
 extern void ecma_init_builtins (void);
 extern void ecma_finalize_builtins (void);
 
+/*
 extern void
 ecma_builtin__sort_property_names (lit_magic_string_id_t ecma_builtin_property_names[], ecma_length_t count);
+*/
 
 extern ecma_completion_value_t
 ecma_builtin_dispatch_call (ecma_object_t *, ecma_value_t, ecma_collection_header_t *);
