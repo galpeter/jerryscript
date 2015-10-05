@@ -30,14 +30,17 @@
 #endif /* !NUMBER_VALUE */
 
 #ifndef ROUTINE
+/* Routine properties:
+ *  (property name, C routine name, arguments number or NON_FIXED, value of the routine's length property) */
 # define ROUTINE(name, c_function_name, args_number, length_prop_value)
 #endif /* !ROUTINE */
 
 /* Object identifier */
 OBJECT_ID (ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE)
 
-/* Object properties:
- *  (property name, object pointer getter) */
+ROUTINE (LIT_MAGIC_STRING_APPLY, ecma_builtin_function_prototype_object_apply, 2, 2)
+ROUTINE (LIT_MAGIC_STRING_BIND, ecma_builtin_function_prototype_object_bind, NON_FIXED, 1)
+ROUTINE (LIT_MAGIC_STRING_CALL, ecma_builtin_function_prototype_object_call, NON_FIXED, 1)
 
 // 15.3.4.1
 OBJECT_VALUE (LIT_MAGIC_STRING_CONSTRUCTOR,
@@ -46,9 +49,6 @@ OBJECT_VALUE (LIT_MAGIC_STRING_CONSTRUCTOR,
               ECMA_PROPERTY_NOT_ENUMERABLE,
               ECMA_PROPERTY_CONFIGURABLE)
 
-/* Number properties:
- *  (property name, object pointer getter) */
-
 // 15.3.4
 NUMBER_VALUE (LIT_MAGIC_STRING_LENGTH,
               0,
@@ -56,12 +56,7 @@ NUMBER_VALUE (LIT_MAGIC_STRING_LENGTH,
               ECMA_PROPERTY_NOT_ENUMERABLE,
               ECMA_PROPERTY_NOT_CONFIGURABLE)
 
-/* Routine properties:
- *  (property name, C routine name, arguments number or NON_FIXED, value of the routine's length property) */
 ROUTINE (LIT_MAGIC_STRING_TO_STRING_UL, ecma_builtin_function_prototype_object_to_string, 0, 0)
-ROUTINE (LIT_MAGIC_STRING_APPLY, ecma_builtin_function_prototype_object_apply, 2, 2)
-ROUTINE (LIT_MAGIC_STRING_CALL, ecma_builtin_function_prototype_object_call, NON_FIXED, 1)
-ROUTINE (LIT_MAGIC_STRING_BIND, ecma_builtin_function_prototype_object_bind, NON_FIXED, 1)
 
 #undef OBJECT_ID
 #undef SIMPLE_VALUE

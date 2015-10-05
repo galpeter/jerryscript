@@ -60,6 +60,7 @@ static lit_magic_string_id_t ecma_builtin_property_names[] =
 #include BUILTIN_INC_HEADER_NAME
 };
 
+#if 0
 /**
  * Sort builtin's property names array
  */
@@ -92,6 +93,7 @@ SORT_PROPERTY_NAMES_ROUTINE_NAME (BUILTIN_UNDERSCORED_ID) (void)
   while (swapped);
 */
 } /* SORT_PROPERTY_NAMES_ROUTINE_NAME */
+#endif
 
 /**
  * If the property's name is one of built-in properties of the built-in object

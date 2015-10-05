@@ -42,13 +42,6 @@ NUMBER_VALUE (LIT_MAGIC_STRING_LENGTH,
               ECMA_PROPERTY_NOT_ENUMERABLE,
               ECMA_PROPERTY_NOT_CONFIGURABLE)
 
-// 15.7.3.4
-NUMBER_VALUE (LIT_MAGIC_STRING_NAN,
-              ecma_number_make_nan (),
-              ECMA_PROPERTY_NOT_WRITABLE,
-              ECMA_PROPERTY_NOT_ENUMERABLE,
-              ECMA_PROPERTY_NOT_CONFIGURABLE)
-
 // 15.7.3.2
 NUMBER_VALUE (LIT_MAGIC_STRING_MAX_VALUE_U,
               ECMA_NUMBER_MAX_VALUE,
@@ -63,9 +56,9 @@ NUMBER_VALUE (LIT_MAGIC_STRING_MIN_VALUE_U,
               ECMA_PROPERTY_NOT_ENUMERABLE,
               ECMA_PROPERTY_NOT_CONFIGURABLE)
 
-// 15.7.3.5
-NUMBER_VALUE (LIT_MAGIC_STRING_POSITIVE_INFINITY_U,
-              ecma_number_make_infinity (false),
+// 15.7.3.4
+NUMBER_VALUE (LIT_MAGIC_STRING_NAN,
+              ecma_number_make_nan (),
               ECMA_PROPERTY_NOT_WRITABLE,
               ECMA_PROPERTY_NOT_ENUMERABLE,
               ECMA_PROPERTY_NOT_CONFIGURABLE)
@@ -76,6 +69,14 @@ NUMBER_VALUE (LIT_MAGIC_STRING_NEGATIVE_INFINITY_U,
               ECMA_PROPERTY_NOT_WRITABLE,
               ECMA_PROPERTY_NOT_ENUMERABLE,
               ECMA_PROPERTY_NOT_CONFIGURABLE)
+
+// 15.7.3.5
+NUMBER_VALUE (LIT_MAGIC_STRING_POSITIVE_INFINITY_U,
+              ecma_number_make_infinity (false),
+              ECMA_PROPERTY_NOT_WRITABLE,
+              ECMA_PROPERTY_NOT_ENUMERABLE,
+              ECMA_PROPERTY_NOT_CONFIGURABLE)
+
 
 /* Object properties:
  *  (property name, object pointer getter) */

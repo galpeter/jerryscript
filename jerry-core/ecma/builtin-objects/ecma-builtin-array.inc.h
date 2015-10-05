@@ -36,15 +36,9 @@
 /* Object identifier */
 OBJECT_ID (ECMA_BUILTIN_ID_ARRAY)
 
-/* Object properties:
- *  (property name, object pointer getter) */
-
-// 15.4.3.1
-OBJECT_VALUE (LIT_MAGIC_STRING_PROTOTYPE,
-              ecma_builtin_get (ECMA_BUILTIN_ID_ARRAY_PROTOTYPE),
-              ECMA_PROPERTY_NOT_WRITABLE,
-              ECMA_PROPERTY_NOT_ENUMERABLE,
-              ECMA_PROPERTY_NOT_CONFIGURABLE)
+/* Routine properties:
+ *  (property name, C routine name, arguments number or NON_FIXED, value of the routine's length property) */
+ROUTINE (LIT_MAGIC_STRING_IS_ARRAY_UL, ecma_builtin_array_object_is_array, 1, 1)
 
 /* Number properties:
  *  (property name, object pointer getter) */
@@ -56,9 +50,15 @@ NUMBER_VALUE (LIT_MAGIC_STRING_LENGTH,
               ECMA_PROPERTY_NOT_ENUMERABLE,
               ECMA_PROPERTY_NOT_CONFIGURABLE)
 
-/* Routine properties:
- *  (property name, C routine name, arguments number or NON_FIXED, value of the routine's length property) */
-ROUTINE (LIT_MAGIC_STRING_IS_ARRAY_UL, ecma_builtin_array_object_is_array, 1, 1)
+/* Object properties:
+ *  (property name, object pointer getter) */
+
+// 15.4.3.1
+OBJECT_VALUE (LIT_MAGIC_STRING_PROTOTYPE,
+              ecma_builtin_get (ECMA_BUILTIN_ID_ARRAY_PROTOTYPE),
+              ECMA_PROPERTY_NOT_WRITABLE,
+              ECMA_PROPERTY_NOT_ENUMERABLE,
+              ECMA_PROPERTY_NOT_CONFIGURABLE)
 
 #undef OBJECT_ID
 #undef SIMPLE_VALUE

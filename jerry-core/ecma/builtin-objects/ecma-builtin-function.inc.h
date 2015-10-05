@@ -36,22 +36,23 @@
 /* Object identifier */
 OBJECT_ID (ECMA_BUILTIN_ID_FUNCTION)
 
-/* Object properties:
- *  (property name, object pointer getter) */
-
-// 15.3.3.1
-OBJECT_VALUE (LIT_MAGIC_STRING_PROTOTYPE,
-              ecma_builtin_get (ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE),
-              ECMA_PROPERTY_NOT_WRITABLE,
-              ECMA_PROPERTY_NOT_ENUMERABLE,
-              ECMA_PROPERTY_NOT_CONFIGURABLE)
-
 /* Number properties:
  *  (property name, object pointer getter) */
 
 // 15.3.3.2
 NUMBER_VALUE (LIT_MAGIC_STRING_LENGTH,
               1,
+              ECMA_PROPERTY_NOT_WRITABLE,
+              ECMA_PROPERTY_NOT_ENUMERABLE,
+              ECMA_PROPERTY_NOT_CONFIGURABLE)
+
+
+/* Object properties:
+ *  (property name, object pointer getter) */
+
+// 15.3.3.1
+OBJECT_VALUE (LIT_MAGIC_STRING_PROTOTYPE,
+              ecma_builtin_get (ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE),
               ECMA_PROPERTY_NOT_WRITABLE,
               ECMA_PROPERTY_NOT_ENUMERABLE,
               ECMA_PROPERTY_NOT_CONFIGURABLE)

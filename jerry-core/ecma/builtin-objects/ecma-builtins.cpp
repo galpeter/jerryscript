@@ -219,11 +219,6 @@ ecma_instantiate_builtin (ecma_builtin_id_t id) /**< built-in id */
     case builtin_id: \
     { \
       JERRY_ASSERT (ecma_builtin_objects[builtin_id] == NULL); \
-      if (is_static) \
-      { \
-        ecma_builtin_ ## lowercase_name ## _sort_property_names (); \
-      } \
-      \
       ecma_object_t *prototype_obj_p; \
       if (object_prototype_builtin_id == ECMA_BUILTIN_ID__COUNT) \
       { \
@@ -699,12 +694,13 @@ ecma_builtin_bin_search_for_magic_string_id_in_array (const lit_magic_string_id_
                                                                                        in the array */
                                                       lit_magic_string_id_t key) /**< value to search for */
 {
+/*
  for (int32_t i = 0; i < (int32_t)array_length; i++)
  {
    if (ids[i] == key) return i;
  }
-
-#if 0
+*/
+#if 1
 #ifndef JERRY_NDEBUG
   /* For binary search the values should be sorted */
   for (ecma_length_t id_index = 1;

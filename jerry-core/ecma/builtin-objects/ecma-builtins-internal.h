@@ -83,9 +83,7 @@ ecma_builtin_ ## lowercase_name ## _dispatch_routine (uint16_t builtin_routine_i
                                                       ecma_length_t); \
 extern ecma_property_t * \
 ecma_builtin_ ## lowercase_name ## _try_to_instantiate_property (ecma_object_t *, \
-                                                                 ecma_string_t *); \
-extern void \
-ecma_builtin_ ## lowercase_name ## _sort_property_names (void);
+                                                                 ecma_string_t *);
 #include "ecma-builtins.inc.h"
 
 

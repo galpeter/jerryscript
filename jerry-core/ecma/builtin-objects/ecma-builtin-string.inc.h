@@ -36,6 +36,10 @@
 /* Object identifier */
 OBJECT_ID (ECMA_BUILTIN_ID_STRING)
 
+/* Routine properties:
+ *  (property name, C routine name, arguments number or NON_FIXED, value of the routine's length property) */
+ROUTINE (LIT_MAGIC_STRING_FROM_CHAR_CODE_UL, ecma_builtin_string_object_from_char_code, NON_FIXED, 1)
+
 /* Number properties:
  *  (property name, number value, writable, enumerable, configurable) */
 
@@ -55,10 +59,6 @@ OBJECT_VALUE (LIT_MAGIC_STRING_PROTOTYPE,
               ECMA_PROPERTY_NOT_WRITABLE,
               ECMA_PROPERTY_NOT_ENUMERABLE,
               ECMA_PROPERTY_NOT_CONFIGURABLE)
-
-/* Routine properties:
- *  (property name, C routine name, arguments number or NON_FIXED, value of the routine's length property) */
-ROUTINE (LIT_MAGIC_STRING_FROM_CHAR_CODE_UL, ecma_builtin_string_object_from_char_code, NON_FIXED, 1)
 
 #undef OBJECT_ID
 #undef SIMPLE_VALUE

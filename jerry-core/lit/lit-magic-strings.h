@@ -30,7 +30,7 @@ typedef enum
 {
 #define LIT_MAGIC_STRING_DEF(id, ascii_zt_string) \
      id,
-#include "lit-magic-strings.inc.h"
+#include "lit-magic-strings.inc.sorted.h"
 #undef LIT_MAGIC_STRING_DEF
 
   LIT_MAGIC_STRING__COUNT /**< number of magic strings */
