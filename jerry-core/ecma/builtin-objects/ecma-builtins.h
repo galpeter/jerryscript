@@ -48,4 +48,7 @@ extern bool
 ecma_builtin_is (ecma_object_t *, ecma_builtin_id_t);
 extern ecma_object_t *
 ecma_builtin_get (ecma_builtin_id_t);
+
+extern void
+ecma_builtin_sort_property_names (lit_magic_string_id_t *, ecma_length_t);
 #endif /* !ECMA_BUILTINS_H */

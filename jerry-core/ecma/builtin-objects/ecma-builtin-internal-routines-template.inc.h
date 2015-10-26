@@ -66,27 +66,8 @@ static lit_magic_string_id_t ecma_builtin_property_names[] =
 void
 SORT_PROPERTY_NAMES_ROUTINE_NAME (BUILTIN_UNDERSCORED_ID) (void)
 {
-  bool swapped;
-
-  do
-  {
-    swapped = false;
-
-    for (ecma_length_t i = 1;
-         i < (sizeof (ecma_builtin_property_names) / sizeof (ecma_builtin_property_names[0]));
-         i++)
-    {
-      if (ecma_builtin_property_names[i] < ecma_builtin_property_names[i - 1])
-      {
-        lit_magic_string_id_t id_temp = ecma_builtin_property_names[i - 1];
-        ecma_builtin_property_names[i - 1] = ecma_builtin_property_names[i];
-        ecma_builtin_property_names[i] = id_temp;
-
-        swapped = true;
-      }
-    }
-  }
-  while (swapped);
+  const ecma_length_t count = sizeof (ecma_builtin_property_names) / sizeof (ecma_builtin_property_names[0]);
+  ecma_builtin_sort_property_names (ecma_builtin_property_names, count);
 } /* SORT_PROPERTY_NAMES_ROUTINE_NAME */
 
 /**

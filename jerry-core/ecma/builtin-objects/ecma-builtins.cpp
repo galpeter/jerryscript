@@ -656,6 +656,34 @@ ecma_builtin_dispatch_routine (ecma_builtin_id_t builtin_object_id, /**< built-i
 } /* ecma_builtin_dispatch_routine */
 
 /**
+ * Performs sort on the builtin property magic string ids.
+ */
+void
+ecma_builtin_sort_property_names (lit_magic_string_id_t ecma_builtin_property_names[], /**< ids to sort */
+                                  ecma_length_t count) /**< number of ids in the array */
+{
+  bool swapped;
+
+  do
+  {
+    swapped = false;
+
+    for (ecma_length_t i = 1; i <  count; i++)
+    {
+      if (ecma_builtin_property_names[i] < ecma_builtin_property_names[i - 1])
+      {
+        lit_magic_string_id_t id_temp = ecma_builtin_property_names[i - 1];
+        ecma_builtin_property_names[i - 1] = ecma_builtin_property_names[i];
+        ecma_builtin_property_names[i] = id_temp;
+
+        swapped = true;
+      }
+    }
+  }
+  while (swapped);
+} /* ecma_builtin__sort_property_names */
+
+/**
  * Binary search for magic string identifier in array.
  *
  * Warning:
