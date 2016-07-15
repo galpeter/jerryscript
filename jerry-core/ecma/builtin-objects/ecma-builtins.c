@@ -234,6 +234,36 @@ ecma_init_builtins (void)
 } /* ecma_init_builtins */
 
 /**
+ * Helper to instantiate a specific ECMA built-in object
+ */
+static void ecma_instantiate_single_builtin(ecma_builtin_id_t builtin_id, /** < built-in id */
+                                            ecma_object_type_t object_type, /** < type of built-in */
+                                            ecma_builtin_id_t prototype_builtin_id, /** < prototype of built-in */
+                                            bool is_extensible) /** < allow extensions */
+{
+  JERRY_ASSERT (ecma_builtin_objects[builtin_id] == NULL);
+  ecma_object_t *prototype_obj_p;
+  if (prototype_builtin_id == ECMA_BUILTIN_ID__COUNT)
+  {
+    prototype_obj_p = NULL;
+  }
+  else
+  {
+    if (ecma_builtin_objects[prototype_builtin_id] == NULL)
+    {
+      ecma_instantiate_builtin (prototype_builtin_id);
+    }
+    prototype_obj_p = ecma_builtin_objects[prototype_builtin_id];
+    JERRY_ASSERT (prototype_obj_p != NULL);
+  }
+
+  ecma_builtin_objects[builtin_id] = ecma_builtin_init_object (builtin_id,
+                                                               prototype_obj_p,
+                                                               object_type,
+                                                               is_extensible);
+} /* ecma_instantiate_single_builtin */
+
+/**
  * Instantiate specified ECMA built-in object
  */
 static void
@@ -249,29 +279,7 @@ ecma_instantiate_builtin (ecma_builtin_id_t id) /**< built-in id */
                 lowercase_name) \
     case builtin_id: \
     { \
-      JERRY_ASSERT (ecma_builtin_objects[builtin_id] == NULL); \
-      \
-      ecma_object_t *prototype_obj_p; \
-      if (object_prototype_builtin_id == ECMA_BUILTIN_ID__COUNT) \
-      { \
-        prototype_obj_p = NULL; \
-      } \
-      else \
-      { \
-        if (ecma_builtin_objects[object_prototype_builtin_id] == NULL) \
-        { \
-          ecma_instantiate_builtin (object_prototype_builtin_id); \
-        } \
-        prototype_obj_p = ecma_builtin_objects[object_prototype_builtin_id]; \
-        JERRY_ASSERT (prototype_obj_p != NULL); \
-      } \
-      \
-      ecma_object_t *builtin_obj_p = ecma_builtin_init_object (builtin_id, \
-                                                               prototype_obj_p, \
-                                                               object_type, \
-                                                               is_extensible); \
-      ecma_builtin_objects[builtin_id] = builtin_obj_p; \
-      \
+      ecma_instantiate_single_builtin (builtin_id, object_type, object_prototype_builtin_id, is_extensible); \
       break; \
     }
 #include "ecma-builtins.inc.h"
