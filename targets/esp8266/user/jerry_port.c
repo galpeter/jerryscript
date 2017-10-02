@@ -13,12 +13,13 @@
  * limitations under the License.
  */
 
-#include "esp_common.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "jerry-core/include/jerryscript-port.h"
-int ets_putc (int);
+#include "esp_common.h"
+#include "apps/time.h"
+#include "jerryscript-port.h"
 
 /**
  * Provide log message implementation for the engine.
@@ -32,19 +33,19 @@ jerry_port_log (jerry_log_level_t level, /**< log level */
 
   va_list args;
   va_start (args, format);
-  /* TODO, uncomment when vprint link is ok */
-  /* vprintf (stderr, format, args); */
+  vfprintf (stderr, format, args);
   va_end (args);
 } /* jerry_port_log */
 
-
-/** exit - cause normal process termination  */
-void exit (int status)
+/**
+ * Provide fatal message implementation for the engine.
+ */
+void jerry_port_fatal (jerry_fatal_code_t code)
 {
-  while (true)
-  {
-  }
-} /* exit */
+  jerry_port_log (JERRY_LOG_LEVEL_ERROR, "Jerry Fatal Error!\n");
+  while (true);
+} /* jerry_port_fatal */
+
 
 /** abort - cause abnormal process termination  */
 void abort (void)
@@ -69,13 +70,34 @@ fwrite (const void *ptr, /**< data to write */
 } /* fwrite */
 
 /**
- * This function can get the time as well as a timezone.
+ * Implementation of jerry_port_get_current_time.
  *
- * @return 0 if success, -1 otherwise
+ * @return current timer's counter value in milliseconds
  */
-int
-gettimeofday (void *tp,  /**< struct timeval */
-              void *tzp) /**< struct timezone */
+double
+jerry_port_get_current_time (void)
 {
-  return -1;
-} /* gettimeofday */
+  struct timeval tv;
+
+  if (gettimeofday (&tv, NULL) != 0)
+  {
+    return 0;
+  }
+
+  return ((double) tv.tv_sec) * 1000.0 + ((double) tv.tv_usec) / 1000.0;
+} /* jerry_port_get_current_time */
+
+/**
+ * Dummy function to get the time zone.
+ *
+ * @return true
+ */
+bool
+jerry_port_get_time_zone (jerry_time_zone_t *tz_p)
+{
+  /* We live in UTC. */
+  tz_p->offset = 0;
+  tz_p->daylight_saving_time = 0;
+
+  return true;
+} /* jerry_port_get_time_zone */

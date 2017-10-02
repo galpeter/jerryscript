@@ -37,8 +37,13 @@ ifndef PDIR # {
 GEN_IMAGES= eagle.app.v6.out
 GEN_BINS= eagle.app.v6.bin
 SPECIAL_MKTARGETS=$(APP_MKTARGETS)
-SUBDIRS= user
+SUBDIRS= 		\
+			user 	\
+			source
 endif # } PDIR
+
+# path to the JERRYSCRIPT directory
+JERRYDIR ?= $(CURDIR)/../../..
 
 LDDIR = $(SDK_PATH)/ld
 
@@ -61,6 +66,7 @@ endif
 
 COMPONENTS_eagle.app.v6 =				\
 	user/libuser.a					\
+	source/libsource.a					\
 
 
 LINKFLAGS_eagle.app.v6 =				\
@@ -73,20 +79,33 @@ LINKFLAGS_eagle.app.v6 =				\
 	-u call_user_start				\
 	-Wl,-static					\
 	-Wl,--start-group				\
-	-lminic						\
-	-lgcc						\
-	-lhal						\
-	-lphy						\
-	-lpp						\
-	-lnet80211					\
-	-lwpa						\
-	-lmain						\
-	-lfreertos					\
-	-llwip						\
+	-lcirom \
+	-lcrypto	\
+	-lespconn	\
+	-lespnow	\
+	-lfreertos	\
+	-lgcc					\
+	-lhal					\
+	-ljson	\
+	-llwip	\
+	-ldriver	\
+	-lmain	\
+	-lmesh	\
+	-lmirom	\
+	-lnet80211	\
+	-lnopoll	\
+	-lphy	\
+	-lpp	\
+	-lpwm	\
+	-lsmartconfig	\
+	-lspiffs	\
+	-lssl	\
+	-lwpa	\
+	-lwps		\
 	-L./libs					\
-	-ljerrycore					\
-	-ljerryentry					\
-	-ljerrylibm					\
+	-ljerry-core					\
+	-ljerry-ext					\
+	-ljerry-libm					\
 	$(DEP_LIBS_eagle.app.v6)			\
 	./libs/lib_a-setjmp.o				\
 	-Wl,--end-group
@@ -96,9 +115,9 @@ DEPENDS_eagle.app.v6 =					\
 	$(LD_FILE)					\
 	$(LDDIR)/eagle.rom.addr.v6.ld			\
 	./source/jerry-targetjs.h			\
-	./libs/libjerrylibm.a				\
-	./libs/libjerrycore.a				\
-	./libs/libjerryentry.a
+	./libs/libjerry-libm.a				\
+	./libs/libjerry-core.a				\
+	./libs/libjerry-ext.a
 
 
 #############################################################
@@ -138,6 +157,7 @@ DDEFINES += \
 # Required for each makefile to inherit from the parent
 #
 
+INCLUDES := -I $(JERRYDIR)/jerry-core/include
 INCLUDES := $(INCLUDES) -I $(PDIR)include -I $(PDIR)source
 sinclude $(SDK_PATH)/Makefile
 

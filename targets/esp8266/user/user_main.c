@@ -30,7 +30,8 @@
 #include "freertos/task.h"
 
 #include "user_config.h"
-#include "esp8266_uart.h"
+#include "uart.h"
+#include "jerry_run.h"
 
 
 //-----------------------------------------------------------------------------
@@ -98,8 +99,8 @@ void jerry_task(void *pvParameters) {
  */
 void ICACHE_FLASH_ATTR user_init(void)
 {
-  uart_div_modify(UART0, UART_CLK_FREQ / (BIT_RATE_115200));
-
+  UART_SetBaudrate(UART0, UART_CLK_FREQ / (BIT_RATE_115200));
+  printf("SDK version:%s,%u\n", system_get_sdk_version(),__LINE__ );
   show_free_mem(0);
   wifi_softap_dhcps_stop();
   show_free_mem(1);
@@ -108,4 +109,37 @@ void ICACHE_FLASH_ATTR user_init(void)
   PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2);    // GPIO 2
 
   xTaskCreate(jerry_task, "jerry", JERRY_STACK_SIZE, NULL, 2, NULL);
+}
+
+uint32 ICACHE_FLASH_ATTR
+user_rf_cal_sector_set(void)
+{
+    flash_size_map size_map = system_get_flash_size_map();
+    uint32 rf_cal_sec = 0;
+
+    switch (size_map) {
+        case FLASH_SIZE_4M_MAP_256_256:
+            rf_cal_sec = 128 - 8;
+            break;
+
+        case FLASH_SIZE_8M_MAP_512_512:
+            rf_cal_sec = 256 - 5;
+            break;
+
+        case FLASH_SIZE_16M_MAP_512_512:
+        case FLASH_SIZE_16M_MAP_1024_1024:
+            rf_cal_sec = 512 - 5;
+            break;
+
+        case FLASH_SIZE_32M_MAP_512_512:
+        case FLASH_SIZE_32M_MAP_1024_1024:
+            rf_cal_sec = 1024 - 5;
+            break;
+
+        default:
+            rf_cal_sec = 0;
+            break;
+    }
+
+    return rf_cal_sec;
 }

@@ -21,7 +21,7 @@ I've slightly changed the step to use SDK from Espressif official SDK
 dependencies for x86
 ```
 sudo apt-get install git autoconf build-essential gperf \
-   bison flex texinfo libtool libncurses5-dev wget \
+   bison flex texinfo libtool libtool-bin libncurses5-dev wget \
     gawk libc6-dev-i386 python-serial libexpat-dev
 sudo mkdir /opt/Espressif
 sudo chown $USER /opt/Espressif/
@@ -30,7 +30,7 @@ sudo chown $USER /opt/Espressif/
 dependencies for x64
 ```
 sudo apt-get install git autoconf build-essential gperf \
-    bison flex texinfo libtool libncurses5-dev wget \
+    bison flex texinfo libtool libtool-bin libncurses5-dev wget \
     gawk libc6-dev-amd64 python-serial libexpat-dev
 sudo mkdir /opt/Espressif
 sudo chown $USER /opt/Espressif/
@@ -57,7 +57,7 @@ cd /opt/Esprissif
 git clone https://github.com/espressif/ESP8266_RTOS_SDK.git ESP8266_RTOS_SDK.git
 ln -s ESP8266_RTOS_SDK.git ESP8266_SDK
 cd ESP8266_SDK
-git checkout -b jerry a2b413ad2996450fe2f173b6afab243f6e1249aa
+git checkout -b jerry 2fab9e23d779cdd6e5900b8ba2b588e30d9b08c4
 ```
 
 We use SDK 1.2.0 version which has stdlib.h and others. Latest 1.3.0 version,
@@ -90,6 +90,9 @@ cd /opt/Espressif
 git clone https://github.com/themadinventor/esptool esptool-py
 sudo ln -s $PWD/esptool-py/esptool.py crosstool-NG/builds/xtensa-lx106-elf/bin/esptool.py
 ```
+
+At this point all prerequisites are availabe. Follow [this](../readme.md) page with the 2nd point.
+---
 
 #### Test writing with Blinky example
 
