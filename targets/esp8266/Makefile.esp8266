@@ -58,14 +58,13 @@ jerry:
 	 -DEXTERNAL_CMAKE_C_COMPILER_ID=GNU \
 	 -DJERRY_LIBC=OFF \
 	 -DJERRY_CMDLINE=OFF \
-	 -DENABLE_ALL_IN_ONE=OFF \
+	 -DENABLE_ALL_IN_ONE=ON \
 	 -DEXTERNAL_COMPILE_FLAGS="$(ESP_CFLAGS)" \
 	 -DMEM_HEAP_SIZE_KB=$(JERRYHEAP)
 
 	 make -C$(INTERM) jerry-core jerry-port-default-minimal jerry-ext
 	 	cp $(INTERM)/lib/libjerry-core.a $(COPYTARGET)/libjerry-core.a
 	 	cp $(INTERM)/lib/libjerry-libm.a $(COPYTARGET)/libjerry-libm.a
-		cp $(INTERM)/lib/libjerry-ext.a $(COPYTARGET)/libjerry-ext.a
 
 js2c:
 	cd targets/esp8266; ../../tools/js2c.py
@@ -73,8 +72,7 @@ js2c:
 mkbin:
 	cd targets/esp8266;	\
 	make clean;	\
-	make BOOT=new APP=1 SPI_SPEED=40 SPI_MODE=QIO SPI_SIZE_MAP=3;	\
-	make BOOT=new APP=2 SPI_SPEED=40 SPI_MODE=QIO SPI_SIZE_MAP=3
+	make BOOT=none APP=0 SPI_SPEED=40 SPI_MODE=DIO SPI_SIZE_MAP=4;	\
 
 check-env:
 ifndef SDK_PATH
@@ -86,11 +84,8 @@ endif
 
 flash:
 	$(ESPTOOL) --port $(USBDEVICE) write_flash \
-	 0x00000 $(SDK_PATH)/bin/"boot_v1.7.bin" \
-	 0x01000 $(BIN_PATH)/upgrade/user1.2048.new.3.bin \
-	 0x81000 $(BIN_PATH)/upgrade/user2.2048.new.3.bin \
-	 0x1FC000 $(SDK_PATH)/bin/esp_init_data_default.bin \
-	 0x1FE000 $(SDK_PATH)/bin/blank.bin
+	 0x00000 $(BIN_PATH)/eagle.flash.bin \
+	 0x20000 $(BIN_PATH)/eagle.irom0text.bin
 
 clean:
 	rm -rf $(INTERM)

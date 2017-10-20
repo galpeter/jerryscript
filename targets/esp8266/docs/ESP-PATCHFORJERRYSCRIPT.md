@@ -33,10 +33,5 @@ index 3af39d7..c395646 100644
 
 #### Need to get setjmp / longjmp
 
-Extract and copy from the SDK.
-
-```
-cd /path/to/jerryscript-folder
-cd targets/esp8266/ && mkdir libs && cd libs
-ar -xv $SDK_PATH/lib/libcirom.a lib_a-setjmp.o
-```
+The libcirom.a already contains the required setjmp.o file so there is no need
+to extract it now.

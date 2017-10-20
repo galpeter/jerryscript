@@ -99,7 +99,7 @@ void jerry_task(void *pvParameters) {
  */
 void ICACHE_FLASH_ATTR user_init(void)
 {
-  UART_SetBaudrate(UART0, UART_CLK_FREQ / (BIT_RATE_115200));
+  UART_SetBaudrate(UART0, BIT_RATE_115200);
   printf("SDK version:%s,%u\n", system_get_sdk_version(),__LINE__ );
   show_free_mem(0);
   wifi_softap_dhcps_stop();

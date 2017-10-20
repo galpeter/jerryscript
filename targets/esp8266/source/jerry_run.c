@@ -37,7 +37,7 @@ int js_entry (const char *source_p, const size_t source_size)
 
   js_register_functions ();
 
-  parsed_res = jerry_parse ((jerry_char_t *) jerry_src, source_size, false);
+  parsed_res = jerry_eval ((jerry_char_t *) jerry_src, source_size, false);
 
   if (jerry_value_has_error_flag (parsed_res))
   {

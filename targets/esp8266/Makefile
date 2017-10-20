@@ -104,10 +104,8 @@ LINKFLAGS_eagle.app.v6 =				\
 	-lwps		\
 	-L./libs					\
 	-ljerry-core					\
-	-ljerry-ext					\
 	-ljerry-libm					\
 	$(DEP_LIBS_eagle.app.v6)			\
-	./libs/lib_a-setjmp.o				\
 	-Wl,--end-group
 
 
@@ -116,9 +114,7 @@ DEPENDS_eagle.app.v6 =					\
 	$(LDDIR)/eagle.rom.addr.v6.ld			\
 	./source/jerry-targetjs.h			\
 	./libs/libjerry-libm.a				\
-	./libs/libjerry-core.a				\
-	./libs/libjerry-ext.a
-
+	./libs/libjerry-core.a
 
 #############################################################
 # Configuration i.e. compile options etc.
@@ -160,6 +156,10 @@ DDEFINES += \
 INCLUDES := -I $(JERRYDIR)/jerry-core/include
 INCLUDES := $(INCLUDES) -I $(PDIR)include -I $(PDIR)source
 sinclude $(SDK_PATH)/Makefile
+
+LD_FILE=$(CURDIR)/ld/eagle.app.v6.ld
+
+
 
 .PHONY: FORCE
 
