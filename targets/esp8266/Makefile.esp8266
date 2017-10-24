@@ -85,7 +85,8 @@ endif
 flash:
 	$(ESPTOOL) --port $(USBDEVICE) write_flash \
 	 0x00000 $(BIN_PATH)/eagle.flash.bin \
-	 0x20000 $(BIN_PATH)/eagle.irom0text.bin
+	 0x20000 $(BIN_PATH)/eagle.irom0text.bin \
+	 0x3FC000 $(SDK_PATH)/bin/esp_init_data_default.bin
 
 clean:
 	rm -rf $(INTERM)
