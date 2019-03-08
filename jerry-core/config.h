@@ -119,6 +119,15 @@
 #endif /* !defined(JERRY_ES2015_TEMPLATE_STRINGS) */
 
 /**
+ * Enables/disables the RegExp strict mode
+ *
+ * Default value: 0
+ */
+#ifndef JERRY_REGEXP_STRICT_MODE
+# define JERRY_REGEXP_STRICT_MODE 0
+#endif
+
+/**
  * Enables/disables the unicode case conversion in the engine.
  * By default Unicode case conversion is enabled.
  */
