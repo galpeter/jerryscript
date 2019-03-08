@@ -983,10 +983,10 @@ ecma_gc_run (jmem_free_unused_memory_severity_t severity) /**< gc severity */
 
   JERRY_CONTEXT (ecma_gc_objects_p) = black_objects_p;
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
   /* Free RegExp bytecodes stored in cache */
   re_cache_gc_run ();
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 } /* ecma_gc_run */
 
 /**

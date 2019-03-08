@@ -63,12 +63,12 @@ JERRY_STATIC_ASSERT ((int) ECMA_INIT_EMPTY == (int) JERRY_INIT_EMPTY
                      && (int) ECMA_INIT_MEM_STATS == (int) JERRY_INIT_MEM_STATS,
                      ecma_init_flag_t_must_be_equal_to_jerry_init_flag_t);
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined(JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
 JERRY_STATIC_ASSERT ((int) RE_FLAG_GLOBAL == (int) JERRY_REGEXP_FLAG_GLOBAL
                      && (int) RE_FLAG_MULTILINE == (int) JERRY_REGEXP_FLAG_MULTILINE
                      && (int) RE_FLAG_IGNORE_CASE == (int) JERRY_REGEXP_FLAG_IGNORE_CASE,
                      re_flags_t_must_be_equal_to_jerry_regexp_flags_t);
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 
 #if defined JERRY_DISABLE_JS_PARSER && !defined JERRY_ENABLE_SNAPSHOT_EXEC
 #error JERRY_ENABLE_SNAPSHOT_EXEC must be defined if JERRY_DISABLE_JS_PARSER is defined!
@@ -905,9 +905,9 @@ jerry_is_feature_enabled (const jerry_feature_t feature) /**< feature to check *
 #ifdef JERRY_VM_EXEC_STOP
           || feature == JERRY_FEATURE_VM_EXEC_STOP
 #endif /* JERRY_VM_EXEC_STOP */
-#ifndef CONFIG_DISABLE_JSON_BUILTIN
+#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
           || feature == JERRY_FEATURE_JSON
-#endif /* !CONFIG_DISABLE_JSON_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
 #ifndef CONFIG_DISABLE_ES2015_PROMISE_BUILTIN
           || feature == JERRY_FEATURE_PROMISE
 #endif /* !CONFIG_DISABLE_ES2015_PROMISE_BUILTIN */
@@ -917,12 +917,12 @@ jerry_is_feature_enabled (const jerry_feature_t feature) /**< feature to check *
 #ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
           || feature == JERRY_FEATURE_TYPEDARRAY
 #endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
-#ifndef CONFIG_DISABLE_DATE_BUILTIN
+#if defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
           || feature == JERRY_FEATURE_DATE
-#endif /* !CONFIG_DISABLE_DATE_BUILTIN */
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#endif /* defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
           || feature == JERRY_FEATURE_REGEXP
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 #ifdef JERRY_ENABLE_LINE_INFO
           || feature == JERRY_FEATURE_LINE_INFO
 #endif /* JERRY_ENABLE_LINE_INFO */
@@ -1637,7 +1637,7 @@ jerry_create_regexp_sz (const jerry_char_t *pattern_p, /**< zero-terminated UTF-
 {
   jerry_assert_api_available ();
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
   if (!lit_is_valid_utf8_string (pattern_p, pattern_size))
   {
     return jerry_throw (ecma_raise_common_error (ECMA_ERR_MSG ("Input must be a valid utf8 string")));
@@ -1650,13 +1650,13 @@ jerry_create_regexp_sz (const jerry_char_t *pattern_p, /**< zero-terminated UTF-
   ecma_deref_ecma_string (ecma_pattern);
   return ret_val;
 
-#else /* CONFIG_DISABLE_REGEXP_BUILTIN */
+#else /* !defined (JERRY_BUILTIN_REGEXP) || (JERRY_BUILTIN_REGEXP == 0) */
   JERRY_UNUSED (pattern_p);
   JERRY_UNUSED (pattern_size);
   JERRY_UNUSED (flags);
 
   return jerry_throw (ecma_raise_type_error (ECMA_ERR_MSG ("RegExp is not supported.")));
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 } /* jerry_create_regexp_sz */
 
 /**
@@ -3529,7 +3529,7 @@ jerry_json_parse (const jerry_char_t *string_p, /**< json string */
 {
   jerry_assert_api_available ();
 
-#ifndef CONFIG_DISABLE_JSON_BUILTIN
+#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
   ecma_value_t ret_value = ecma_builtin_json_parse_buffer (string_p, string_size);
 
   if (ecma_is_value_undefined (ret_value))
@@ -3538,12 +3538,12 @@ jerry_json_parse (const jerry_char_t *string_p, /**< json string */
   }
 
   return ret_value;
-#else /* CONFIG_DISABLE_JSON_BUILTIN */
+#else /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 0) */
   JERRY_UNUSED (string_p);
   JERRY_UNUSED (string_size);
 
   return jerry_throw (ecma_raise_syntax_error (ECMA_ERR_MSG ("The JSON has been disabled.")));
-#endif /* !CONFIG_DISABLE_JSON_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
 } /* jerry_json_parse */
 
 /**
@@ -3557,7 +3557,7 @@ jerry_value_t
 jerry_json_stringify (const jerry_value_t object_to_stringify) /**< a jerry_object_t to stringify */
 {
   jerry_assert_api_available ();
-#ifndef CONFIG_DISABLE_JSON_BUILTIN
+#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
   ecma_value_t ret_value = ecma_builtin_json_string_from_object (object_to_stringify);
 
   if (ecma_is_value_undefined (ret_value))
@@ -3566,11 +3566,11 @@ jerry_json_stringify (const jerry_value_t object_to_stringify) /**< a jerry_obje
   }
 
   return ret_value;
-#else /* CONFIG_DISABLE_JSON_BUILTIN */
+#else /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
   JERRY_UNUSED (object_to_stringify);
 
   return jerry_throw (ecma_raise_syntax_error (ECMA_ERR_MSG ("The JSON has been disabled.")));
-#endif /* !CONFIG_DISABLE_JSON_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
 } /* jerry_json_stringify */
 
 /**

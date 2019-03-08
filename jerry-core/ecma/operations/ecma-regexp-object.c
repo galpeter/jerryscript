@@ -26,7 +26,7 @@
 #include "lit-char-helpers.h"
 #include "re-compiler.h"
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -1494,4 +1494,4 @@ ecma_regexp_read_pattern_str_helper (ecma_value_t pattern_arg, /**< the RegExp p
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */

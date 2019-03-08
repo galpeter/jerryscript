@@ -125,7 +125,7 @@ void JERRY_ATTR_FORMAT (printf, 2, 3) jerry_port_log (jerry_log_level_t level, c
  *
  * Note:
  *      This port function is called by jerry-core when
- *      CONFIG_DISABLE_DATE_BUILTIN is _not_ defined. Otherwise this function is
+ *      JERRY_BUILTIN_DATE is defined to 1. Otherwise this function is
  *      not used.
  *
  * @param unix_ms The unix timestamp we want an offset for, given in
@@ -147,7 +147,7 @@ double jerry_port_get_local_time_zone_adjustment (double unix_ms, bool is_utc);
  *
  * Note:
  *      This port function is called by jerry-core when
- *      CONFIG_DISABLE_DATE_BUILTIN is _not_ defined. It is also common practice
+ *      JERRY_BUILTIN_DATE is defined to 1. It is also common practice
  *      in application code to use this function for the initialization of the
  *      random number generator.
  *

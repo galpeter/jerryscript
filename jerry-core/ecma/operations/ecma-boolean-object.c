@@ -43,11 +43,11 @@ ecma_op_create_boolean_object (ecma_value_t arg) /**< argument passed to the Boo
 {
   bool boolean_value = ecma_op_to_boolean (arg);
 
-#ifndef CONFIG_DISABLE_BOOLEAN_BUILTIN
+#if defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1)
   ecma_object_t *prototype_obj_p = ecma_builtin_get (ECMA_BUILTIN_ID_BOOLEAN_PROTOTYPE);
-#else /* CONFIG_DISABLE_BOOLEAN_BUILTIN */
+#else /* defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1) */
   ecma_object_t *prototype_obj_p = ecma_builtin_get (ECMA_BUILTIN_ID_OBJECT_PROTOTYPE);
-#endif /* !CONFIG_DISABLE_BOOLEAN_BUILTIN */
+#endif /* !(defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1) */
 
   ecma_object_t *object_p = ecma_create_object (prototype_obj_p,
                                                 sizeof (ecma_extended_object_t),

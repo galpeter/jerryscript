@@ -25,7 +25,7 @@
 #include "ecma-try-catch-macro.h"
 #include "jrt.h"
 
-#ifndef CONFIG_DISABLE_ARRAY_BUILTIN
+#if defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -107,4 +107,4 @@ ecma_builtin_array_dispatch_construct (const ecma_value_t *arguments_list_p, /**
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_ARRAY_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1) */

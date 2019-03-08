@@ -25,7 +25,7 @@
 #include "ecma-try-catch-macro.h"
 #include "jrt.h"
 
-#ifndef CONFIG_DISABLE_STRING_BUILTIN
+#if defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -151,4 +151,4 @@ ecma_builtin_string_dispatch_construct (const ecma_value_t *arguments_list_p, /*
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_STRING_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1) */

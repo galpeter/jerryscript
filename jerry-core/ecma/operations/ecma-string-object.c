@@ -60,11 +60,11 @@ ecma_op_create_string_object (const ecma_value_t *arguments_list_p, /**< list of
     JERRY_ASSERT (ecma_is_value_string (prim_value));
   }
 
-#ifndef CONFIG_DISABLE_STRING_BUILTIN
+#if defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1)
   ecma_object_t *prototype_obj_p = ecma_builtin_get (ECMA_BUILTIN_ID_STRING_PROTOTYPE);
-#else /* CONFIG_DISABLE_STRING_BUILTIN */
+#else /* !defined (JERRY_BUILTIN_STRING) || (JERRY_BUILTIN_STRING == 0) */
   ecma_object_t *prototype_obj_p = ecma_builtin_get (ECMA_BUILTIN_ID_OBJECT_PROTOTYPE);
-#endif /* !CONFIG_DISABLE_STRING_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1) */
 
   ecma_object_t *object_p = ecma_create_object (prototype_obj_p,
                                                 sizeof (ecma_extended_object_t),

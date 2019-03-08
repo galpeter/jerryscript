@@ -1916,26 +1916,26 @@ ecma_object_get_class_name (ecma_object_t *obj_p) /**< object */
 
         switch (ext_obj_p->u.built_in.id)
         {
-#ifndef CONFIG_DISABLE_MATH_BUILTIN
+#if defined (JERRY_BUILTIN_MATH) && (JERRY_BUILTIN_MATH == 1)
           case ECMA_BUILTIN_ID_MATH:
           {
             return LIT_MAGIC_STRING_MATH_UL;
           }
-#endif /* !CONFIG_DISABLE_MATH_BUILTIN */
-#ifndef CONFIG_DISABLE_JSON_BUILTIN
+#endif /* defined (JERRY_BUILTIN_MATH) && (JERRY_BUILTIN_MATH == 1) */
+#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
           case ECMA_BUILTIN_ID_JSON:
           {
             return LIT_MAGIC_STRING_JSON_U;
           }
-#endif /* !CONFIG_DISABLE_JSON_BUILTIN */
-#ifndef CONFIG_DISABLE_ERROR_BUILTINS
+#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
+#if defined (JERRY_BUILTIN_ERROR) && (JERRY_BUILTIN_ERROR == 1)
           case ECMA_BUILTIN_ID_EVAL_ERROR_PROTOTYPE:
           case ECMA_BUILTIN_ID_RANGE_ERROR_PROTOTYPE:
           case ECMA_BUILTIN_ID_REFERENCE_ERROR_PROTOTYPE:
           case ECMA_BUILTIN_ID_SYNTAX_ERROR_PROTOTYPE:
           case ECMA_BUILTIN_ID_TYPE_ERROR_PROTOTYPE:
           case ECMA_BUILTIN_ID_URI_ERROR_PROTOTYPE:
-#endif /* !CONFIG_DISABLE_ERROR_BUILTINS */
+#endif /* defined (JERRY_BUILTIN_ERROR) && (JERRY_BUILTIN_ERROR == 1) */
           case ECMA_BUILTIN_ID_ERROR_PROTOTYPE:
           {
             return LIT_MAGIC_STRING_ERROR_UL;

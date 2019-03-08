@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#ifndef CONFIG_DISABLE_BOOLEAN_BUILTIN
+#if defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1)
 
 /* Object properties:
  *  (property name, object pointer getter) */
@@ -37,6 +37,6 @@ NUMBER_VALUE (LIT_MAGIC_STRING_LENGTH,
               1,
               ECMA_PROPERTY_FIXED)
 
-#endif /* !CONFIG_DISABLE_BOOLEAN_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"

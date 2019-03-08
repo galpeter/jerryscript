@@ -22,7 +22,7 @@
 #include "re-compiler.h"
 #include "re-parser.h"
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
 
 /** \addtogroup parser Parser
  * @{
@@ -943,4 +943,4 @@ re_parse_next_token (re_parser_ctx_t *parser_ctx_p, /**< RegExp parser context *
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */

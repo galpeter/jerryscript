@@ -30,7 +30,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_OBJECT,
                  true,
                  object)
 
-#ifndef CONFIG_DISABLE_ARRAY_BUILTIN
+#if defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1)
 /* The Array.prototype object (15.4.4) */
 BUILTIN (ECMA_BUILTIN_ID_ARRAY_PROTOTYPE,
          ECMA_OBJECT_TYPE_ARRAY,
@@ -44,9 +44,9 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_ARRAY,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  array)
-#endif /* !CONFIG_DISABLE_ARRAY_BUILTIN*/
+#endif /* defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1) */
 
-#ifndef CONFIG_DISABLE_STRING_BUILTIN
+#if defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1)
 /* The String.prototype object (15.5.4) */
 BUILTIN (ECMA_BUILTIN_ID_STRING_PROTOTYPE,
          ECMA_OBJECT_TYPE_CLASS,
@@ -60,9 +60,9 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_STRING,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  string)
-#endif /* !CONFIG_DISABLE_STRING_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1) */
 
-#ifndef CONFIG_DISABLE_BOOLEAN_BUILTIN
+#if defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1)
 /* The Boolean.prototype object (15.6.4) */
 BUILTIN (ECMA_BUILTIN_ID_BOOLEAN_PROTOTYPE,
          ECMA_OBJECT_TYPE_CLASS,
@@ -76,9 +76,9 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_BOOLEAN,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  boolean)
-#endif /* !CONFIG_DISABLE_BOOLEAN_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1) */
 
-#ifndef CONFIG_DISABLE_NUMBER_BUILTIN
+#if defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
 /* The Number.prototype object (15.7.4) */
 BUILTIN (ECMA_BUILTIN_ID_NUMBER_PROTOTYPE,
          ECMA_OBJECT_TYPE_CLASS,
@@ -92,7 +92,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_NUMBER,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  number)
-#endif /* !CONFIG_DISABLE_NUMBER_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
 
 /* The Function.prototype object (15.3.4) */
 BUILTIN_ROUTINE (ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
@@ -108,25 +108,25 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_FUNCTION,
                  true,
                  function)
 
-#ifndef CONFIG_DISABLE_MATH_BUILTIN
+#if defined (JERRY_BUILTIN_MATH) && (JERRY_BUILTIN_MATH == 1)
 /* The Math object (15.8) */
 BUILTIN (ECMA_BUILTIN_ID_MATH,
          ECMA_OBJECT_TYPE_GENERAL,
          ECMA_BUILTIN_ID_OBJECT_PROTOTYPE,
          true,
          math)
-#endif /* !CONFIG_DISABLE_MATH_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_MATH) && (JERRY_BUILTIN_MATH == 1) */
 
-#ifndef CONFIG_DISABLE_JSON_BUILTIN
+#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
 /* The JSON object (15.12) */
 BUILTIN (ECMA_BUILTIN_ID_JSON,
          ECMA_OBJECT_TYPE_GENERAL,
          ECMA_BUILTIN_ID_OBJECT_PROTOTYPE,
          true,
          json)
-#endif /* !CONFIG_DISABLE_JSON_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
 
-#ifndef CONFIG_DISABLE_DATE_BUILTIN
+#if defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
 /* The Date.prototype object (15.9.4) */
 BUILTIN (ECMA_BUILTIN_ID_DATE_PROTOTYPE,
          ECMA_OBJECT_TYPE_CLASS,
@@ -140,9 +140,9 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_DATE,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  date)
-#endif /* !CONFIG_DISABLE_DATE_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
 /* The RegExp.prototype object (15.10.6) */
 BUILTIN (ECMA_BUILTIN_ID_REGEXP_PROTOTYPE,
          ECMA_OBJECT_TYPE_CLASS,
@@ -156,7 +156,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_REGEXP,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  regexp)
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 
 /* The Error object (15.11.1) */
 BUILTIN_ROUTINE (ECMA_BUILTIN_ID_ERROR,
@@ -172,7 +172,7 @@ BUILTIN (ECMA_BUILTIN_ID_ERROR_PROTOTYPE,
          true,
          error_prototype)
 
-#ifndef CONFIG_DISABLE_ERROR_BUILTINS
+#if defined (JERRY_BUILTIN_ERROR) && (JERRY_BUILTIN_ERROR == 1)
 /* The EvalError.prototype object (15.11.6.1) */
 BUILTIN (ECMA_BUILTIN_ID_EVAL_ERROR_PROTOTYPE,
          ECMA_OBJECT_TYPE_GENERAL,
@@ -256,7 +256,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_URI_ERROR,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  uri_error)
-#endif /* !CONFIG_DISABLE_ERROR_BUILTINS */
+#endif /* defined (JERRY_BUILTIN_ERROR) && (JERRY_BUILTIN_ERROR == 1) */
 
 /**< The [[ThrowTypeError]] object (13.2.3) */
 BUILTIN_ROUTINE (ECMA_BUILTIN_ID_TYPE_ERROR_THROWER,

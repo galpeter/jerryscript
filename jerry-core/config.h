@@ -16,21 +16,53 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/**
- * Group of builtin-related features that can be disabled together.
+/*
+ * By default all built-ins are enabled if they are not defined.
  */
-#ifdef CONFIG_DISABLE_BUILTINS
-# define CONFIG_DISABLE_ANNEXB_BUILTIN
-# define CONFIG_DISABLE_ARRAY_BUILTIN
-# define CONFIG_DISABLE_BOOLEAN_BUILTIN
-# define CONFIG_DISABLE_DATE_BUILTIN
-# define CONFIG_DISABLE_ERROR_BUILTINS
-# define CONFIG_DISABLE_JSON_BUILTIN
-# define CONFIG_DISABLE_MATH_BUILTIN
-# define CONFIG_DISABLE_NUMBER_BUILTIN
-# define CONFIG_DISABLE_REGEXP_BUILTIN
-# define CONFIG_DISABLE_STRING_BUILTIN
-#endif /* CONFIG_DISABLE_BUILTINS */
+#ifndef JERRY_BUILTINS
+# define JERRY_BUILTINS 1
+#endif
+
+#ifndef JERRY_BUILTIN_ANNEXB
+# define JERRY_BUILTIN_ANNEXB JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_ANNEXB) */
+
+#ifndef JERRY_BUILTIN_ARRAY
+# define JERRY_BUILTIN_ARRAY JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_ARRAY) */
+
+#ifndef JERRY_BUILTIN_DATE
+# define JERRY_BUILTIN_DATE JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_DATE) */
+
+#ifndef JERRY_BUILTIN_ERROR
+# define JERRY_BUILTIN_ERROR JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_ERROR) */
+
+#ifndef JERRY_BUILTIN_BOOLEAN
+# define JERRY_BUILTIN_BOOLEAN JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_BOOLEAN) */
+
+#ifndef JERRY_BUILTIN_JSON
+# define JERRY_BUILTIN_JSON JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_JSON) */
+
+#ifndef JERRY_BUILTIN_MATH
+# define JERRY_BUILTIN_MATH JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_MATH) */
+
+#ifndef JERRY_BUILTIN_NUMBER
+# define JERRY_BUILTIN_NUMBER JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_NUMBER) */
+
+#ifndef JERRY_BUILTIN_REGEXP
+# define JERRY_BUILTIN_REGEXP JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_REGEXP) */
+
+#ifndef JERRY_BUILTIN_STRING
+# define JERRY_BUILTIN_STRING JERRY_BUILTINS
+#endif /* !defined(JERRY_BUILTIN_STRING) */
+
 
 /**
  * Group of ES2015-related features that can be disabled together.

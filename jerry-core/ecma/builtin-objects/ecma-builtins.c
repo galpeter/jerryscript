@@ -421,7 +421,7 @@ ecma_instantiate_builtin (ecma_builtin_id_t obj_builtin_id) /**< built-in id */
   /** Initializing [[PrimitiveValue]] properties of built-in prototype objects */
   switch (obj_builtin_id)
   {
-#ifndef CONFIG_DISABLE_ARRAY_BUILTIN
+#if defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1)
     case ECMA_BUILTIN_ID_ARRAY_PROTOTYPE:
     {
       JERRY_ASSERT (obj_type == ECMA_OBJECT_TYPE_ARRAY);
@@ -431,9 +431,9 @@ ecma_instantiate_builtin (ecma_builtin_id_t obj_builtin_id) /**< built-in id */
       ext_object_p->u.array.length_prop = ECMA_PROPERTY_FLAG_WRITABLE | ECMA_PROPERTY_TYPE_VIRTUAL;
       break;
     }
-#endif /* !CONFIG_DISABLE_ARRAY_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1) */
 
-#ifndef CONFIG_DISABLE_STRING_BUILTIN
+#if defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1)
     case ECMA_BUILTIN_ID_STRING_PROTOTYPE:
     {
       JERRY_ASSERT (obj_type == ECMA_OBJECT_TYPE_CLASS);
@@ -443,9 +443,9 @@ ecma_instantiate_builtin (ecma_builtin_id_t obj_builtin_id) /**< built-in id */
       ext_object_p->u.class_prop.u.value = ecma_make_magic_string_value (LIT_MAGIC_STRING__EMPTY);
       break;
     }
-#endif /* !CONFIG_DISABLE_STRING_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1) */
 
-#ifndef CONFIG_DISABLE_NUMBER_BUILTIN
+#if defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
     case ECMA_BUILTIN_ID_NUMBER_PROTOTYPE:
     {
       JERRY_ASSERT (obj_type == ECMA_OBJECT_TYPE_CLASS);
@@ -455,9 +455,9 @@ ecma_instantiate_builtin (ecma_builtin_id_t obj_builtin_id) /**< built-in id */
       ext_object_p->u.class_prop.u.value = ecma_make_integer_value (0);
       break;
     }
-#endif /* !CONFIG_DISABLE_NUMBER_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
 
-#ifndef CONFIG_DISABLE_BOOLEAN_BUILTIN
+#if defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1)
     case ECMA_BUILTIN_ID_BOOLEAN_PROTOTYPE:
     {
       JERRY_ASSERT (obj_type == ECMA_OBJECT_TYPE_CLASS);
@@ -467,9 +467,9 @@ ecma_instantiate_builtin (ecma_builtin_id_t obj_builtin_id) /**< built-in id */
       ext_object_p->u.class_prop.u.value = ECMA_VALUE_FALSE;
       break;
     }
-#endif /* !CONFIG_DISABLE_BOOLEAN_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1) */
 
-#ifndef CONFIG_DISABLE_DATE_BUILTIN
+#if defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
     case ECMA_BUILTIN_ID_DATE_PROTOTYPE:
     {
       JERRY_ASSERT (obj_type == ECMA_OBJECT_TYPE_CLASS);
@@ -482,9 +482,9 @@ ecma_instantiate_builtin (ecma_builtin_id_t obj_builtin_id) /**< built-in id */
       ECMA_SET_INTERNAL_VALUE_POINTER (ext_object_p->u.class_prop.u.value, prim_prop_num_value_p);
       break;
     }
-#endif /* !CONFIG_DISABLE_DATE_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
     case ECMA_BUILTIN_ID_REGEXP_PROTOTYPE:
     {
       JERRY_ASSERT (obj_type == ECMA_OBJECT_TYPE_CLASS);
@@ -494,7 +494,7 @@ ecma_instantiate_builtin (ecma_builtin_id_t obj_builtin_id) /**< built-in id */
       ext_object_p->u.class_prop.u.value = ECMA_NULL_POINTER;
       break;
     }
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
     default:
     {
       JERRY_ASSERT (obj_type != ECMA_OBJECT_TYPE_CLASS);

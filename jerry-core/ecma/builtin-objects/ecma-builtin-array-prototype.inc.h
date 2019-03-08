@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#ifndef CONFIG_DISABLE_ARRAY_BUILTIN
+#if defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1)
 
 /* Object properties:
  *  (property name, object pointer getter) */
@@ -72,6 +72,6 @@ ROUTINE (LIT_MAGIC_STRING_KEYS, ECMA_ARRAY_PROTOTYPE_KEYS, 0, 0)
 ROUTINE (LIT_GLOBAL_SYMBOL_ITERATOR, ECMA_ARRAY_PROTOTYPE_SYMBOL_ITERATOR, 0, 0)
 #endif /* !CONFIG_DISABLE_ES2015_ITERATOR_BUILTIN */
 
-#endif /* !CONFIG_DISABLE_ARRAY_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"

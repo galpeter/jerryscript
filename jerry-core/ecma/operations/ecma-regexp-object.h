@@ -16,7 +16,7 @@
 #ifndef ECMA_REGEXP_OBJECT_H
 #define ECMA_REGEXP_OBJECT_H
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
 
 #include "ecma-globals.h"
 #include "re-compiler.h"
@@ -112,5 +112,5 @@ void re_initialize_props (ecma_object_t *re_obj_p, ecma_string_t *source_p, uint
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 #endif /* !ECMA_REGEXP_OBJECT_H */

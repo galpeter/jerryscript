@@ -42,9 +42,9 @@ snapshot_get_global_flags (bool has_regex, /**< regex literal is present */
 
   uint32_t flags = 0;
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
   flags |= (has_regex ? JERRY_SNAPSHOT_HAS_REGEX_LITERAL : 0);
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 #ifndef CONFIG_DISABLE_ES2015_CLASS
   flags |= (has_class ? JERRY_SNAPSHOT_HAS_CLASS_LITERAL : 0);
 #endif /* !CONFIG_DISABLE_ES2015_CLASS */
@@ -60,9 +60,9 @@ snapshot_get_global_flags (bool has_regex, /**< regex literal is present */
 static inline bool JERRY_ATTR_ALWAYS_INLINE
 snapshot_check_global_flags (uint32_t global_flags) /**< global flags */
 {
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
   global_flags &= (uint32_t) ~JERRY_SNAPSHOT_HAS_REGEX_LITERAL;
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 #ifndef CONFIG_DISABLE_ES2015_CLASS
   global_flags &= (uint32_t) ~JERRY_SNAPSHOT_HAS_CLASS_LITERAL;
 #endif /* !CONFIG_DISABLE_ES2015_CLASS */
@@ -167,7 +167,7 @@ snapshot_add_compiled_code (ecma_compiled_code_t *compiled_code_p, /**< compiled
   }
 #endif /* !CONFIG_DISABLE_ES2015_CLASS */
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
   if (!(compiled_code_p->status_flags & CBC_CODE_FLAGS_FUNCTION))
   {
     /* Regular expression. */
@@ -219,7 +219,7 @@ snapshot_add_compiled_code (ecma_compiled_code_t *compiled_code_p, /**< compiled
 
     return start_offset;
   }
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 
   JERRY_ASSERT (compiled_code_p->status_flags & CBC_CODE_FLAGS_FUNCTION);
 
@@ -548,7 +548,7 @@ snapshot_load_compiled_code (const uint8_t *base_addr_p, /**< base address of th
   ecma_compiled_code_t *bytecode_p = (ecma_compiled_code_t *) base_addr_p;
   uint32_t code_size = ((uint32_t) bytecode_p->size) << JMEM_ALIGNMENT_LOG;
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
   if (!(bytecode_p->status_flags & CBC_CODE_FLAGS_FUNCTION))
   {
     const re_compiled_code_t *re_bytecode_p = NULL;
@@ -567,7 +567,7 @@ snapshot_load_compiled_code (const uint8_t *base_addr_p, /**< base address of th
 
     return (ecma_compiled_code_t *) re_bytecode_p;
   }
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 
   JERRY_ASSERT (bytecode_p->status_flags & CBC_CODE_FLAGS_FUNCTION);
 

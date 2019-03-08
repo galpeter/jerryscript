@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#ifndef CONFIG_DISABLE_JSON_BUILTIN
+#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
 
 #ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
 /* ECMA-262 v6, 24.3.3 */
@@ -33,6 +33,6 @@ STRING_VALUE (LIT_GLOBAL_SYMBOL_TO_STRING_TAG,
 ROUTINE (LIT_MAGIC_STRING_PARSE, ecma_builtin_json_parse, 2, 2)
 ROUTINE (LIT_MAGIC_STRING_STRINGIFY, ecma_builtin_json_stringify, 3, 3)
 
-#endif /* !CONFIG_DISABLE_JSON_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"

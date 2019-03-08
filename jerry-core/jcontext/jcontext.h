@@ -84,9 +84,9 @@ struct jerry_context_t
 
   /* Update JERRY_CONTEXT_FIRST_MEMBER if the first non-external member changes */
   ecma_object_t *ecma_builtin_objects[ECMA_BUILTIN_ID__COUNT]; /**< pointer to instances of built-in objects */
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
   const re_compiled_code_t *re_cache[RE_CACHE_SIZE]; /**< regex cache */
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
   ecma_object_t *ecma_gc_objects_p; /**< List of currently alive objects. */
   jmem_heap_free_t *jmem_heap_list_skip_p; /**< This is used to speed up deallocation. */
   jmem_pools_chunk_t *jmem_free_8_byte_chunk_p; /**< list of free eight byte pool chunks */
@@ -119,9 +119,9 @@ struct jerry_context_t
                                           *   if !0 property hashmap allocation is disabled */
 #endif /* !CONFIG_ECMA_PROPERTY_HASHMAP_DISABLE */
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
   uint8_t re_cache_idx; /**< evicted item index when regex cache is full (round-robin) */
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 
 #ifndef CONFIG_DISABLE_ES2015_PROMISE_BUILTIN
   ecma_job_queueitem_t *job_queue_head_p; /**< points to the head item of the jobqueue */

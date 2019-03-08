@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#ifndef CONFIG_DISABLE_MATH_BUILTIN
+#if defined (JERRY_BUILTIN_MATH) && (JERRY_BUILTIN_MATH == 1)
 
 /* Number properties:
  *  (property name, number value, writable, enumerable, configurable) */
@@ -92,6 +92,6 @@ ROUTINE (LIT_MAGIC_STRING_SIN, ECMA_MATH_OBJECT_SIN, 1, 1)
 ROUTINE (LIT_MAGIC_STRING_SQRT, ECMA_MATH_OBJECT_SQRT, 1, 1)
 ROUTINE (LIT_MAGIC_STRING_TAN, ECMA_MATH_OBJECT_TAN, 1, 1)
 
-#endif /* !CONFIG_DISABLE_MATH_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_MATH) && (JERRY_BUILTIN_MATH == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"

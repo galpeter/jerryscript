@@ -1588,11 +1588,11 @@ ecma_bytecode_deref (ecma_compiled_code_t *bytecode_p) /**< byte code pointer */
   }
   else
   {
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
     re_compiled_code_t *re_bytecode_p = (re_compiled_code_t *) bytecode_p;
 
     ecma_deref_ecma_string (ecma_get_string_from_value (re_bytecode_p->pattern));
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
   }
 
   jmem_heap_free_block (bytecode_p,

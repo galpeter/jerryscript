@@ -48,11 +48,11 @@ ecma_op_create_number_object (ecma_value_t arg) /**< argument passed to the Numb
     return conv_to_num_completion;
   }
 
-#ifndef CONFIG_DISABLE_NUMBER_BUILTIN
+#if defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
   ecma_object_t *prototype_obj_p = ecma_builtin_get (ECMA_BUILTIN_ID_NUMBER_PROTOTYPE);
-#else /* CONFIG_DISABLE_NUMBER_BUILTIN */
+#else /* defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
   ecma_object_t *prototype_obj_p = ecma_builtin_get (ECMA_BUILTIN_ID_OBJECT_PROTOTYPE);
-#endif /* !CONFIG_DISABLE_NUMBER_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
 
   ecma_object_t *object_p = ecma_create_object (prototype_obj_p,
                                                 sizeof (ecma_extended_object_t),

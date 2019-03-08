@@ -61,31 +61,36 @@ Set FEATURE_PROFILE option to one of the following values:
 ### Configurations
 
 In JerryScript all of the features are enabled by default, so an empty profile file turns on all of the available ECMA features.
+The defines can have a value of `0` or `1`. If for whatever reason one of them are not defined, it is treated as if it were
+defined to `1`.
 
-* `CONFIG_DISABLE_ANNEXB_BUILTIN`:
-  Disable the [Annex B](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-B) of the ECMA5.1 standard.
-* `CONFIG_DISABLE_ARRAY_BUILTIN`:
-  Disable the [Array](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.4) built-in.
-* `CONFIG_DISABLE_BOOLEAN_BUILTIN`:
-  Disable the [Boolean](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.6) built-in.
-* `CONFIG_DISABLE_DATE_BUILTIN`:
-  Disable the [Date](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.9) built-in.
-* `CONFIG_DISABLE_ERROR_BUILTINS`:
-  Disable the [Native Error Types](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.11.6) (EvalError, RangeError, ReferenceError, SyntaxError, TypeError, URIError).
+* `JERRY_BUILTIN_ANNEXB`:
+  Enables or disables the [Annex B](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-B) of the ECMA5.1 standard.
+* `JERRY_BUILTIN_ARRAY`:
+  Enables or disable the [Array](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.4) built-in.
+* `JERRY_BUILTIN_BOOLEAN`:
+  Enables or disables the [Boolean](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.6) built-in.
+* `JERRY_BUILTIN_DATE`:
+  Enables or disables the [Date](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.9) built-in.
+* `JERRY_BUILTIN_ERROR_BUILTINS`:
+  Enables or disables the [Native Error Types](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.11.6) (EvalError, RangeError, ReferenceError, SyntaxError, TypeError, URIError).
   **Note**: The [Error](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.11.2) object remains available.
-* `CONFIG_DISABLE_JSON_BUILTIN`:
-  Disable the [JSON](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.12) built-in.
-* `CONFIG_DISABLE_MATH_BUILTIN`:
-  Disable the [Math](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.8) built-in.
-* `CONFIG_DISABLE_NUMBER_BUILTIN`:
-  Disable the [Number](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.7) built-in.
-* `CONFIG_DISABLE_REGEXP_BUILTIN`:
-  Disable the [RegExp](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.10) built-in.
-* `CONFIG_DISABLE_STRING_BUILTIN`:
-  Disable the [String](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.5) built-in.
-* `CONFIG_DISABLE_BUILTINS`:
-  Disable all of the [Standard Built-in ECMAScript 5.1 Objects](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15)
-  (equivalent to `CONFIG_DISABLE_ANNEXB_BUILTIN`, `CONFIG_DISABLE_ARRAY_BUILTIN`, `CONFIG_DISABLE_BOOLEAN_BUILTIN`, `CONFIG_DISABLE_DATE_BUILTIN`, `CONFIG_DISABLE_ERROR_BUILTINS`, `CONFIG_DISABLE_JSON_BUILTIN`, `CONFIG_DISABLE_MATH_BUILTIN`, `CONFIG_DISABLE_NUMBER_BUILTIN`, `CONFIG_DISABLE_REGEXP_BUILTIN`, and `CONFIG_DISABLE_STRING_BUILTIN`).
+* `JERRY_BUILTIN_JSON`:
+  Enables or disables the [JSON](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.12) built-in.
+* `JERRY_BUILTIN_MATH`:
+  Enables or disables the [Math](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.8) built-in.
+* `JERRY_BUILTIN_NUMBER`:
+  Enables or disables the [Number](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.7) built-in.
+* `JERRY_BUILTIN_REGEXP`:
+  Enables or disables the [RegExp](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.10) built-in.
+* `JERRY_BUILTIN_STRING`:
+  Enables or disables the [String](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.5) built-in.
+
+* `JERRY_BUILTINS`:
+  Enables or disable all of the [Standard Built-in ECMAScript 5.1 Objects](http://www.ecma-international.org/ecma-262/5.1/index.html#sec-15)
+  This option is evaulated first, any other `JERRY_BUILTIN_<name>` defines will override that specific builtin config.
+  Equivalent with `JERRY_BUILTIN_ANNEXB`, `JERRY_BUILTIN_ARRAY`, `JERRY_BUILTIN_BOOLEAN`, `JERRY_BUILTIN_DATE`, `JERRY_BUILTIN_ERROR_BUILTINS`, `JERRY_BUILTIN_JSON`, `JERRY_BUILTIN_MATH`, `JERRY_BUILTIN_NUMBER`, `JERRY_BUILTIN_REGEXP`, and `JERRY_BUILTIN_STRING`
+  set to the value of `JERRY_BUILTINS`.
 
 * `CONFIG_DISABLE_ES2015_ARROW_FUNCTION`:
   Disable the [arrow functions](http://www.ecma-international.org/ecma-262/6.0/#sec-arrow-function-definitions).

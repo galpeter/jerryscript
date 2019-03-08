@@ -22,7 +22,7 @@
 #include "ecma-regexp-object.h"
 #include "ecma-try-catch-macro.h"
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -132,4 +132,4 @@ ecma_builtin_regexp_dispatch_construct (const ecma_value_t *arguments_list_p, /*
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */

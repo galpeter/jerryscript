@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#ifndef CONFIG_DISABLE_REGEXP_BUILTIN
+#if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
 
 /* ECMA-262 v5, 15.10.6.1 */
 OBJECT_VALUE (LIT_MAGIC_STRING_CONSTRUCTOR,
@@ -51,13 +51,13 @@ NUMBER_VALUE (LIT_MAGIC_STRING_LASTINDEX_UL,
               0,
               ECMA_PROPERTY_FLAG_WRITABLE)
 
-#ifndef CONFIG_DISABLE_ANNEXB_BUILTIN
+#if defined (JERRY_BUILTIN_ANNEXB) && (JERRY_BUILTIN_ANNEXB == 1)
 ROUTINE (LIT_MAGIC_STRING_COMPILE, ecma_builtin_regexp_prototype_compile, 2, 1)
-#endif /* !CONFIG_DISABLE_ANNEXB_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_ANNEXB) && (JERRY_BUILTIN_ANNEXB == 1) */
 ROUTINE (LIT_MAGIC_STRING_EXEC, ecma_builtin_regexp_prototype_exec, 1, 1)
 ROUTINE (LIT_MAGIC_STRING_TEST, ecma_builtin_regexp_prototype_test, 1, 1)
 ROUTINE (LIT_MAGIC_STRING_TO_STRING_UL, ecma_builtin_regexp_prototype_to_string, 0, 0)
 
-#endif /* !CONFIG_DISABLE_REGEXP_BUILTIN */
+#endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"

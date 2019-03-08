@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#ifndef CONFIG_DISABLE_NUMBER_BUILTIN
+#if defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
 
 /* Number properties:
  *  (property name, number value, writable, enumerable, configurable) */
@@ -62,6 +62,6 @@ OBJECT_VALUE (LIT_MAGIC_STRING_PROTOTYPE,
               ECMA_BUILTIN_ID_NUMBER_PROTOTYPE,
               ECMA_PROPERTY_FIXED)
 
-#endif /* !CONFIG_DISABLE_NUMBER_BUILTIN */
+#endif /* defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"
