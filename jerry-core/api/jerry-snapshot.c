@@ -120,11 +120,11 @@ snapshot_write_to_buffer_by_offset (uint8_t *buffer_p, /**< buffer */
 /**
  * Maximum snapshot write buffer offset.
  */
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32
+#if JERRY_NUMBER_TYPE_FLOAT64 == 0
 #define JERRY_SNAPSHOT_MAXIMUM_WRITE_OFFSET (0x7fffff >> 1)
-#else
+#else /* JERRY_NUMBER_TYPE_FLOAT64 == 1 */
 #define JERRY_SNAPSHOT_MAXIMUM_WRITE_OFFSET (UINT32_MAX >> 1)
-#endif
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 0 */
 
 /**
  * Save snapshot helper.

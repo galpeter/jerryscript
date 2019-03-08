@@ -119,8 +119,8 @@
 #endif /* !defined(JERRY_ES2015_TEMPLATE_STRINGS) */
 
 /**
- * Enables/disables the unicode case conversion in the engine
- * By default Unicode case conversion is enabled
+ * Enables/disables the unicode case conversion in the engine.
+ * By default Unicode case conversion is enabled.
  */
 #ifndef JERRY_UNICODE_CASE_CONVERSION
 # define JERRY_UNICODE_CASE_CONVERSION 1
@@ -145,22 +145,20 @@
 
 /**
  * Use 32-bit/64-bit float for ecma-numbers
+ * This option is for expert use only!
+ *
+ * Allowed values:
+ *  1: use 64-bit floating point number mode
+ *  0: use 32-bit floating point number mode
+ *
+ * Default value: 1
  */
-#define CONFIG_ECMA_NUMBER_FLOAT32 (1u) /* 32-bit float */
-#define CONFIG_ECMA_NUMBER_FLOAT64 (2u) /* 64-bit float */
-
-#ifndef CONFIG_ECMA_NUMBER_TYPE
-# define CONFIG_ECMA_NUMBER_TYPE CONFIG_ECMA_NUMBER_FLOAT64
-#else /* CONFIG_ECMA_NUMBER_TYPE */
-# if (CONFIG_ECMA_NUMBER_TYPE != CONFIG_ECMA_NUMBER_FLOAT32 \
-      && CONFIG_ECMA_NUMBER_TYPE != CONFIG_ECMA_NUMBER_FLOAT64)
-#  error "ECMA-number storage is configured incorrectly"
-# endif /* CONFIG_ECMA_NUMBER_TYPE != CONFIG_ECMA_NUMBER_FLOAT32
-           && CONFIG_ECMA_NUMBER_TYPE != CONFIG_ECMA_NUMBER_FLOAT64 */
-#endif /* !CONFIG_ECMA_NUMBER_TYPE */
+#ifndef JERRY_NUMBER_TYPE_FLOAT64
+# define JERRY_NUMBER_TYPE_FLOAT64 1
+#endif
 
 #if ((defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)) \
-     && (CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32))
+     && (JERRY_NUMBER_TYPE_FLOAT64 != 1))
 #  error "Date does not support float32"
 #endif
 
@@ -311,6 +309,12 @@
     || ((JERRY_UNICODE_CASE_CONVERSION != 0) \
         && (JERRY_UNICODE_CASE_CONVERSION != 1))
 # error "Invalid value for JERRY_UNICODE_CASE_CONVERSION macro."
+#endif
+
+#if !defined(JERRY_NUMBER_TYPE_FLOAT64) \
+    || ((JERRY_NUMBER_TYPE_FLOAT64 != 0) \
+        && (JERRY_NUMBER_TYPE_FLOAT64 != 1))
+# error "Invalid value for JERRY_NUMBER_TYPE_FLOAT64 macro."
 #endif
 
 #endif /* !CONFIG_H */

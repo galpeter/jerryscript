@@ -85,12 +85,12 @@ ecma_get_typedarray_element (lit_utf8_byte_t *src, /**< the location in the inte
     {
       return GET_ELEMENT (float, src);
     }
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64
+#if JERRY_NUMBER_TYPE_FLOAT64 == 1
     case LIT_MAGIC_STRING_FLOAT64_ARRAY_UL:
     {
       return GET_ELEMENT (double, src);
     }
-#endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64 */
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 1 */
     default:
     {
       JERRY_UNREACHABLE ();
@@ -140,13 +140,13 @@ ecma_set_typedarray_element (lit_utf8_byte_t *dst_p, /**< the location in the in
       *((float *) dst_p) = (float) value;
       return;
     }
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64
+#if JERRY_NUMBER_TYPE_FLOAT64 == 1
     case LIT_MAGIC_STRING_FLOAT64_ARRAY_UL:
     {
       *((double *) dst_p) = (double) value;
       return;
     }
-#endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64 */
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 1 */
     default:
     {
       break;
@@ -970,14 +970,14 @@ ecma_op_create_typedarray_with_type_and_length (ecma_object_t *obj_p, /**< Typed
       element_size_shift = 2;
       break;
     }
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64
+#if JERRY_NUMBER_TYPE_FLOAT64 == 1
     case LIT_MAGIC_STRING_FLOAT64_ARRAY_UL:
     {
       proto_p = ecma_builtin_get (ECMA_BUILTIN_ID_FLOAT64ARRAY_PROTOTYPE);
       element_size_shift = 3;
       break;
     }
-#endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64 */
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 1 */
     default:
     {
       JERRY_UNREACHABLE ();

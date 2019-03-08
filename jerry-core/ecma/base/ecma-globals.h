@@ -190,7 +190,7 @@ enum
   ECMA_VALUE_IMPLICIT_CONSTRUCTOR = ECMA_MAKE_VALUE (9), /**< special value for bound class constructors */
 };
 
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32
+#if JERRY_NUMBER_TYPE_FLOAT64 == 0
 /**
  * Maximum integer number for an ecma value
  */
@@ -199,7 +199,7 @@ enum
  * Maximum integer number for an ecma value (shifted left with ECMA_DIRECT_SHIFT)
  */
 #define ECMA_INTEGER_NUMBER_MAX_SHIFTED 0x7fffff0
-#else /* CONFIG_ECMA_NUMBER_TYPE != CONFIG_ECMA_NUMBER_FLOAT32 */
+#else /* JERRY_NUMBER_TYPE_FLOAT64 == 1 */
 /**
  * Maximum integer number for an ecma value
  */
@@ -208,9 +208,9 @@ enum
  * Maximum integer number for an ecma value (shifted left with ECMA_DIRECT_SHIFT)
  */
 #define ECMA_INTEGER_NUMBER_MAX_SHIFTED 0x7ffffff0
-#endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32 */
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 0 */
 
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32
+#if JERRY_NUMBER_TYPE_FLOAT64 == 0
 /**
  * Minimum integer number for an ecma value
  */
@@ -219,7 +219,7 @@ enum
  * Minimum integer number for an ecma value (shifted left with ECMA_DIRECT_SHIFT)
  */
 #define ECMA_INTEGER_NUMBER_MIN_SHIFTED -0x7fffff0
-#else /* CONFIG_ECMA_NUMBER_TYPE != CONFIG_ECMA_NUMBER_FLOAT32 */
+#else /* JERRY_NUMBER_TYPE_FLOAT64 == 1 */
 /**
  * Minimum integer number for an ecma value
  */
@@ -228,7 +228,7 @@ enum
  * Minimum integer number for an ecma value (shifted left with ECMA_DIRECT_SHIFT)
  */
 #define ECMA_INTEGER_NUMBER_MIN_SHIFTED (-0x7fffffff - 1) /* -0x80000000 */
-#endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32 */
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 0 */
 
 #if ECMA_DIRECT_SHIFT != 4
 #error "Please update ECMA_INTEGER_NUMBER_MIN/MAX_SHIFTED according to the new value of ECMA_DIRECT_SHIFT."
@@ -243,11 +243,11 @@ enum
 /**
  * Maximum integer number, which if squared, still fits in ecma_integer_value_t
  */
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32
+#if JERRY_NUMBER_TYPE_FLOAT64 == 0
 #define ECMA_INTEGER_MULTIPLY_MAX 0xb50
-#else /* CONFIG_ECMA_NUMBER_TYPE != CONFIG_ECMA_NUMBER_FLOAT32 */
+#else /* JERRY_NUMBER_TYPE_FLOAT64 == 1 */
 #define ECMA_INTEGER_MULTIPLY_MAX 0x2d41
-#endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32 */
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 0 */
 
 /**
  * Checks whether the error flag is set.
@@ -1030,7 +1030,7 @@ typedef struct
   ecma_object_t *set_p;
 } ecma_property_descriptor_t;
 
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32
+#if JERRY_NUMBER_TYPE_FLOAT64 == 0
 /**
  * Description of an ecma-number
  */
@@ -1066,7 +1066,7 @@ typedef float ecma_number_t;
  *          IEEE-754 2008, 3.6, Table 3.5
  */
 #define ECMA_NUMBER_FRACTION_WIDTH   (23)
-#elif CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64
+#elif JERRY_NUMBER_TYPE_FLOAT64 == 1
 /**
  * Description of an ecma-number
  */
@@ -1102,7 +1102,7 @@ typedef double ecma_number_t;
  *          IEEE-754 2008, 3.6, Table 3.5
  */
 #define ECMA_NUMBER_FRACTION_WIDTH   (52)
-#endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32 */
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 0 */
 
 /**
  * Value '0' of ecma_number_t
@@ -1129,7 +1129,7 @@ typedef double ecma_number_t;
  */
 #define ECMA_NUMBER_MINUS_ONE ((ecma_number_t) -1)
 
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32
+#if JERRY_NUMBER_TYPE_FLOAT64 == 0
 /**
  * Number.MIN_VALUE (i.e., the smallest positive value of ecma-number)
  *
@@ -1142,7 +1142,7 @@ typedef double ecma_number_t;
  * See also: ECMA_262 v5, 15.7.3.2
  */
 # define ECMA_NUMBER_MAX_VALUE (FLT_MAX)
-#elif CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64
+#elif JERRY_NUMBER_TYPE_FLOAT64 == 1
 /**
  * Number.MAX_VALUE (i.e., the maximum value of ecma-number)
  *
@@ -1155,7 +1155,7 @@ typedef double ecma_number_t;
  * See also: ECMA_262 v5, 15.7.3.3
  */
 # define ECMA_NUMBER_MIN_VALUE ((ecma_number_t) 5e-324)
-#endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32 */
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 0 */
 
 /**
  * Euler number

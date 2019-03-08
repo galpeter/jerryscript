@@ -478,7 +478,7 @@ ecma_make_nan_value (void)
 static inline bool JERRY_ATTR_CONST JERRY_ATTR_ALWAYS_INLINE
 ecma_is_number_equal_to_positive_zero (ecma_number_t ecma_number) /**< number */
 {
-#if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32
+#if JERRY_NUMBER_TYPE_FLOAT64 == 0
   union
   {
     uint32_t u32_value;
@@ -488,7 +488,7 @@ ecma_is_number_equal_to_positive_zero (ecma_number_t ecma_number) /**< number */
   u.float_value = ecma_number;
 
   return u.u32_value == 0;
-#else /* CONFIG_ECMA_NUMBER_TYPE != CONFIG_ECMA_NUMBER_FLOAT32 */
+#else /* JERRY_NUMBER_TYPE_FLOAT64 == 1 */
   union
   {
     uint64_t u64_value;
@@ -498,7 +498,7 @@ ecma_is_number_equal_to_positive_zero (ecma_number_t ecma_number) /**< number */
   u.float_value = ecma_number;
 
   return u.u64_value == 0;
-#endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT32 */
+#endif /* JERRY_NUMBER_TYPE_FLOAT64 == 0 */
 } /* ecma_is_number_equal_to_positive_zero */
 
 /**
