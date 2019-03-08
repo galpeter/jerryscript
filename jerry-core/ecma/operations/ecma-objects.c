@@ -26,9 +26,9 @@
 #include "ecma-objects-general.h"
 #include "ecma-objects.h"
 
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
 #include "ecma-typedarray-object.h"
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
 
 /** \addtogroup ecma ECMA
  * @{
@@ -135,18 +135,18 @@ ecma_op_object_get_own_property (ecma_object_t *object_p, /**< the object */
       }
       break;
     }
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
     case ECMA_OBJECT_TYPE_PSEUDO_ARRAY:
     {
       /* ES2015 9.4.5.1 */
       if (ecma_is_typedarray (ecma_make_object_value (object_p)))
       {
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
         if (ecma_prop_name_is_symbol (property_name_p))
         {
           break;
         }
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
         uint32_t array_index = ecma_string_get_array_index (property_name_p);
 
@@ -186,7 +186,7 @@ ecma_op_object_get_own_property (ecma_object_t *object_p, /**< the object */
 
       break;
     }
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
     default:
     {
       break;
@@ -210,7 +210,7 @@ ecma_op_object_get_own_property (ecma_object_t *object_p, /**< the object */
           /* Get length virtual property. */
           const ecma_compiled_code_t *bytecode_data_p;
 
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
           if (type != ECMA_OBJECT_TYPE_ARROW_FUNCTION)
           {
             ecma_extended_object_t *ext_func_p = (ecma_extended_object_t *) object_p;
@@ -221,10 +221,10 @@ ecma_op_object_get_own_property (ecma_object_t *object_p, /**< the object */
             ecma_arrow_function_t *arrow_func_p = (ecma_arrow_function_t *) object_p;
             bytecode_data_p = ecma_op_arrow_function_get_compiled_code (arrow_func_p);
           }
-#else /* CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#else /* !defined (JERRY_ES2015_ARROW_FUNCTION) || (JERRY_ES2015_ARROW_FUNCTION == 0) */
           ecma_extended_object_t *ext_func_p = (ecma_extended_object_t *) object_p;
           bytecode_data_p = ecma_op_function_get_compiled_code (ext_func_p);
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
 
           uint32_t len;
           if (bytecode_data_p->status_flags & CBC_CODE_FLAGS_UINT16_ARGUMENTS)
@@ -479,16 +479,16 @@ ecma_op_object_find_own (ecma_value_t base_value, /**< base value */
           }
         }
       }
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
       /* ES2015 9.4.5.4 */
       if (ecma_is_typedarray (ecma_make_object_value (object_p)))
       {
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
         if (ecma_prop_name_is_symbol (property_name_p))
         {
           break;
         }
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
         uint32_t array_index = ecma_string_get_array_index (property_name_p);
 
@@ -509,7 +509,7 @@ ecma_op_object_find_own (ecma_value_t base_value, /**< base value */
 
         ecma_deref_ecma_string (num_to_str);
       }
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
 
       break;
     }
@@ -534,7 +534,7 @@ ecma_op_object_find_own (ecma_value_t base_value, /**< base value */
         /* Get length virtual property. */
         const ecma_compiled_code_t *bytecode_data_p;
 
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
         if (type != ECMA_OBJECT_TYPE_ARROW_FUNCTION)
         {
           ecma_extended_object_t *ext_func_p = (ecma_extended_object_t *) object_p;
@@ -545,10 +545,10 @@ ecma_op_object_find_own (ecma_value_t base_value, /**< base value */
           ecma_arrow_function_t *arrow_func_p = (ecma_arrow_function_t *) object_p;
           bytecode_data_p = ecma_op_arrow_function_get_compiled_code (arrow_func_p);
         }
-#else /* CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#else /* !defined (JERRY_ES2015_ARROW_FUNCTION) || (JERRY_ES2015_ARROW_FUNCTION == 0) */
         ecma_extended_object_t *ext_func_p = (ecma_extended_object_t *) object_p;
         bytecode_data_p = ecma_op_function_get_compiled_code (ext_func_p);
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
 
         uint32_t len;
         if (bytecode_data_p->status_flags & CBC_CODE_FLAGS_UINT16_ARGUMENTS)
@@ -734,7 +734,7 @@ ecma_op_object_get_by_magic_id (ecma_object_t *object_p, /**< the object */
   return ecma_op_object_get (object_p, ecma_get_magic_string (property_id));
 } /* ecma_op_object_get_by_magic_id */
 
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
 /**
  * [[Get]] operation of ecma object where the property is a well-known symbol
  *
@@ -756,7 +756,7 @@ ecma_op_object_get_by_symbol_id (ecma_object_t *object_p, /**< the object */
 
   return ret_value;
 } /* ecma_op_object_get_by_symbol_id */
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
 /**
  * [[Put]] ecma general object's operation
@@ -834,16 +834,16 @@ ecma_op_object_put (ecma_object_t *object_p, /**< the object */
           }
         }
       }
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
       /* ES2015 9.4.5.5 */
       if (ecma_is_typedarray (ecma_make_object_value (object_p)))
       {
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
         if (ecma_prop_name_is_symbol (property_name_p))
         {
           break;
         }
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
         uint32_t array_index = ecma_string_get_array_index (property_name_p);
 
@@ -871,7 +871,7 @@ ecma_op_object_put (ecma_object_t *object_p, /**< the object */
 
         ecma_deref_ecma_string (num_to_str);
       }
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
       break;
     }
     default:
@@ -1152,9 +1152,9 @@ ecma_op_object_define_own_property (ecma_object_t *obj_p, /**< the object */
     case ECMA_OBJECT_TYPE_GENERAL:
     case ECMA_OBJECT_TYPE_CLASS:
     case ECMA_OBJECT_TYPE_FUNCTION:
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
     case ECMA_OBJECT_TYPE_ARROW_FUNCTION:
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
     case ECMA_OBJECT_TYPE_EXTERNAL_FUNCTION:
     case ECMA_OBJECT_TYPE_BOUND_FUNCTION:
     {
@@ -1178,22 +1178,22 @@ ecma_op_object_define_own_property (ecma_object_t *obj_p, /**< the object */
 
       ecma_extended_object_t *ext_object_p = (ecma_extended_object_t *) obj_p;
 
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
       if (ext_object_p->u.pseudo_array.type == ECMA_PSEUDO_ARRAY_ARGUMENTS)
       {
-#else /* CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#else /* !defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) || (JERRY_ES2015_BUILTIN_TYPEDARRAY == 0) */
         JERRY_ASSERT (ext_object_p->u.pseudo_array.type == ECMA_PSEUDO_ARRAY_ARGUMENTS);
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
         return ecma_op_arguments_object_define_own_property (obj_p,
                                                              property_name_p,
                                                              property_desc_p,
                                                              is_throw);
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
       }
       /* ES2015 9.4.5.3 */
       if (ecma_is_typedarray (ecma_make_object_value (obj_p)))
       {
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
         if (ecma_prop_name_is_symbol (property_name_p))
         {
           return ecma_op_general_object_define_own_property (obj_p,
@@ -1201,7 +1201,7 @@ ecma_op_object_define_own_property (ecma_object_t *obj_p, /**< the object */
                                                              property_desc_p,
                                                              is_throw);
         }
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
         uint32_t array_index = ecma_string_get_array_index (property_name_p);
 
         if (array_index != ECMA_STRING_NOT_ARRAY_INDEX)
@@ -1235,9 +1235,9 @@ ecma_op_object_define_own_property (ecma_object_t *obj_p, /**< the object */
                                                          property_name_p,
                                                          property_desc_p,
                                                          is_throw);
-#else /* CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#else /* !defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) || (JERRY_ES2015_BUILTIN_TYPEDARRAY == 0) */
       break;
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
     }
   }
 } /* ecma_op_object_define_own_property */
@@ -1405,9 +1405,9 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
   const bool is_enumerable_only = (opts & ECMA_LIST_ENUMERABLE) != 0;
   const bool is_array_indices_only = (opts & ECMA_LIST_ARRAY_INDICES) != 0;
   const bool is_with_prototype_chain = (opts & ECMA_LIST_PROTOTYPE) != 0;
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
   const bool is_symbols_only = (opts & ECMA_LIST_SYMBOLS) != 0;
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
   const size_t bitmap_row_size = sizeof (uint32_t) * JERRY_BITSINBYTE;
   const size_t names_hashes_bitmap_size = ECMA_OBJECT_HASH_BITMAP_SIZE / bitmap_row_size;
@@ -1425,10 +1425,10 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
 
     ecma_collection_header_t *prop_names_p = ecma_new_values_collection ();
 
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
     if (JERRY_LIKELY (!is_symbols_only))
     {
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
       if (obj_is_builtin)
       {
@@ -1443,18 +1443,18 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
         {
           case ECMA_OBJECT_TYPE_PSEUDO_ARRAY:
           {
-  #ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+  #if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
             if (ecma_is_typedarray (ecma_make_object_value (obj_p)))
             {
               ecma_op_typedarray_list_lazy_property_names (obj_p, prop_names_p);
             }
-  #endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+  #endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
             break;
           }
           case ECMA_OBJECT_TYPE_FUNCTION:
-  #ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+  #if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
           case ECMA_OBJECT_TYPE_ARROW_FUNCTION:
-  #endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+  #endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
           {
             ecma_op_function_list_lazy_property_names (obj_p,
                                                        is_enumerable_only,
@@ -1506,9 +1506,9 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
           }
         }
       }
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
     }
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
     ecma_value_t *ecma_value_p = ecma_collection_iterator_init (prop_names_p);
 
@@ -1520,10 +1520,10 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
     {
       ecma_string_t *name_p = ecma_get_string_from_value (*ecma_value_p);
 
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
       /* Symbols are never lazy listed */
       JERRY_ASSERT (!ecma_prop_name_is_symbol (name_p));
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
       ecma_value_p = ecma_collection_iterator_next (ecma_value_p);
 
@@ -1570,7 +1570,7 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
 
           if (!(is_enumerable_only && !ecma_is_property_enumerable (*property_p)))
           {
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
             /* If is_symbols_only is false and prop_name is symbol
                we should skip the current property e.g. for-in.
 
@@ -1581,7 +1581,7 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
               ecma_deref_ecma_string (name_p);
               continue;
             }
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
             uint8_t hash = (uint8_t) ecma_string_hash (name_p);
             uint32_t bitmap_row = (uint32_t) (hash / bitmap_row_size);
@@ -1812,10 +1812,10 @@ ecma_object_check_class_name_is_object (ecma_object_t *obj_p) /**< object */
 {
 #ifndef JERRY_NDEBUG
   return (ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_GLOBAL)
-#ifndef CONFIG_DISABLE_ES2015_PROMISE_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1)
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_PROMISE_PROTOTYPE)
-#endif /* !CONFIG_DISABLE_ES2015_PROMISE_BUILTIN */
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#endif /* defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1) */
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_ARRAYBUFFER_PROTOTYPE)
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_TYPEDARRAY_PROTOTYPE)
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_INT8ARRAY_PROTOTYPE)
@@ -1829,17 +1829,17 @@ ecma_object_check_class_name_is_object (ecma_object_t *obj_p) /**< object */
 #if CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_FLOAT64ARRAY_PROTOTYPE)
 #endif /* CONFIG_ECMA_NUMBER_TYPE == CONFIG_ECMA_NUMBER_FLOAT64 */
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
-#ifndef CONFIG_DISABLE_ES2015_ITERATOR_BUILTIN
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
+#if defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1)
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_ARRAY_ITERATOR_PROTOTYPE)
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_ITERATOR_PROTOTYPE)
-#endif /* !CONFIG_DISABLE_ES2015_ITERATOR_BUILTIN */
-#ifndef CONFIG_DISABLE_ES2015_MAP_BUILTIN
+#endif /* defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1) */
+#if defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1)
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_MAP_PROTOTYPE)
-#endif /* !CONFIG_DISABLE_ES2015_MAP_BUILTIN */
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#endif /* defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1) */
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_SYMBOL_PROTOTYPE)
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
           || ecma_builtin_is (obj_p, ECMA_BUILTIN_ID_OBJECT_PROTOTYPE));
 #else /* JERRY_NDEBUG */
   JERRY_UNUSED (obj_p);
@@ -1874,19 +1874,19 @@ ecma_object_get_class_name (ecma_object_t *obj_p) /**< object */
 
       switch (ext_obj_p->u.pseudo_array.type)
       {
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
         case ECMA_PSEUDO_ARRAY_TYPEDARRAY:
         case ECMA_PSEUDO_ARRAY_TYPEDARRAY_WITH_INFO:
         {
           return (lit_magic_string_id_t) ext_obj_p->u.pseudo_array.u1.class_id;
         }
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
-#ifndef CONFIG_DISABLE_ES2015_ITERATOR_BUILTIN
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
+#if defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1)
         case ECMA_PSEUDO_ARRAY_ITERATOR:
         {
           return LIT_MAGIC_STRING_ARRAY_ITERATOR_UL;
         }
-#endif /* !CONFIG_DISABLE_ES2015_ITERATOR_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1) */
         default:
         {
           JERRY_ASSERT (ext_obj_p->u.pseudo_array.type == ECMA_PSEUDO_ARRAY_ARGUMENTS);
@@ -1898,9 +1898,9 @@ ecma_object_get_class_name (ecma_object_t *obj_p) /**< object */
       break;
     }
     case ECMA_OBJECT_TYPE_FUNCTION:
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
     case ECMA_OBJECT_TYPE_ARROW_FUNCTION:
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
     case ECMA_OBJECT_TYPE_EXTERNAL_FUNCTION:
     case ECMA_OBJECT_TYPE_BOUND_FUNCTION:
     {

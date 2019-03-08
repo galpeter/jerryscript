@@ -128,7 +128,7 @@ ecma_op_create_array_object (const ecma_value_t *arguments_list_p, /**< list of 
   return ecma_make_object_value (object_p);
 } /* ecma_op_create_array_object */
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
 /**
  * Array object creation with custom prototype.
  *
@@ -159,7 +159,7 @@ ecma_op_create_array_object_by_constructor (const ecma_value_t *arguments_list_p
                                       arguments_list_len,
                                       is_treat_single_arg_as_length);
 } /* ecma_op_create_array_object_by_constructor */
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
 /**
  * Update the length of an array to a new length

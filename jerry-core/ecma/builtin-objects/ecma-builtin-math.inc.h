@@ -64,12 +64,12 @@ NUMBER_VALUE (LIT_MAGIC_STRING_SQRT2_U,
               ECMA_BUILTIN_NUMBER_SQRT2,
               ECMA_PROPERTY_FIXED)
 
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
 /* ECMA-262 v6, 20.2.1.9 */
 STRING_VALUE (LIT_GLOBAL_SYMBOL_TO_STRING_TAG,
               LIT_MAGIC_STRING_MATH_UL,
               ECMA_PROPERTY_FLAG_CONFIGURABLE)
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
 /* Routine properties:
  *  (property name, C routine name, arguments number or NON_FIXED, value of the routine's length property) */

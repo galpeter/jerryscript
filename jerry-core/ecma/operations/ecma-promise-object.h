@@ -16,7 +16,7 @@
 #ifndef ECMA_PROMISE_OBJECT_H
 #define ECMA_PROMISE_OBJECT_H
 
-#ifndef CONFIG_DISABLE_ES2015_PROMISE_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1)
 #include "ecma-globals.h"
 
 /** \addtogroup ecma ECMA
@@ -85,5 +85,5 @@ void ecma_promise_free_resolving_functions (ecma_promise_resolving_functions_t *
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_ES2015_PROMISE_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1) */
 #endif /* !ECMA_PROMISE_OBJECT_H */

@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#ifndef CONFIG_DISABLE_ES2015_MAP_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1)
 
 /* Number properties:
  *  (property name, number value, writable, enumerable, configurable) */
@@ -42,6 +42,6 @@ OBJECT_VALUE (LIT_MAGIC_STRING_PROTOTYPE,
               ECMA_BUILTIN_ID_MAP_PROTOTYPE,
               ECMA_PROPERTY_FIXED)
 
-#endif /* !CONFIG_DISABLE_ES2015_MAP_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"

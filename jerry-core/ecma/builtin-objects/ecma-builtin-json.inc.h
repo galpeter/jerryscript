@@ -21,12 +21,12 @@
 
 #if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
 
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
 /* ECMA-262 v6, 24.3.3 */
 STRING_VALUE (LIT_GLOBAL_SYMBOL_TO_STRING_TAG,
               LIT_MAGIC_STRING_JSON_U,
               ECMA_PROPERTY_FLAG_CONFIGURABLE)
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
 /* Routine properties:
  *  (property name, C routine name, arguments number or NON_FIXED, value of the routine's length property) */

@@ -48,9 +48,9 @@ ecma_init (void)
   JERRY_CONTEXT (vm_recursion_counter) = VM_RECURSION_LIMIT;
 #endif /* VM_RECURSION_LIMIT */
 
-#ifndef CONFIG_DISABLE_ES2015_PROMISE_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1)
   ecma_job_queue_init ();
-#endif /* CONFIG_DISABLE_ES2015_PROMISE_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1) */
 } /* ecma_init */
 
 /**

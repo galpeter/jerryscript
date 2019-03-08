@@ -28,9 +28,9 @@
 
 ecma_object_t *ecma_op_resolve_reference_base (ecma_object_t *lex_env_p, ecma_string_t *name_p);
 ecma_value_t ecma_op_resolve_reference_value (ecma_object_t *lex_env_p, ecma_string_t *name_p);
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
 ecma_object_t *ecma_op_resolve_super_reference_value (ecma_object_t *lex_env_p);
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
 /**
  * @}

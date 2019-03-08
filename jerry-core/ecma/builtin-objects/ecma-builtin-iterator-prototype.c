@@ -17,7 +17,7 @@
 #include "ecma-builtins.h"
 #include "ecma-iterator-object.h"
 
-#ifndef CONFIG_DISABLE_ES2015_ITERATOR_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -60,4 +60,4 @@ ecma_builtin_iterator_prototype_object_iterator (ecma_value_t this_val) /**< thi
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_ES2015_ITERATOR_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1) */

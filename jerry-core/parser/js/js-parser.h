@@ -79,20 +79,20 @@ typedef enum
   PARSER_ERR_MULTIPLE_DEFAULTS_NOT_ALLOWED,           /**< multiple default cases are not allowed */
   PARSER_ERR_DEFAULT_NOT_IN_SWITCH,                   /**< default statement is not in switch block */
   PARSER_ERR_CASE_NOT_IN_SWITCH,                      /**< case statement is not in switch block */
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
   PARSER_ERR_MULTIPLE_CLASS_CONSTRUCTORS,             /**< multiple class constructor */
   PARSER_ERR_CLASS_CONSTRUCTOR_AS_ACCESSOR,           /**< class constructor cannot be an accessor */
   PARSER_ERR_CLASS_STATIC_PROTOTYPE,                  /**< static method name 'prototype' is not allowed */
   PARSER_ERR_UNEXPECTED_SUPER_REFERENCE,              /**< unexpected super keyword */
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
   PARSER_ERR_LEFT_PAREN_EXPECTED,                     /**< left paren expected */
   PARSER_ERR_LEFT_BRACE_EXPECTED,                     /**< left brace expected */
   PARSER_ERR_RIGHT_PAREN_EXPECTED,                    /**< right paren expected */
   PARSER_ERR_RIGHT_SQUARE_EXPECTED,                   /**< right square expected */
-#ifndef CONFIG_DISABLE_ES2015_TEMPLATE_STRINGS
+#if defined (JERRY_ES2015_TEMPLATE_STRINGS) && (JERRY_ES2015_TEMPLATE_STRINGS == 1)
   PARSER_ERR_RIGHT_BRACE_EXPECTED,                    /**< right brace expected */
-#endif /* !CONFIG_DISABLE_ES2015_TEMPLATE_STRINGS */
+#endif /* defined (JERRY_ES2015_TEMPLATE_STRINGS) && (JERRY_ES2015_TEMPLATE_STRINGS == 1) */
   PARSER_ERR_COLON_EXPECTED,                          /**< colon expected */
   PARSER_ERR_COLON_FOR_CONDITIONAL_EXPECTED,          /**< colon expected for conditional expression */
   PARSER_ERR_SEMICOLON_EXPECTED,                      /**< semicolon expected */
@@ -119,15 +119,15 @@ typedef enum
   PARSER_ERR_INVALID_RETURN,                          /**< return must be inside a function */
   PARSER_ERR_INVALID_RIGHT_SQUARE,                    /**< right square must terminate a block */
   PARSER_ERR_DUPLICATED_LABEL,                        /**< duplicated label */
-#if (!defined (CONFIG_DISABLE_ES2015_FUNCTION_PARAMETER_INITIALIZER) \
-     || !defined (CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER))
+#if ((defined (JERRY_ES2015_FUNCTION_PARAMETER_INITIALIZER) && (JERRY_ES2015_FUNCTION_PARAMETER_INITIALIZER == 1)) \
+     || (defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1)))
   PARSER_ERR_DUPLICATED_ARGUMENT_NAMES,               /**< duplicated argument names */
-#endif /* (!defined (CONFIG_DISABLE_ES2015_FUNCTION_PARAMETER_INITIALIZER)
-           || !defined (CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER)) */
-#ifndef CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER
+#endif /* ((defined (JERRY_ES2015_FUNCTION_PARAMETER_INITIALIZER) && (JERRY_ES2015_FUNCTION_PARAMETER_INITIALIZER == 1))
+           || (defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1)) */
+#if defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1)
   PARSER_ERR_FORMAL_PARAM_AFTER_REST_PARAMETER,       /**< formal parameter after rest parameter */
   PARSER_ERR_REST_PARAMETER_DEFAULT_INITIALIZER,      /**< rest parameter default initializer */
-#endif /* !CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER */
+#endif /* defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1) */
   PARSER_ERR_OBJECT_PROPERTY_REDEFINED,               /**< property of object literal redefined */
   PARSER_ERR_NON_STRICT_ARG_DEFINITION                /**< non-strict argument definition */
 } parser_error_t;

@@ -34,11 +34,11 @@ bool ecma_is_constructor (ecma_value_t value);
 ecma_object_t *
 ecma_op_create_function_object (ecma_object_t *scope_p, const ecma_compiled_code_t *bytecode_data_p);
 
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
 ecma_object_t *
 ecma_op_create_arrow_function_object (ecma_object_t *scope_p, const ecma_compiled_code_t *bytecode_data_p,
                                       ecma_value_t this_binding);
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
 
 ecma_object_t *
 ecma_op_create_external_function_object (ecma_external_handler_t handler_cb);
@@ -46,7 +46,7 @@ ecma_op_create_external_function_object (ecma_external_handler_t handler_cb);
 const ecma_compiled_code_t *
 ecma_op_function_get_compiled_code (ecma_extended_object_t *function_p);
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
 void
 ecma_op_set_super_called (ecma_object_t *lex_env_p);
 
@@ -67,12 +67,12 @@ ecma_op_function_implicit_constructor_handler_cb (const ecma_value_t function_ob
 
 void
 ecma_op_set_class_prototype (ecma_value_t completion_value, ecma_value_t this_arg);
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
 const ecma_compiled_code_t *
 ecma_op_arrow_function_get_compiled_code (ecma_arrow_function_t *arrow_function_p);
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
 
 ecma_value_t
 ecma_op_function_has_instance (ecma_object_t *func_obj_p, ecma_value_t value);

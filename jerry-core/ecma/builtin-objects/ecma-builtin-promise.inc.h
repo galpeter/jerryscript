@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#ifndef CONFIG_DISABLE_ES2015_PROMISE_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1)
 
 /* Number properties:
  *  (property name, number value, writable, enumerable, configurable) */
@@ -42,6 +42,6 @@ ROUTINE (LIT_MAGIC_STRING_RESOLVE, ecma_builtin_promise_resolve, 1, 1)
 ROUTINE (LIT_MAGIC_STRING_RACE, ecma_builtin_promise_race, 1, 1)
 ROUTINE (LIT_MAGIC_STRING_ALL, ecma_builtin_promise_all, 1, 1)
 
-#endif /* !CONFIG_DISABLE_ES2015_PROMISE_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"

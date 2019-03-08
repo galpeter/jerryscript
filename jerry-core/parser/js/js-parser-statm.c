@@ -599,7 +599,7 @@ parser_parse_with_statement_end (parser_context_t *context_p) /**< context */
   }
 } /* parser_parse_with_statement_end */
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
 /**
  * Parse super class context like a with statement (starting part).
  */
@@ -668,7 +668,7 @@ parser_parse_super_class_context_end (parser_context_t *context_p, /**< context 
 
   parser_set_branch_to_current_position (context_p, &with_statement.branch);
 } /* parser_parse_super_class_context_end */
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
 /**
  * Parse do-while statement (ending part).
@@ -1890,13 +1890,13 @@ parser_parse_statements (parser_context_t *context_p) /**< context */
         break;
       }
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
       case LEXER_KEYW_CLASS:
       {
         parser_parse_class (context_p, true);
         continue;
       }
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
       case LEXER_KEYW_FUNCTION:
       {
@@ -2028,7 +2028,7 @@ parser_parse_statements (parser_context_t *context_p) /**< context */
             || context_p->token.type == LEXER_SEMICOLON
             || context_p->token.type == LEXER_RIGHT_BRACE)
         {
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
           if (JERRY_UNLIKELY (PARSER_IS_CLASS_CONSTRUCTOR_SUPER (context_p->status_flags)))
           {
             if (context_p->status_flags & PARSER_CLASS_IMPLICIT_SUPER)
@@ -2043,20 +2043,20 @@ parser_parse_statements (parser_context_t *context_p) /**< context */
           }
           else
           {
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
             parser_emit_cbc (context_p, CBC_RETURN_WITH_BLOCK);
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
           }
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
           break;
         }
 
         parser_parse_expression (context_p, PARSE_EXPR);
 
         bool return_with_literal = (context_p->last_cbc_opcode == CBC_PUSH_LITERAL);
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
         return_with_literal = return_with_literal && !PARSER_IS_CLASS_CONSTRUCTOR_SUPER (context_p->status_flags);
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
         if (return_with_literal)
         {
@@ -2064,18 +2064,18 @@ parser_parse_statements (parser_context_t *context_p) /**< context */
         }
         else
         {
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
           if (JERRY_UNLIKELY (PARSER_IS_CLASS_CONSTRUCTOR_SUPER (context_p->status_flags)))
           {
             parser_emit_cbc_ext (context_p, CBC_EXT_CONSTRUCTOR_RETURN);
           }
           else
           {
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
             parser_emit_cbc (context_p, CBC_RETURN);
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
           }
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
         }
         break;
       }
@@ -2177,7 +2177,7 @@ parser_parse_statements (parser_context_t *context_p) /**< context */
           /* There is no lexer_next_token here, since the
            * next token belongs to the parent context. */
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
           if (JERRY_UNLIKELY (PARSER_IS_CLASS_CONSTRUCTOR_SUPER (context_p->status_flags)))
           {
             if (context_p->status_flags & PARSER_CLASS_IMPLICIT_SUPER)
@@ -2191,7 +2191,7 @@ parser_parse_statements (parser_context_t *context_p) /**< context */
             parser_emit_cbc (context_p, CBC_RETURN);
             parser_flush_cbc (context_p);
           }
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
           return;
         }
         parser_raise_error (context_p, PARSER_ERR_INVALID_RIGHT_SQUARE);

@@ -20,7 +20,7 @@
 #include "ecma-map-object.h"
 #include "ecma-objects.h"
 
-#ifndef CONFIG_DISABLE_ES2015_MAP_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1)
 
 /** \addtogroup ecma ECMA
  * @{
@@ -581,4 +581,4 @@ ecma_op_map_delete (ecma_value_t this_arg, /**< this argument */
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_ES2015_MAP_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1) */

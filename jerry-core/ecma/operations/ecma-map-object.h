@@ -18,7 +18,7 @@
 
 #include "ecma-globals.h"
 
-#ifndef CONFIG_DISABLE_ES2015_MAP_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1)
 
 /** \addtogroup ecma ECMA
  * @{
@@ -41,6 +41,6 @@ ecma_value_t ecma_op_map_delete (ecma_value_t this_arg, ecma_value_t key_arg);
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_ES2015_MAP_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1) */
 
 #endif /* !ECMA_MAP_OBJECT_H */

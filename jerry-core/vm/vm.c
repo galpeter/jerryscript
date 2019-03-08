@@ -77,12 +77,12 @@ vm_op_get_value (ecma_value_t object, /**< base object */
       property_name_p = ecma_get_string_from_value (property);
     }
 
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
     if (ecma_is_value_symbol (property))
     {
       property_name_p = ecma_get_symbol_from_value (property);
     }
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
     if (property_name_p != NULL)
     {
@@ -371,13 +371,13 @@ vm_construct_literal_object (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
 
   ecma_object_t *func_obj_p;
 
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
   if (!(bytecode_p->status_flags & CBC_CODE_FLAGS_ARROW_FUNCTION))
   {
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
     func_obj_p = ecma_op_create_function_object (frame_ctx_p->lex_env_p,
                                                  bytecode_p);
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
   }
   else
   {
@@ -385,7 +385,7 @@ vm_construct_literal_object (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
                                                        bytecode_p,
                                                        frame_ctx_p->this_binding);
   }
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
 
   return ecma_make_object_value (func_obj_p);
 } /* vm_construct_literal_object */
@@ -425,7 +425,7 @@ static const uint8_t vm_error_byte_code_p[] =
   CBC_EXT_OPCODE, CBC_EXT_ERROR
 };
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
 /**
  * 'super(...)' function call handler.
  */
@@ -500,7 +500,7 @@ vm_super_call (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
 
   frame_ctx_p->stack_top_p = stack_top_p;
 } /* vm_super_call */
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
 /**
  * 'Function call' opcode handler.
@@ -1182,7 +1182,7 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
           *stack_top_p++ = left_value;
           continue;
         }
-#ifndef CONFIG_DISABLE_ES2015_OBJECT_INITIALIZER
+#if defined (JERRY_ES2015_OBJECT_INITIALIZER) && (JERRY_ES2015_OBJECT_INITIALIZER == 1)
         case VM_OC_SET_COMPUTED_PROPERTY:
         {
           /* Swap values. */
@@ -1191,7 +1191,7 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
           left_value ^= right_value;
           /* FALLTHRU */
         }
-#endif /* !CONFIG_DISABLE_ES2015_OBJECT_INITIALIZER */
+#endif /* defined (JERRY_ES2015_OBJECT_INITIALIZER) && (JERRY_ES2015_OBJECT_INITIALIZER == 1) */
         case VM_OC_SET_PROPERTY:
         {
           JERRY_STATIC_ASSERT (VM_OC_NON_STATIC_FLAG == VM_OC_BACKWARD_BRANCH,
@@ -1207,7 +1207,7 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
             goto error;
           }
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
           if (JERRY_UNLIKELY (ecma_compare_ecma_string_to_magic_id (prop_name_p, LIT_MAGIC_STRING_PROTOTYPE))
               && !(opcode_data & VM_OC_NON_STATIC_FLAG))
           {
@@ -1216,9 +1216,9 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
           }
 
           const int index = (int) (opcode_data >> VM_OC_NON_STATIC_SHIFT) - 2;
-#else /* CONFIG_DISABLE_ES2015_CLASS */
+#else /* !defined (JERRY_ES2015_CLASS) || (JERRY_ES2015_CLASS == 0) */
           const int index = -1;
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
           ecma_object_t *object_p = ecma_get_object_from_value (stack_top_p[index]);
           ecma_property_t *property_p = ecma_find_named_property (object_p, prop_name_p);
@@ -1263,7 +1263,7 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
             goto error;
           }
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
           if (JERRY_UNLIKELY (ecma_compare_ecma_string_to_magic_id (prop_name_p, LIT_MAGIC_STRING_PROTOTYPE))
               && !(opcode_data & VM_OC_NON_STATIC_FLAG))
           {
@@ -1272,9 +1272,9 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
           }
 
           const int index = (int) (opcode_data >> VM_OC_NON_STATIC_SHIFT) - 2;
-#else /* CONFIG_DISABLE_ES2015_CLASS */
+#else /* !defined (JERRY_ES2015_CLASS) || (JERRY_ES2015_CLASS == 0) */
           const int index = -1;
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
           opfunc_set_accessor (VM_OC_GROUP_GET_INDEX (opcode_data) == VM_OC_SET_GETTER,
                                stack_top_p[index],
@@ -1297,7 +1297,7 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
           *stack_top_p++ = result;
           continue;
         }
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
         case VM_OC_SUPER_CALL:
         {
           frame_ctx_p->call_operation = VM_EXEC_SUPER_CALL;
@@ -1572,7 +1572,7 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
 
           goto error;
         }
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
         case VM_OC_PUSH_ELISON:
         {
           *stack_top_p++ = ECMA_VALUE_ARRAY_HOLE;
@@ -3407,9 +3407,9 @@ vm_execute (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
 
   frame_ctx_p->stack_top_p = frame_ctx_p->registers_p + register_end;
 
-#ifndef CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER
+#if defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1)
   uint32_t function_call_argument_count = arg_list_len;
-#endif /* !CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER */
+#endif /* defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1) */
 
   if (arg_list_len > argument_end)
   {
@@ -3433,7 +3433,7 @@ vm_execute (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
     }
   }
 
-#ifndef CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER
+#if defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1)
   if (bytecode_header_p->status_flags & CBC_CODE_FLAGS_REST_PARAMETER)
   {
     JERRY_ASSERT (function_call_argument_count >= arg_list_len);
@@ -3444,7 +3444,7 @@ vm_execute (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
     frame_ctx_p->registers_p[argument_end] = new_array;
     arg_list_len++;
   }
-#endif /* !CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER */
+#endif /* defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1) */
 
   JERRY_CONTEXT (status_flags) &= (uint32_t) ~ECMA_STATUS_DIRECT_EVAL;
 
@@ -3463,13 +3463,13 @@ vm_execute (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
         opfunc_call (frame_ctx_p);
         break;
       }
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
       case VM_EXEC_SUPER_CALL:
       {
         vm_super_call (frame_ctx_p);
         break;
       }
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
       case VM_EXEC_CONSTRUCT:
       {
         opfunc_construct (frame_ctx_p);

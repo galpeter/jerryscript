@@ -363,9 +363,9 @@ typedef enum
                                        *   that are not indices */
   ECMA_LIST_ENUMERABLE = (1 << 1), /**< exclude non-enumerable properties */
   ECMA_LIST_PROTOTYPE = (1 << 2), /**< list properties from prototype chain */
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
   ECMA_LIST_SYMBOLS = (1 << 3), /**< list symbol properties only */
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 } ecma_list_properties_options_t;
 
 /**
@@ -647,9 +647,9 @@ typedef enum
   ECMA_OBJECT_TYPE_ARRAY = 4, /**< Array object (15.4) */
   ECMA_OBJECT_TYPE_BOUND_FUNCTION = 5, /**< Function objects (15.3), created through 15.3.4.5 routine */
   ECMA_OBJECT_TYPE_PSEUDO_ARRAY  = 6, /**< Array-like object, such as Arguments object (10.6) */
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
   ECMA_OBJECT_TYPE_ARROW_FUNCTION = 7, /**< arrow function objects */
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
 
   /* Types between 13-15 cannot have a built-in flag. See ecma_lexical_environment_type_t. */
 
@@ -687,7 +687,7 @@ typedef enum
   ECMA_LEXICAL_ENVIRONMENT_TYPE__MAX = ECMA_LEXICAL_ENVIRONMENT_SUPER_OBJECT_BOUND /**< maximum value */
 } ecma_lexical_environment_type_t;
 
-#ifndef CONFIG_DISABLE_ES2015_ITERATOR_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1)
 /**
  * Types of array iterators.
  */
@@ -697,7 +697,7 @@ typedef enum
   ECMA_ARRAY_ITERATOR_VALUES, /**< List only key values */
   ECMA_ARRAY_ITERATOR_KEYS_VALUES, /**< List key indices and values */
 } ecma_array_iterator_type_t;
-#endif /* !CONFIG_DISABLE_ES2015_ITERATOR_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1) */
 
 /**
  * Offset for JERRY_CONTEXT (status_flags) top 8 bits.
@@ -926,7 +926,7 @@ typedef struct
 
 #endif /* JERRY_ENABLE_SNAPSHOT_EXEC */
 
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
 
 /**
  * Description of arrow function objects.
@@ -952,9 +952,9 @@ typedef struct
 
 #endif /* JERRY_ENABLE_SNAPSHOT_EXEC */
 
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
 
-#ifndef CONFIG_DISABLE_ES2015_MAP_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1)
 
 /**
  * Map item count of chunks
@@ -980,7 +980,7 @@ typedef struct
                                                        *   the rest can be ECMA_VALUE_ARRAY_HOLE or any valid value. */
 } ecma_map_object_chunk_t;
 
-#endif /* !CONFIG_DISABLE_ES2015_MAP_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1) */
 
 /**
  * Description of ECMA property descriptor
@@ -1517,7 +1517,7 @@ typedef struct
 
 #endif /* !CONFIG_ECMA_LCACHE_DISABLE */
 
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
 
 /**
  * Extra information for ArrayBuffers.
@@ -1558,7 +1558,7 @@ typedef struct
   ecma_length_t array_length; /**< the array length */
 } ecma_extended_typedarray_object_t;
 
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
 
 /**
  * Flag for indicating whether the symbol is a well known symbol

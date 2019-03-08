@@ -28,7 +28,7 @@
 #include "ecma-helpers.h"
 #include "jcontext.h"
 
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
 
 /** \addtogroup ecma ECMA
  * @{
@@ -984,7 +984,7 @@ ecma_op_create_typedarray_with_type_and_length (ecma_object_t *obj_p, /**< Typed
     }
   }
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
   ecma_value_t constructor_value = ecma_op_object_get_by_magic_id (obj_p, LIT_MAGIC_STRING_CONSTRUCTOR);
 
   if (ECMA_IS_VALUE_ERROR (constructor_value)
@@ -1005,20 +1005,20 @@ ecma_op_create_typedarray_with_type_and_length (ecma_object_t *obj_p, /**< Typed
   {
     return constructor_prototype;
   }
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
   ecma_value_t new_obj = ecma_typedarray_create_object_with_length (array_length,
                                                                     proto_p,
                                                                     element_size_shift,
                                                                     class_id);
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
   ecma_object_t *constructor_prototype_object_p = ecma_get_object_from_value (constructor_prototype);
   ecma_object_t *new_obj_p = ecma_get_object_from_value (new_obj);
   ECMA_SET_POINTER (new_obj_p->prototype_or_outer_reference_cp, constructor_prototype_object_p);
 
   ecma_deref_object (constructor_prototype_object_p);
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
   return new_obj;
 } /* ecma_op_create_typedarray_with_type_and_length */
@@ -1027,4 +1027,4 @@ ecma_op_create_typedarray_with_type_and_length (ecma_object_t *obj_p, /**< Typed
  * @}
  * @}
  */
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */

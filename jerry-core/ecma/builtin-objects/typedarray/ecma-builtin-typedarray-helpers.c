@@ -15,7 +15,7 @@
 
 #include "ecma-builtin-typedarray-helpers.h"
 
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
 
 #include "ecma-builtins.h"
 #include "ecma-gc.h"
@@ -225,4 +225,4 @@ ecma_typedarray_helper_dispatch_construct (const ecma_value_t *arguments_list_p,
   return val;
 } /* ecma_typedarray_helper_dispatch_construct */
 
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */

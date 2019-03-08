@@ -45,9 +45,9 @@ typedef enum
   PARSER_IS_FUNC_EXPRESSION = (1u << 3),      /**< a function expression is parsed */
   PARSER_IS_PROPERTY_GETTER = (1u << 4),      /**< a property getter function is parsed */
   PARSER_IS_PROPERTY_SETTER = (1u << 5),      /**< a property setter function is parsed */
-#ifndef CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER
+#if defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1)
   PARSER_FUNCTION_HAS_REST_PARAM = (1u << 6), /**< function has rest parameter */
-#endif /* !CONFIG_DISABLE_ES2015_FUNCTION_REST_PARAMETER */
+#endif /* defined (JERRY_ES2015_FUNCTION_REST_PARAMETER) && (JERRY_ES2015_FUNCTION_REST_PARAMETER == 1) */
   PARSER_HAS_NON_STRICT_ARG = (1u << 7),      /**< the function has arguments which
                                                *   are not supported in strict mode */
   PARSER_ARGUMENTS_NEEDED = (1u << 8),        /**< arguments object must be created */
@@ -65,11 +65,11 @@ typedef enum
                                                *   after the last byte code */
   PARSER_DEBUGGER_BREAKPOINT_APPENDED = (1u << 17), /**< pending (unsent) breakpoint
                                                      *   info is available */
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
   PARSER_IS_ARROW_FUNCTION = (1u << 18),      /**< an arrow function is parsed */
   PARSER_ARROW_PARSE_ARGS = (1u << 19),       /**< parse the argument list of an arrow function */
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
   /* These four status flags must be in this order. See PARSER_CLASS_PARSE_OPTS_OFFSET. */
   PARSER_CLASS_CONSTRUCTOR = (1u << 20),      /**< a class constructor is parsed (this value must be kept in
                                                *   in sync with ECMA_PARSE_CLASS_CONSTRUCTOR) */
@@ -77,7 +77,7 @@ typedef enum
   PARSER_CLASS_IMPLICIT_SUPER = (1u << 22),   /**< class has implicit parent class */
   PARSER_CLASS_STATIC_FUNCTION = (1u << 23),  /**< this function is a static class method */
   PARSER_CLASS_SUPER_PROP_REFERENCE = (1u << 24),  /**< super property call or assignment */
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 } parser_general_flags_t;
 
 /**
@@ -98,7 +98,7 @@ typedef enum
  */
 #define PARSER_STRICT_MODE_MASK 0x1
 
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
 /**
  * Offset between PARSER_CLASS_CONSTRUCTOR and ECMA_PARSE_CLASS_CONSTRUCTOR
  */
@@ -139,7 +139,7 @@ typedef enum
  */
 #define PARSER_IS_CLASS_CONSTRUCTOR_SUPER(flag) \
   (((flag) & PARSER_CLASS_CONSTRUCTOR_SUPER) == PARSER_CLASS_CONSTRUCTOR_SUPER)
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
 /* The maximum of PARSER_CBC_STREAM_PAGE_SIZE is 127. */
 #define PARSER_CBC_STREAM_PAGE_SIZE \
@@ -491,12 +491,12 @@ void parser_set_continues_to_current_position (parser_context_t *context_p, pars
 
 void lexer_next_token (parser_context_t *context_p);
 bool lexer_check_next_character (parser_context_t *context_p, lit_utf8_byte_t character);
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
 void lexer_skip_empty_statements (parser_context_t *context_p);
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
 lexer_token_type_t lexer_check_arrow (parser_context_t *context_p);
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
 void lexer_parse_string (parser_context_t *context_p);
 void lexer_expect_identifier (parser_context_t *context_p, uint8_t literal_type);
 void lexer_scan_identifier (parser_context_t *context_p, bool property_name);
@@ -523,11 +523,11 @@ uint8_t lexer_convert_binary_lvalue_token_to_binary (uint8_t token);
 /* Parser functions. */
 
 void parser_parse_expression (parser_context_t *context_p, int options);
-#ifndef CONFIG_DISABLE_ES2015_CLASS
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
 void parser_parse_class (parser_context_t *context_p, bool is_statement);
 void parser_parse_super_class_context_start (parser_context_t *context_p);
 void parser_parse_super_class_context_end (parser_context_t *context_p, bool is_statement);
-#endif /* !CONFIG_DISABLE_ES2015_CLASS */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
 /**
  * @}
@@ -556,9 +556,9 @@ void parser_free_jumps (parser_stack_iterator_t iterator);
  */
 
 ecma_compiled_code_t *parser_parse_function (parser_context_t *context_p, uint32_t status_flags);
-#ifndef CONFIG_DISABLE_ES2015_ARROW_FUNCTION
+#if defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1)
 ecma_compiled_code_t *parser_parse_arrow_function (parser_context_t *context_p, uint32_t status_flags);
-#endif /* !CONFIG_DISABLE_ES2015_ARROW_FUNCTION */
+#endif /* defined (JERRY_ES2015_ARROW_FUNCTION) && (JERRY_ES2015_ARROW_FUNCTION == 1) */
 
 /* Error management. */
 

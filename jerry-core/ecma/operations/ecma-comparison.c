@@ -130,12 +130,12 @@ ecma_op_abstract_equality_compare (ecma_value_t x, /**< first operand */
     y = tmp;
   }
 
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
   if (ecma_is_value_symbol (x))
   {
     return ECMA_VALUE_FALSE;
   }
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
   if (ecma_is_value_boolean (y))
   {
@@ -153,9 +153,9 @@ ecma_op_abstract_equality_compare (ecma_value_t x, /**< first operand */
   if (ecma_is_value_object (x))
   {
     if (ecma_is_value_string (y)
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
         || ecma_is_value_symbol (y)
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
         || ecma_is_value_number (y))
     {
       /* 9. */
@@ -210,10 +210,10 @@ ecma_op_strict_equality_compare (ecma_value_t x, /**< first operand */
 {
   if (ecma_is_value_direct (x)
       || ecma_is_value_direct (y)
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
       || ecma_is_value_symbol (x)
       || ecma_is_value_symbol (y)
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
       || ecma_is_value_object (x)
       || ecma_is_value_object (y))
   {

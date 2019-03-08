@@ -97,9 +97,9 @@ struct jerry_context_t
   const lit_utf8_byte_t * const *lit_magic_string_ex_array; /**< array of external magic strings */
   const lit_utf8_size_t *lit_magic_string_ex_sizes; /**< external magic string lengths */
   ecma_lit_storage_item_t *string_list_first_p; /**< first item of the literal string list */
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
   ecma_lit_storage_item_t *symbol_list_first_p; /**< first item of the global symbol list */
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
   ecma_lit_storage_item_t *number_list_first_p; /**< first item of the literal number list */
   ecma_object_t *ecma_global_lex_env_p; /**< global lexical environment */
   vm_frame_ctx_t *vm_top_context_p; /**< top (current) interpreter context */
@@ -123,10 +123,10 @@ struct jerry_context_t
   uint8_t re_cache_idx; /**< evicted item index when regex cache is full (round-robin) */
 #endif /* defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1) */
 
-#ifndef CONFIG_DISABLE_ES2015_PROMISE_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1)
   ecma_job_queueitem_t *job_queue_head_p; /**< points to the head item of the jobqueue */
   ecma_job_queueitem_t *job_queue_tail_p; /**< points to the tail item of the jobqueue*/
-#endif /* CONFIG_DISABLE_ES2015_PROMISE_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1) */
 
 #ifdef JERRY_VM_EXEC_STOP
   uint32_t vm_exec_stop_frequency; /**< reset value for vm_exec_stop_counter */

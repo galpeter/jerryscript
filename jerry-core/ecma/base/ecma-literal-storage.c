@@ -57,9 +57,9 @@ ecma_free_string_list (ecma_lit_storage_item_t *string_list_p) /**< string list 
 void
 ecma_finalize_lit_storage (void)
 {
-#ifndef CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN
+#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
   ecma_free_string_list (JERRY_CONTEXT (symbol_list_first_p));
-#endif /* !CONFIG_DISABLE_ES2015_SYMBOL_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
   ecma_free_string_list (JERRY_CONTEXT (string_list_first_p));
   ecma_free_string_list (JERRY_CONTEXT (number_list_first_p));
 } /* ecma_finalize_lit_storage */

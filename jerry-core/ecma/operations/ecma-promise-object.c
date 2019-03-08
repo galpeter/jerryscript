@@ -26,7 +26,7 @@
 #include "ecma-promise-object.h"
 #include "jcontext.h"
 
-#ifndef CONFIG_DISABLE_ES2015_PROMISE_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1)
 
 /** \addtogroup ecma ECMA
  * @{
@@ -778,4 +778,4 @@ ecma_promise_then (ecma_value_t promise, /**< the promise which call 'then' */
  * @}
  * @}
  */
-#endif /* !CONFIG_DISABLE_ES2015_PROMISE_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1) */

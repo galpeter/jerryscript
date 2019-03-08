@@ -16,7 +16,7 @@
 #ifndef ECMA_JOB_QUEUE_H
 #define ECMA_JOB_QUEUE_H
 
-#ifndef CONFIG_DISABLE_ES2015_PROMISE_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1)
 
 /** \addtogroup ecma ECMA
  * @{
@@ -52,5 +52,5 @@ ecma_value_t ecma_process_all_enqueued_jobs (void);
  * @}
  * @}
  */
-#endif /* !CONFIG_DISABLE_ES2015_PROMISE_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1) */
 #endif /* !ECMA_JOB_QUEUE_H */

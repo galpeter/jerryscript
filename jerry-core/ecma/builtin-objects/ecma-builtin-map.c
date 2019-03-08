@@ -17,7 +17,7 @@
 #include "ecma-exceptions.h"
 #include "ecma-map-object.h"
 
-#ifndef CONFIG_DISABLE_ES2015_MAP_BUILTIN
+#if defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -68,4 +68,4 @@ ecma_builtin_map_dispatch_construct (const ecma_value_t *arguments_list_p, /**< 
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_ES2015_MAP_BUILTIN */
+#endif /* defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1) */

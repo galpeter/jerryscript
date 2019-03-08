@@ -16,8 +16,9 @@
 #ifndef ECMA_ARRAYBUFFER_OBJECT_H
 #define ECMA_ARRAYBUFFER_OBJECT_H
 
-#ifndef CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN
 #include "ecma-globals.h"
+
+#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
 
 /** \addtogroup ecma ECMA
  * @{
@@ -50,5 +51,5 @@ ecma_is_arraybuffer (ecma_value_t val);
  * @}
  */
 
-#endif /* !CONFIG_DISABLE_ES2015_TYPEDARRAY_BUILTIN */
+#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
 #endif /* !ECMA_ARRAYBUFFER_OBJECT_H */
