@@ -34,6 +34,7 @@ do
   INCLUDE_DIRS=("${INCLUDE_DIRS[@]}" "-I$DIR")
 done
 
+cppcheck --version
 cppcheck -j$CPPCHECK_JOBS --force \
   --language=c --std=c99 \
   --quiet \
