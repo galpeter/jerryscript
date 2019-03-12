@@ -30,7 +30,7 @@
 #include "ecma-gc.h"
 #include "jmem.h"
 
-#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
+#if defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -140,7 +140,7 @@ ecma_builtin_typedarray_prototype_length_getter (ecma_value_t this_arg) /**< thi
   return ecma_raise_type_error (ECMA_ERR_MSG ("Argument 'this' is not a TypedArray."));
 } /* ecma_builtin_typedarray_prototype_length_getter */
 
-#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
+#if defined (JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
 /**
  * The %TypedArray%.prototype[Symbol.toStringTag] accessor
  *
@@ -160,7 +160,7 @@ ecma_builtin_typedarray_prototype_to_string_tag_getter (ecma_value_t this_arg) /
 
   return ecma_make_magic_string_value (ecma_object_get_class_name (ecma_get_object_from_value (this_arg)));
 } /* ecma_builtin_typedarray_prototype_to_string_tag_getter */
-#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
 /**
  * Type of routine.
@@ -1574,4 +1574,4 @@ ecma_builtin_typedarray_prototype_find (ecma_value_t this_arg, /**< this argumen
  * @}
  */
 
-#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */

@@ -24,7 +24,7 @@
 #include "ecma-objects.h"
 #include "ecma-try-catch-macro.h"
 
-#if defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
+#if defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -656,4 +656,4 @@ ecma_builtin_date_prototype_dispatch_routine (uint16_t builtin_routine_id, /**< 
  * @}
  */
 
-#endif /* defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
+#endif /* defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */

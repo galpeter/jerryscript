@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#if defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
+#if defined (JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
 
 /* Object properties:
  *  (property name, object pointer getter) */
@@ -38,6 +38,6 @@ ROUTINE (LIT_MAGIC_STRING_TO_FIXED_UL, ecma_builtin_number_prototype_object_to_f
 ROUTINE (LIT_MAGIC_STRING_TO_EXPONENTIAL_UL, ecma_builtin_number_prototype_object_to_exponential, 1, 1)
 ROUTINE (LIT_MAGIC_STRING_TO_PRECISION_UL, ecma_builtin_number_prototype_object_to_precision, 1, 1)
 
-#endif /* defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
+#endif /* defined (JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"

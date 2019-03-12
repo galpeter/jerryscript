@@ -31,7 +31,7 @@
 #include "lit-char-helpers.h"
 #include "lit-globals.h"
 
-#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
+#if defined (JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -1818,4 +1818,4 @@ ecma_builtin_json_array (ecma_object_t *obj_p, /**< the array object*/
  * @}
  */
 
-#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
+#endif /* defined (JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */

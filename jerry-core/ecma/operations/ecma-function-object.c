@@ -526,7 +526,7 @@ ecma_op_function_has_construct_flag (const ecma_value_t *arguments_list_p) /**< 
 #endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 } /* ecma_op_function_has_construct_flag */
 
-#if defined(JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
+#if defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1)
 /**
  * Returns the closest declarative lexical enviroment to the super object bound lexical enviroment.
  *

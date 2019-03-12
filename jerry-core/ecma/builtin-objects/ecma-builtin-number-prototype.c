@@ -28,7 +28,7 @@
 #include "jrt.h"
 #include "jrt-libc-includes.h"
 
-#if defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
+#if defined (JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -997,4 +997,4 @@ ecma_builtin_number_prototype_object_to_precision (ecma_value_t this_arg, /**< t
  * @}
  */
 
-#endif /* defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
+#endif /* defined (JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */

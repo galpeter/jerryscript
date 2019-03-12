@@ -30,7 +30,7 @@
 #include "ecma-try-catch-macro.h"
 #include "jrt.h"
 
-#if defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1)
+#if defined (JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -1992,7 +1992,7 @@ ecma_builtin_array_reduce_from (ecma_value_t callbackfn, /**< routine's 1st argu
   return ret_value;
 } /* ecma_builtin_array_reduce_from */
 
-#if defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
+#if defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
 /**
  * The Array.prototype object's 'find' routine
  *
@@ -2061,7 +2061,7 @@ ecma_builtin_array_prototype_object_find (ecma_value_t predicate, /**< callback 
 
   return ret_value;
 } /* ecma_builtin_array_prototype_object_find */
-#endif /* defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
 
 #if defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1)
 /**
@@ -2300,7 +2300,7 @@ ecma_builtin_array_prototype_dispatch_routine (uint16_t builtin_routine_id, /**<
                                                   length);
       break;
     }
-#if defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
+#if defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
     case ECMA_ARRAY_PROTOTYPE_FIND:
     {
       ret_value = ecma_builtin_array_prototype_object_find (routine_arg_1,
@@ -2309,7 +2309,7 @@ ecma_builtin_array_prototype_dispatch_routine (uint16_t builtin_routine_id, /**<
                                                             length);
       break;
     }
-#endif /* defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
     default:
     {
       JERRY_ASSERT (builtin_routine_id == ECMA_ARRAY_PROTOTYPE_FILTER);
@@ -2334,4 +2334,4 @@ ecma_builtin_array_prototype_dispatch_routine (uint16_t builtin_routine_id, /**<
  * @}
  */
 
-#endif /* defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1) */
+#endif /* defined (JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1) */

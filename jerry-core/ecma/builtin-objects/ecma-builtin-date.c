@@ -25,7 +25,7 @@
 #include "ecma-try-catch-macro.h"
 #include "lit-char-helpers.h"
 
-#if defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
+#if defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -571,4 +571,4 @@ ecma_builtin_date_dispatch_construct (const ecma_value_t *arguments_list_p, /**<
  * @}
  */
 
-#endif /* defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
+#endif /* defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */

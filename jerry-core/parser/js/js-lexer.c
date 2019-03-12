@@ -354,9 +354,9 @@ static const keyword_string_t keywords_with_length_4[] =
  */
 static const keyword_string_t keywords_with_length_5[] =
 {
-#if defined(JERRY_ES2015) && (JERRY_ES2015 == 1)
+#if defined (JERRY_ES2015) && (JERRY_ES2015 == 1)
   LEXER_KEYWORD ("await", LEXER_KEYW_AWAIT),
-#endif /* defined(JERRY_ES2015) && (JERRY_ES2015 == 1) */
+#endif /* defined (JERRY_ES2015) && (JERRY_ES2015 == 1) */
   LEXER_KEYWORD ("break", LEXER_KEYW_BREAK),
   LEXER_KEYWORD ("catch", LEXER_KEYW_CATCH),
   LEXER_KEYWORD ("class", LEXER_KEYW_CLASS),

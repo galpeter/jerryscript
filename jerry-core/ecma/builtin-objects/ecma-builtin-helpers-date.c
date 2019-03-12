@@ -24,7 +24,7 @@
 #include "ecma-try-catch-macro.h"
 #include "lit-char-helpers.h"
 
-#if defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
+#if defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
 
 /** \addtogroup ecma ECMA
  * @{
@@ -823,4 +823,4 @@ ecma_date_value_to_time_string (ecma_number_t datetime_number) /**<datetime */
  * @}
  */
 
-#endif /* defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
+#endif /* defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */

@@ -1568,7 +1568,7 @@ parser_post_processing (parser_context_t *context_p) /**< context */
       {
         last_opcode = CBC_RETURN;
       }
-#endif /* defined(JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
+#endif /* defined (JERRY_ES2015_CLASS) && (JERRY_ES2015_CLASS == 1) */
 
 #ifdef JERRY_ENABLE_LINE_INFO
       if (ext_opcode == CBC_EXT_LINE)

@@ -21,7 +21,7 @@
 #include "ecma-typedarray-object.h"
 #include "jrt.h"
 
-#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
+#if defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
 #if JERRY_NUMBER_TYPE_FLOAT64 == 1
 
 #define ECMA_BUILTINS_INTERNAL
@@ -77,4 +77,4 @@ ecma_builtin_float64array_dispatch_construct (const ecma_value_t *arguments_list
   */
 
 #endif /* JERRY_NUMBER_TYPE_FLOAT64 == 1 */
-#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */

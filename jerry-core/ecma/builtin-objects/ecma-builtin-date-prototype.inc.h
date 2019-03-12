@@ -19,7 +19,7 @@
 
 #include "ecma-builtin-helpers-macro-defines.inc.h"
 
-#if defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
+#if defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
 
 OBJECT_VALUE (LIT_MAGIC_STRING_CONSTRUCTOR,
               ECMA_BUILTIN_ID_DATE,
@@ -77,6 +77,6 @@ ROUTINE (LIT_MAGIC_STRING_TO_GMT_STRING_UL, ECMA_DATE_PROTOTYPE_TO_UTC_STRING, 0
 
 #endif /* defined (JERRY_BUILTIN_ANNEXB) && (JERRY_BUILTIN_ANNEXB == 1) */
 
-#endif /* defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
+#endif /* defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
 
 #include "ecma-builtin-helpers-macro-undefs.inc.h"

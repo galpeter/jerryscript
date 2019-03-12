@@ -18,7 +18,7 @@
 #include "ecma-builtin-helpers.h"
 #include "lit-char-helpers.h"
 
-#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
+#if defined (JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
 
 /** \addtogroup ecma ECMA
  * @{
@@ -223,7 +223,7 @@ ecma_builtin_helper_json_create_non_formatted_json (lit_utf8_byte_t left_bracket
   return ecma_make_string_value (result_str_p);
 } /* ecma_builtin_helper_json_create_non_formatted_json */
 
-#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
+#endif /* defined (JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
 
 /**
  * @}

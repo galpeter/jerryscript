@@ -30,7 +30,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_OBJECT,
                  true,
                  object)
 
-#if defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1)
+#if defined (JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1)
 /* The Array.prototype object (15.4.4) */
 BUILTIN (ECMA_BUILTIN_ID_ARRAY_PROTOTYPE,
          ECMA_OBJECT_TYPE_ARRAY,
@@ -44,7 +44,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_ARRAY,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  array)
-#endif /* defined(JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1) */
+#endif /* defined (JERRY_BUILTIN_ARRAY) && (JERRY_BUILTIN_ARRAY == 1) */
 
 #if defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1)
 /* The String.prototype object (15.5.4) */
@@ -62,7 +62,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_STRING,
                  string)
 #endif /* defined (JERRY_BUILTIN_STRING) && (JERRY_BUILTIN_STRING == 1) */
 
-#if defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1)
+#if defined (JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1)
 /* The Boolean.prototype object (15.6.4) */
 BUILTIN (ECMA_BUILTIN_ID_BOOLEAN_PROTOTYPE,
          ECMA_OBJECT_TYPE_CLASS,
@@ -76,9 +76,9 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_BOOLEAN,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  boolean)
-#endif /* defined(JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1) */
+#endif /* defined (JERRY_BUILTIN_BOOLEAN) && (JERRY_BUILTIN_BOOLEAN == 1) */
 
-#if defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
+#if defined (JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
 /* The Number.prototype object (15.7.4) */
 BUILTIN (ECMA_BUILTIN_ID_NUMBER_PROTOTYPE,
          ECMA_OBJECT_TYPE_CLASS,
@@ -92,7 +92,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_NUMBER,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  number)
-#endif /* defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
+#endif /* defined (JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
 
 /* The Function.prototype object (15.3.4) */
 BUILTIN_ROUTINE (ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
@@ -117,16 +117,16 @@ BUILTIN (ECMA_BUILTIN_ID_MATH,
          math)
 #endif /* defined (JERRY_BUILTIN_MATH) && (JERRY_BUILTIN_MATH == 1) */
 
-#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
+#if defined (JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
 /* The JSON object (15.12) */
 BUILTIN (ECMA_BUILTIN_ID_JSON,
          ECMA_OBJECT_TYPE_GENERAL,
          ECMA_BUILTIN_ID_OBJECT_PROTOTYPE,
          true,
          json)
-#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
+#endif /* defined (JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
 
-#if defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
+#if defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1)
 /* The Date.prototype object (15.9.4) */
 BUILTIN (ECMA_BUILTIN_ID_DATE_PROTOTYPE,
          ECMA_OBJECT_TYPE_CLASS,
@@ -140,7 +140,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_DATE,
                  ECMA_BUILTIN_ID_FUNCTION_PROTOTYPE,
                  true,
                  date)
-#endif /* defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
+#endif /* defined (JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
 
 #if defined (JERRY_BUILTIN_REGEXP) && (JERRY_BUILTIN_REGEXP == 1)
 /* The RegExp.prototype object (15.10.6) */
@@ -265,7 +265,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_TYPE_ERROR_THROWER,
                  false,
                  type_error_thrower)
 
-#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
+#if defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
 
 /* The ArrayBuffer.prototype object (ES2015 24.1.4) */
 BUILTIN (ECMA_BUILTIN_ID_ARRAYBUFFER_PROTOTYPE,
@@ -405,7 +405,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_UINT8CLAMPEDARRAY,
                  true,
                  uint8clampedarray)
 
-#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
 
 #if defined (JERRY_ES2015_BUILTIN_PROMISE) && (JERRY_ES2015_BUILTIN_PROMISE == 1)
 
@@ -441,7 +441,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_MAP,
 
 #endif /* defined (JERRY_ES2015_BUILTIN_MAP) && (JERRY_ES2015_BUILTIN_MAP == 1) */
 
-#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
+#if defined (JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
 
 /* The Symbol prototype object (ECMA-262 v6, 19.4.2.7) */
 BUILTIN (ECMA_BUILTIN_ID_SYMBOL_PROTOTYPE,
@@ -457,7 +457,7 @@ BUILTIN_ROUTINE (ECMA_BUILTIN_ID_SYMBOL,
                  true,
                  symbol)
 
-#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 #if defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1)
 /* The %IteratorPrototype% object (ECMA-262 v6, 25.1.2) */
 BUILTIN (ECMA_BUILTIN_ID_ITERATOR_PROTOTYPE,

@@ -16,7 +16,7 @@
 #ifndef ECMA_SYMBOL_H
 #define ECMA_SYMBOL_H
 
-#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
+#if defined (JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
 #include "ecma-globals.h"
 
 /** \addtogroup ecma ECMA
@@ -44,7 +44,7 @@ ecma_symbol_to_string_helper (ecma_value_t this_arg, bool is_to_string);
 ecma_value_t
 ecma_get_symbol_descriptive_string (ecma_value_t symbol_value);
 
-#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 /**
  * @}
  * @}

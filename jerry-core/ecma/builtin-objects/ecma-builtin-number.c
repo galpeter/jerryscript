@@ -25,7 +25,7 @@
 #include "ecma-try-catch-macro.h"
 #include "jrt.h"
 
-#if defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
+#if defined (JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1)
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -97,4 +97,4 @@ ecma_builtin_number_dispatch_construct (const ecma_value_t *arguments_list_p, /*
  * @}
  */
 
-#endif /* defined(JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */
+#endif /* defined (JERRY_BUILTIN_NUMBER) && (JERRY_BUILTIN_NUMBER == 1) */

@@ -20,9 +20,9 @@
 
 #if defined (JERRY_ES2015_BUILTIN_ITERATOR) && (JERRY_ES2015_BUILTIN_ITERATOR == 1)
 
-#if !defined(JERRY_ES2015_BUILTIN_SYMBOL) || (JERRY_ES2015_BUILTIN_SYMBOL == 0)
+#if !defined (JERRY_ES2015_BUILTIN_SYMBOL) || (JERRY_ES2015_BUILTIN_SYMBOL == 0)
 #error "Iterator builtin requires ES2015 symbol builtin"
-#endif /* !defined(JERRY_ES2015_BUILTIN_SYMBOL) || (JERRY_ES2015_BUILTIN_SYMBOL == 0) */
+#endif /* !defined (JERRY_ES2015_BUILTIN_SYMBOL) || (JERRY_ES2015_BUILTIN_SYMBOL == 0) */
 
 #define ECMA_BUILTINS_INTERNAL
 #include "ecma-builtins-internal.h"
@@ -84,22 +84,22 @@ ecma_builtin_array_iterator_prototype_object_next (ecma_value_t this_val) /**< t
   uint32_t length;
 
   /* 8 - 9. */
-#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
+#if defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
   if (ecma_is_typedarray (ecma_make_object_value (array_object_p)))
   {
     length = ecma_typedarray_get_length (array_object_p);
   }
   else
   {
-#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
     JERRY_ASSERT (ecma_get_object_type (array_object_p) == ECMA_OBJECT_TYPE_ARRAY);
 
     ecma_extended_object_t *ext_array_obj_p = (ecma_extended_object_t *) array_object_p;
 
     length = ext_array_obj_p->u.array.length;
-#if defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
+#if defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1)
   }
-#endif /* defined(JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN_TYPEDARRAY) && (JERRY_ES2015_BUILTIN_TYPEDARRAY == 1) */
 
   uint32_t index = ext_obj_p->u.pseudo_array.u1.iterator_index;
 

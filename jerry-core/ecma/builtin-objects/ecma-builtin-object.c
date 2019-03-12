@@ -113,15 +113,15 @@ ecma_builtin_object_object_get_prototype_of (ecma_value_t this_arg, /**< 'this' 
   /* 1. */
   if (!was_object)
   {
-#if defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
+#if defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
     arg = ecma_op_to_object (arg);
     if (ECMA_IS_VALUE_ERROR (arg))
     {
       return arg;
     }
-#else /* !defined(JERRY_ES2015_BUILTIN) || (JERRY_ES2015_BUILTIN == 0) */
+#else /* !defined (JERRY_ES2015_BUILTIN) || (JERRY_ES2015_BUILTIN == 0) */
     return ecma_raise_type_error (ECMA_ERR_MSG ("Argument is not an object."));
-#endif /* defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
   }
   /* 2. */
   ecma_object_t *obj_p = ecma_get_object_from_value (arg);
@@ -137,17 +137,17 @@ ecma_builtin_object_object_get_prototype_of (ecma_value_t this_arg, /**< 'this' 
     ret_value = ECMA_VALUE_NULL;
   }
 
-#if defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
+#if defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
   if (!was_object)
   {
     ecma_free_value (arg);
   }
-#endif /* defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
 
   return ret_value;
 } /* ecma_builtin_object_object_get_prototype_of */
 
-#if defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
+#if defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
 /**
  * [[SetPrototypeOf]]
  *
@@ -269,7 +269,7 @@ ecma_builtin_object_object_set_prototype_of (ecma_value_t this_arg, /**< 'this' 
 
   return ret_value;
 } /* ecma_builtin_object_object_set_prototype_of */
-#endif /* defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
 
 /**
  * The Object object's 'getOwnPropertyNames' routine
@@ -302,7 +302,7 @@ ecma_builtin_object_object_get_own_property_names (ecma_value_t this_arg, /**< '
   return ret_value;
 } /* ecma_builtin_object_object_get_own_property_names */
 
-#if defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
+#if defined (JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1)
 /**
  * The Object object's 'getOwnPropertySymbols' routine
  *
@@ -329,7 +329,7 @@ ecma_builtin_object_object_get_own_property_symbols (ecma_value_t this_arg, /**<
 
   return ecma_builtin_helper_object_get_properties (obj_p, ECMA_LIST_SYMBOLS);
 } /* ecma_builtin_object_object_get_own_property_symbols */
-#endif /* defined(JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN_SYMBOL) && (JERRY_ES2015_BUILTIN_SYMBOL == 1) */
 
 /**
  * The Object object's 'seal' routine
@@ -949,7 +949,7 @@ ecma_builtin_object_object_define_property (ecma_value_t this_arg, /**< 'this' a
   return ret_value;
 } /* ecma_builtin_object_object_define_property */
 
-#if defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
+#if defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1)
 /**
  * The Object object's 'assign' routine
  *
@@ -1067,7 +1067,7 @@ ecma_builtin_object_object_assign (ecma_value_t this_arg, /**< 'this' argument *
   ecma_deref_object (to_obj_p);
   return ret_value;
 } /* ecma_builtin_object_object_assign */
-#endif /* defined(JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
+#endif /* defined (JERRY_ES2015_BUILTIN) && (JERRY_ES2015_BUILTIN == 1) */
 
 /**
  * @}
