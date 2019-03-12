@@ -784,14 +784,14 @@ parser_parse_object_literal (parser_context_t *context_p) /**< context */
       {
         uint16_t literal_index = context_p->lit_object.index;
 
-#if !defined (JERRY_ES2015_OBJECT_INITIALIZER) || (JERRY_ES2015_OBJECT_INITIALIZER == 0)
+#if defined (JERRY_ES2015_OBJECT_INITIALIZER) && (JERRY_ES2015_OBJECT_INITIALIZER == 1)
+        parser_line_counter_t start_line = context_p->token.line;
+        parser_line_counter_t start_column = context_p->token.column;
+#else /* !defined (JERRY_ES2015_OBJECT_INITIALIZER) || (JERRY_ES2015_OBJECT_INITIALIZER == 0) */
         parser_append_object_literal_item (context_p,
                                            literal_index,
                                            PARSER_OBJECT_PROPERTY_VALUE);
-#else /* defined (JERRY_ES2015_OBJECT_INITIALIZER) && (JERRY_ES2015_OBJECT_INITIALIZER == 1) */
-        parser_line_counter_t start_line = context_p->token.line;
-        parser_line_counter_t start_column = context_p->token.column;
-#endif /* !defined (JERRY_ES2015_OBJECT_INITIALIZER) || (JERRY_ES2015_OBJECT_INITIALIZER == 0) */
+#endif /* defined (JERRY_ES2015_OBJECT_INITIALIZER) && (JERRY_ES2015_OBJECT_INITIALIZER == 1) */
 
         lexer_next_token (context_p);
 
