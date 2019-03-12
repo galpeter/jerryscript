@@ -120,6 +120,7 @@ ecma_value_t ecma_date_value_to_time_string (ecma_number_t datetime_number);
 
 #endif /* defined(JERRY_BUILTIN_DATE) && (JERRY_BUILTIN_DATE == 1) */
 
+#if defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1)
 /* ecma-builtin-helper-json.c */
 
 /**
@@ -165,6 +166,7 @@ ecma_builtin_helper_json_create_formatted_json (lit_utf8_byte_t left_bracket, li
 ecma_value_t
 ecma_builtin_helper_json_create_non_formatted_json (lit_utf8_byte_t left_bracket, lit_utf8_byte_t right_bracket,
                                                     ecma_collection_header_t *partial_p);
+#endif /* defined(JERRY_BUILTIN_JSON) && (JERRY_BUILTIN_JSON == 1) */
 
 /* ecma-builtin-helper-error.c */
 
