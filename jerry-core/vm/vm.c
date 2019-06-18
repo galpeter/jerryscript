@@ -146,6 +146,22 @@ vm_op_set_value (ecma_value_t object, /**< base object */
 {
   if (JERRY_UNLIKELY (!ecma_is_value_object (object)))
   {
+    if (is_strict)
+    {
+#ifdef JERRY_ENABLE_ERROR_MESSAGES
+      ecma_value_t error_value = ecma_raise_standard_error_with_format (ECMA_ERROR_TYPE,
+                                                                        "Cannot set property '%' of %",
+                                                                        property,
+                                                                        object);
+#else /* !defined (JERRY_ENABLE_ERROR_MESSAGES) */
+      ecma_value_t error_value = ecma_raise_type_error (NULL);
+#endif /* defined (JERRY_ENABLE_ERROR_MESSAGES) */
+
+      ecma_free_value (property);
+
+      return error_value;
+    }
+
     ecma_value_t to_object = ecma_op_to_object (object);
     ecma_free_value (object);
 
