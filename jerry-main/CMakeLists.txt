@@ -1,5 +1,4 @@
-# Copyright 2016 Samsung Electronics Co., Ltd.
-# Copyright 2016 University of Szeged.
+# Copyright JS Foundation and other contributors, http://js.foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,45 +13,86 @@
 # limitations under the License.
 
 cmake_minimum_required (VERSION 2.8.12)
-set(JERRY_NAME jerry)
-project (${JERRY_NAME} C)
+project (jerry-main C)
 
-# Sources
-# Jerry standalone
-set(SOURCE_JERRY_STANDALONE_MAIN main-unix.c)
+# Optional build settings
+set(ENABLE_LINK_MAP OFF CACHE BOOL "Enable generating a link map file?")
 
-# Generage map file
-if("${PLATFORM}" STREQUAL "DARWIN")
-  set(MAP_FILE_FLAGS "-Xlinker -map")
+# Status messages
+message(STATUS "ENABLE_LINK_MAP             " ${ENABLE_LINK_MAP})
+
+# Generate map file
+if(ENABLE_LINK_MAP)
+  if("${PLATFORM}" STREQUAL "DARWIN")
+    set(LINKER_FLAGS_COMMON "${LINKER_FLAGS_COMMON} -Xlinker -map -Xlinker jerry.map")
+  else()
+    set(LINKER_FLAGS_COMMON "${LINKER_FLAGS_COMMON} -Xlinker -Map -Xlinker jerry.map")
+  endif()
+endif()
+
+# Get version information from git
+if(IS_DIRECTORY "${CMAKE_SOURCE_DIR}/.git")
+  execute_process(COMMAND git rev-parse --short HEAD
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                  OUTPUT_VARIABLE JERRY_COMMIT_HASH
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  set(JERRY_COMMIT_HASH " (${JERRY_COMMIT_HASH})")
 else()
-  set(MAP_FILE_FLAGS "-Xlinker -Map")
+  set(JERRY_COMMIT_HASH "")
 endif()
 
-set(MAP_FILE_FLAGS "${MAP_FILE_FLAGS} -Xlinker jerry.map")
-set(LINKER_FLAGS_COMMON "${LINKER_FLAGS_COMMON} ${MAP_FILE_FLAGS}")
+set(DEFINES_JERRY ${DEFINES_JERRY}) # JERRY_COMMIT_HASH="${JERRY_COMMIT_HASH}")
 
-# Disable static build
-if(NOT ("${PLATFORM}" STREQUAL "DARWIN"))
-  set(LINKER_FLAGS_STATIC "-static")
+macro(jerry_create_executable JERRY_NAME)
+  add_executable(${JERRY_NAME} ${ARGN})
+  set_property(TARGET ${JERRY_NAME}
+               PROPERTY LINK_FLAGS "-static ${LINKER_FLAGS_COMMON}")
+  target_compile_definitions(${JERRY_NAME} PRIVATE ${DEFINES_JERRY})
+
+  target_link_libraries(${JERRY_NAME} jerry-core)
+  target_include_directories(${JERRY_NAME} PRIVATE ${PORT_DIR})
+
+  install(TARGETS ${JERRY_NAME} DESTINATION bin)
+endmacro()
+
+# Jerry with libfuzzer support
+if(JERRY_LIBFUZZER)
+  #jerry_create_executable("jerry-libfuzzer" "libfuzzer.c")
+  #target_link_libraries("jerry-libfuzzer" jerry-port-default -fsanitize=fuzzer)
 endif()
 
-add_executable(${JERRY_NAME} ${SOURCE_JERRY_STANDALONE_MAIN})
-set_property(TARGET ${JERRY_NAME}
-             PROPERTY LINK_FLAGS "${LINKER_FLAGS_STATIC} ${LINKER_FLAGS_COMMON}")
-target_compile_definitions(${JERRY_NAME} PRIVATE ${DEFINES_JERRY})
-target_include_directories(${JERRY_NAME} PRIVATE ${PORT_DIR})
-link_directories(${CMAKE_BINARY_DIR})
+# Jerry standalones
+if(JERRY_CMDLINE)
+  jerry_create_executable("jerry" "main-unix.c")
+  target_link_libraries("jerry" jerry-ext jerry-port-default)
+endif()
 
-set(JERRY_LIBS jerry-core)
+if(JERRY_CMDLINE_TEST)
+  jerry_create_executable("jerry-test" "main-unix-test.c" "benchmarking.c")
+  target_link_libraries("jerry-test" jerry-port-default-minimal)
+endif()
 
+if(JERRY_CMDLINE_SNAPSHOT)
+  #jerry_create_executable("jerry-snapshot" "main-unix-snapshot.c" "cli.c")
+  #target_link_libraries("jerry-snapshot" jerry-port-default)
+endif()
+
+
+set(JERRY_LIBS)
 if(JERRY_LIBM)
   set(JERRY_LIBS ${JERRY_LIBS} jerry-libm)
 endif()
-
 if(JERRY_LIBC)
   set(JERRY_LIBS ${JERRY_LIBS} jerry-libc)
 endif()
 
 set(JERRY_LIBS ${JERRY_LIBS} ${IMPORTED_LIB})
 
-target_link_libraries(${JERRY_NAME} ${JERRY_LIBS})
+if(JERRY_CMDLINE_TEST)
+  target_link_libraries(jerry-test ${JERRY_LIBS})
+endif()
+if(JERRY_CMDLINE)
+  target_link_libraries(jerry ${JERRY_LIBS})
+endif()
+
+

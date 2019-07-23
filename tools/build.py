@@ -56,7 +56,8 @@ def add_build_args(parser):
     parser.add_argument('--compiler-default-libc', choices=['on', 'off'], default='off', help='Use compiler-default libc (default: %(default)s)')
     parser.add_argument('--jerry-core', choices=['on', 'off'], default='on', help='Use jerry-core (default: %(default)s)')
     parser.add_argument('--jerry-libm', choices=['on', 'off'], default='on', help='Use jerry-libm (default: %(default)s)')
-    parser.add_argument('--jerry-cmdline', choices=['on', 'off'], default='on', help='Use jerry commandline tool (default: %(default)s)')
+    parser.add_argument('--jerry-cmdline', type=str.lower, choices=['on', 'off'], default='on', help='Use jerry commandline tool (default: %(default)s)')
+    parser.add_argument('--jerry-cmdline-test', type=str.lower, choices=['on', 'off'], default='on', help='Use jerry commandline tool (default: %(default)s)')
 
 def get_arguments():
     parser = argparse.ArgumentParser()
@@ -71,6 +72,7 @@ def generate_build_options(arguments):
     build_options.append('-DJERRY_CORE=%s' % arguments.jerry_core.upper())
     build_options.append('-DJERRY_LIBM=%s' % arguments.jerry_libm.upper())
     build_options.append('-DJERRY_CMDLINE=%s' % arguments.jerry_cmdline.upper())
+    build_options.append('-DJERRY_CMDLINE_TEST=%s' % arguments.jerry_cmdline_test.upper())
     build_options.append('-DCOMPILER_DEFAULT_LIBC=%s' % arguments.compiler_default_libc.upper())
     build_options.append('-DCMAKE_VERBOSE_MAKEFILE=%s' % arguments.verbose)
     build_options.append('-DCMAKE_BUILD_TYPE=%s' % arguments.build_type)

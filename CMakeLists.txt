@@ -220,7 +220,7 @@ if(JERRY_CORE)
 endif()
 
 # Jerry commandline tool
-if(JERRY_CMDLINE)
+if(JERRY_CMDLINE OR JERRY_CMDLINE_TEST)
   add_subdirectory(jerry-main)
 endif()
 

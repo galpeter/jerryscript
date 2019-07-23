@@ -87,6 +87,12 @@ set(SOURCE_CORE_FILES
 # Jerry port
 file(GLOB SOURCE_PORT_FILES "${PORT_DIR}/*.c")
 
+add_library(jerry-port-default STATIC ${SOURCE_PORT_FILES})
+add_library(jerry-port-default-minimal ALIAS jerry-port-default)
+if(JERRY_LIBC)
+  target_link_libraries(jerry-port-default jerry-libc)
+endif()
+
 # All-in-one build
 if(ENABLE_ALL_IN_ONE)
   set(ALL_IN_FILE "${CMAKE_BINARY_DIR}/jerry-all-in.c")
@@ -97,13 +103,13 @@ if(ENABLE_ALL_IN_ONE)
     file(APPEND ${ALL_IN_FILE} "#include \"${FILE}\"\n")
   endforeach()
 
-  foreach(FILE ${SOURCE_PORT_FILES})
-    file(APPEND ${ALL_IN_FILE} "#include \"${FILE}\"\n")
-  endforeach()
+  #foreach(FILE ${SOURCE_PORT_FILES})
+  #  file(APPEND ${ALL_IN_FILE} "#include \"${FILE}\"\n")
+  #endforeach()
 
   set(SOURCE_CORE ${ALL_IN_FILE})
 else()
-  set(SOURCE_CORE ${SOURCE_CORE_FILES} ${SOURCE_PORT_FILES})
+  set(SOURCE_CORE ${SOURCE_CORE_FILES}) # ${SOURCE_PORT_FILES})
 endif()
 
 # Third-party
@@ -227,3 +233,7 @@ if (JERRY_LIBC)
   target_include_directories(${JERRY_CORE_NAME} SYSTEM PRIVATE "${CMAKE_SOURCE_DIR}/jerry-libc/include")
 endif()
 
+target_compile_definitions(jerry-port-default PUBLIC ${DEFINES_JERRY} -D_BSD_SOURCE -D_DEFAULT_SOURCE)
+target_include_directories(jerry-port-default PUBLIC ${INCLUDE_CORE})
+
+add_library(jerry-ext ALIAS jerry-libc)

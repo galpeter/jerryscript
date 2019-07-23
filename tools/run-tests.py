@@ -108,6 +108,7 @@ def create_binary(buildoptions):
 
     try:
         script_output = subprocess.check_output(build_cmd)
+        print(script_output)
     except CalledProcessError as e:
         return e.returncode
 

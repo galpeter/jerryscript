@@ -265,7 +265,7 @@ fwrite (const void *ptr, /**< data to write */
  *
  * @return 0 if success, -1 otherwise
  */
-int
+int __attribute__((weak))
 gettimeofday (void *tp,  /**< struct timeval */
               void *tzp) /**< struct timezone */
 {

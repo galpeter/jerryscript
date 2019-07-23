@@ -254,7 +254,7 @@ strlen (const char *s)
  *
  * @return integer in range [0; RAND_MAX]
  */
-int
+int __attribute__((weak))
 rand (void)
 {
   uint32_t intermediate = libc_random_gen_state[0] ^ (libc_random_gen_state[0] << 11);
