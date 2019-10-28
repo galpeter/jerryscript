@@ -72,7 +72,7 @@ ecma_has_string_value_in_collection (ecma_collection_t *collection_p, /**< colle
   {
     ecma_string_t *current_p = ecma_get_string_from_value (buffer_p[i]);
 
-    if (ecma_compare_ecma_strings (current_p, string_p))
+    if (ecma_compare_ecma_strings (current_p, string_p, true))
     {
       return true;
     }

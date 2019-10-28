@@ -159,7 +159,7 @@ ecma_find_or_create_literal_string (const lit_utf8_byte_t *chars_p, /**< string 
         ecma_string_t *value_p = JMEM_CP_GET_NON_NULL_POINTER (ecma_string_t,
                                                                string_list_p->values[i]);
 
-        if (ecma_compare_ecma_strings (string_p, value_p))
+        if (ecma_compare_ecma_strings (string_p, value_p, true))
         {
           /* Return with string if found in the list. */
           ecma_deref_ecma_string (string_p);

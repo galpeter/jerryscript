@@ -108,7 +108,7 @@ ecma_module_find_module (ecma_string_t *const path_p) /**< module identifier */
   ecma_module_t *current_p = JERRY_CONTEXT (ecma_modules_p);
   while (current_p != NULL)
   {
-    if (ecma_compare_ecma_strings (path_p, current_p->path_p))
+    if (ecma_compare_ecma_strings (path_p, current_p->path_p, true))
     {
       return current_p;
     }
@@ -200,7 +200,7 @@ ecma_module_resolve_set_insert (ecma_module_resolve_set_t **set_p, /**< [in, out
   while (current_p != NULL)
   {
     if (current_p->record.module_p == module_p
-        && ecma_compare_ecma_strings (current_p->record.name_p, export_name_p))
+        && ecma_compare_ecma_strings (current_p->record.name_p, export_name_p, true))
     {
       return false;
     }
@@ -349,7 +349,7 @@ ecma_module_resolve_export (ecma_module_t * const module_p, /**< base module */
         ecma_module_names_t *export_names_p = context_p->local_exports_p->module_names_p;
         while (export_names_p != NULL)
         {
-          if (ecma_compare_ecma_strings (current_export_name_p, export_names_p->imex_name_p))
+          if (ecma_compare_ecma_strings (current_export_name_p, export_names_p->imex_name_p, true))
           {
             if (found)
             {
@@ -384,7 +384,7 @@ ecma_module_resolve_export (ecma_module_t * const module_p, /**< base module */
         ecma_module_names_t *export_names_p = indirect_export_p->module_names_p;
         while (export_names_p != NULL)
         {
-          if (ecma_compare_ecma_strings (current_export_name_p, export_names_p->imex_name_p))
+          if (ecma_compare_ecma_strings (current_export_name_p, export_names_p->imex_name_p, true))
           {
             /* 5.2.1.16.3 / 5.a.iv */
             ecma_module_resolve_stack_push (&stack_p,

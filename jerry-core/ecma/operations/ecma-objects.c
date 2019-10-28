@@ -214,7 +214,7 @@ ecma_op_object_get_own_property (ecma_object_t *object_p, /**< the object */
         ecma_number_t num = ecma_string_to_number (property_name_p);
         ecma_string_t *num_to_str = ecma_new_ecma_string_from_number (num);
 
-        if (ecma_compare_ecma_strings (property_name_p, num_to_str))
+        if (ecma_compare_ecma_strings (property_name_p, num_to_str, true))
         {
           ecma_deref_ecma_string (num_to_str);
 
@@ -568,7 +568,7 @@ ecma_op_object_find_own (ecma_value_t base_value, /**< base value */
         ecma_number_t num = ecma_string_to_number (property_name_p);
         ecma_string_t *num_to_str = ecma_new_ecma_string_from_number (num);
 
-        if (ecma_compare_ecma_strings (property_name_p, num_to_str))
+        if (ecma_compare_ecma_strings (property_name_p, num_to_str, true))
         {
           ecma_deref_ecma_string (num_to_str);
 
@@ -1108,7 +1108,7 @@ ecma_op_object_put (ecma_object_t *object_p, /**< the object */
         ecma_number_t num = ecma_string_to_number (property_name_p);
         ecma_string_t *num_to_str = ecma_new_ecma_string_from_number (num);
 
-        if (ecma_compare_ecma_strings (property_name_p, num_to_str))
+        if (ecma_compare_ecma_strings (property_name_p, num_to_str, true))
         {
           ecma_deref_ecma_string (num_to_str);
 
@@ -1512,7 +1512,7 @@ ecma_op_object_define_own_property (ecma_object_t *obj_p, /**< the object */
         ecma_number_t num = ecma_string_to_number (property_name_p);
         ecma_string_t *num_to_str = ecma_new_ecma_string_from_number (num);
 
-        if (ecma_compare_ecma_strings (property_name_p, num_to_str))
+        if (ecma_compare_ecma_strings (property_name_p, num_to_str, true))
         {
           ecma_deref_ecma_string (num_to_str);
 
@@ -1881,7 +1881,7 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
           {
             ecma_string_t *current_name_p = ecma_get_prop_name_from_value (buffer_p[j]);
 
-            if (ecma_compare_ecma_strings (index_str_p, current_name_p))
+            if (ecma_compare_ecma_strings (index_str_p, current_name_p, true))
             {
               is_add = false;
               break;
@@ -1965,7 +1965,7 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
                 {
                   ecma_string_t *current_name_p = ecma_get_prop_name_from_value (buffer_p[j]);
 
-                  if (ecma_compare_ecma_strings (name_p, current_name_p))
+                  if (ecma_compare_ecma_strings (name_p, current_name_p, true))
                   {
                     is_add = false;
                     break;
@@ -2120,7 +2120,7 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
         {
           ecma_string_t *current_name_p = ecma_get_prop_name_from_value (buffer_p[j]);
 
-          if (ecma_compare_ecma_strings (name_p, current_name_p))
+          if (ecma_compare_ecma_strings (name_p, current_name_p, true))
           {
             is_append = false;
             break;
@@ -2136,7 +2136,7 @@ ecma_op_object_get_property_names (ecma_object_t *obj_p, /**< object */
         {
           ecma_string_t *current_name_p = ecma_get_prop_name_from_value (buffer_p[j]);
 
-          if (ecma_compare_ecma_strings (name_p, current_name_p))
+          if (ecma_compare_ecma_strings (name_p, current_name_p, true))
           {
             is_append = false;
             break;

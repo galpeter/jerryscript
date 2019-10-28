@@ -904,7 +904,7 @@ ecma_builtin_array_prototype_object_sort_compare_helper (ecma_value_t lhs, /**< 
     {
       result = ECMA_NUMBER_MINUS_ONE;
     }
-    else if (!ecma_compare_ecma_strings (lhs_str_p, rhs_str_p))
+    else if (!ecma_compare_ecma_strings (lhs_str_p, rhs_str_p, true))
     {
       result = ECMA_NUMBER_ONE;
     }

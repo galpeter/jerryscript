@@ -1756,7 +1756,8 @@ ecma_string_compare_to_property_name (ecma_property_t property, /**< property na
   }
 
   ecma_string_t *prop_name_p = ECMA_GET_NON_NULL_POINTER (ecma_string_t, prop_name_cp);
-  return ecma_compare_ecma_non_direct_strings (prop_name_p, string_p);
+  //return ecma_compare_ecma_non_direct_strings (prop_name_p, string_p);
+  return ecma_compare_ecma_strings (prop_name_p, string_p, false);
 } /* ecma_string_compare_to_property_name */
 
 static void
@@ -1830,7 +1831,8 @@ ecma_compare_ecma_strings_longpath (const ecma_string_t *string1_p, /**< ecma-st
  */
 extern inline bool JERRY_ATTR_ALWAYS_INLINE
 ecma_compare_ecma_strings (const ecma_string_t *string1_p, /**< ecma-string */
-                           const ecma_string_t *string2_p) /**< ecma-string */
+                           const ecma_string_t *string2_p,
+                           bool test_direct_strings) /**< ecma-string */
 {
   JERRY_ASSERT (string1_p != NULL && string2_p != NULL);
 
@@ -1841,7 +1843,7 @@ ecma_compare_ecma_strings (const ecma_string_t *string1_p, /**< ecma-string */
   }
 
   /* Either string is direct, return with false. */
-  if (ECMA_IS_DIRECT_STRING (((uintptr_t) string1_p) | ((uintptr_t) string2_p)))
+  if (test_direct_strings && ECMA_IS_DIRECT_STRING (((uintptr_t) string1_p) | ((uintptr_t) string2_p)))
   {
     return false;
   }
@@ -1878,6 +1880,7 @@ ecma_compare_ecma_strings (const ecma_string_t *string1_p, /**< ecma-string */
   return ecma_compare_ecma_strings_longpath (string1_p, string2_p);
 } /* ecma_compare_ecma_strings */
 
+#if 0
 /**
  * Compare two non-direct ecma-strings
  *
@@ -1928,6 +1931,7 @@ ecma_compare_ecma_non_direct_strings (const ecma_string_t *string1_p, /**< ecma-
 
   return ecma_compare_ecma_strings_longpath (string1_p, string2_p);
 } /* ecma_compare_ecma_non_direct_strings */
+#endif
 
 /**
  * Relational compare of ecma-strings.
@@ -1944,7 +1948,8 @@ ecma_compare_ecma_strings_relational (const ecma_string_t *string1_p, /**< ecma-
                                       const ecma_string_t *string2_p) /**< ecma-string */
 {
   if (ecma_compare_ecma_strings (string1_p,
-                                 string2_p))
+                                 string2_p,
+                                 true))
   {
     return false;
   }

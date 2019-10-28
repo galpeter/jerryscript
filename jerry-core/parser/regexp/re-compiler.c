@@ -736,7 +736,7 @@ re_find_bytecode_in_cache (ecma_string_t *pattern_str_p, /**< pattern string */
       ecma_string_t *cached_pattern_str_p = ecma_get_string_from_value (cached_bytecode_p->source);
 
       if ((cached_bytecode_p->header.status_flags & RE_FLAGS_MASK) == flags
-          && ecma_compare_ecma_strings (cached_pattern_str_p, pattern_str_p))
+          && ecma_compare_ecma_strings (cached_pattern_str_p, pattern_str_p, true))
       {
         JERRY_TRACE_MSG ("RegExp is found in cache\n");
         return idx;

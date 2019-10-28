@@ -497,7 +497,7 @@ ecma_property_hashmap_find (ecma_property_hashmap_t *hashmap_p, /**< hashmap */
       {
         ecma_string_t *prop_name_p = ECMA_GET_NON_NULL_POINTER (ecma_string_t, property_pair_p->names_cp[offset]);
 
-        if (ecma_compare_ecma_non_direct_strings (prop_name_p, name_p))
+        if (ecma_compare_ecma_strings (prop_name_p, name_p, false))
         {
 #ifndef JERRY_NDEBUG
           JERRY_ASSERT (property_found);

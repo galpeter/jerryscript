@@ -207,7 +207,7 @@ main (void)
   TEST_ASSERT (utf8_sz == cesu8_sz);
 
   JERRY_VLA (char, string_from_utf8_string, utf8_sz);
-  JERRY_VLA (char, string_from_cesu8_string, cesu8_sz);
+  JERRY_VLA (char, string_from_cesu8_string, cesu8_sz + 1);
 
   jerry_string_to_utf8_char_buffer (args[0], (jerry_char_t *) string_from_utf8_string, utf8_sz);
   jerry_string_to_utf8_char_buffer (args[1], (jerry_char_t *) string_from_cesu8_string, cesu8_sz);

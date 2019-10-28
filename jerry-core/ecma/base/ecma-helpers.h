@@ -301,7 +301,7 @@ uint32_t ecma_string_get_property_index (ecma_property_t property, jmem_cpointer
 bool ecma_string_compare_to_property_name (ecma_property_t property, jmem_cpointer_t prop_name_cp,
                                            const ecma_string_t *string_p);
 
-bool ecma_compare_ecma_strings (const ecma_string_t *string1_p, const ecma_string_t *string2_p);
+bool ecma_compare_ecma_strings (const ecma_string_t *string1_p, const ecma_string_t *string2_p, bool test_direct_strings);
 bool ecma_compare_ecma_non_direct_strings (const ecma_string_t *string1_p, const ecma_string_t *string2_p);
 bool ecma_compare_ecma_strings_relational (const ecma_string_t *string1_p, const ecma_string_t *string2_p);
 ecma_length_t ecma_string_get_length (const ecma_string_t *string_p);

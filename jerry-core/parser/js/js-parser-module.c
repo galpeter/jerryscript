@@ -47,7 +47,7 @@ parser_module_check_duplicate_import (parser_context_t *context_p, /**< parser c
   ecma_module_names_t *module_names_p = context_p->module_current_node_p->module_names_p;
   while (module_names_p != NULL)
   {
-    if (ecma_compare_ecma_strings (module_names_p->local_name_p, local_name_p))
+    if (ecma_compare_ecma_strings (module_names_p->local_name_p, local_name_p, true))
     {
       return true;
     }
@@ -62,7 +62,7 @@ parser_module_check_duplicate_import (parser_context_t *context_p, /**< parser c
 
     while (module_names_p != NULL)
     {
-      if (ecma_compare_ecma_strings (module_names_p->local_name_p, local_name_p))
+      if (ecma_compare_ecma_strings (module_names_p->local_name_p, local_name_p, true))
       {
         return true;
       }
@@ -89,7 +89,7 @@ parser_module_check_duplicate_export (parser_context_t *context_p, /**< parser c
   ecma_module_names_t *current_names_p = context_p->module_current_node_p->module_names_p;
   while (current_names_p != NULL)
   {
-    if (ecma_compare_ecma_strings (current_names_p->imex_name_p, export_name_p))
+    if (ecma_compare_ecma_strings (current_names_p->imex_name_p, export_name_p, true))
     {
       return true;
     }
@@ -104,7 +104,7 @@ parser_module_check_duplicate_export (parser_context_t *context_p, /**< parser c
 
     while (name_p != NULL)
     {
-      if (ecma_compare_ecma_strings (name_p->imex_name_p, export_name_p))
+      if (ecma_compare_ecma_strings (name_p->imex_name_p, export_name_p, true))
       {
         return true;
       }
@@ -120,7 +120,7 @@ parser_module_check_duplicate_export (parser_context_t *context_p, /**< parser c
 
     while (name_p != NULL)
     {
-      if (ecma_compare_ecma_strings (name_p->imex_name_p, export_name_p))
+      if (ecma_compare_ecma_strings (name_p->imex_name_p, export_name_p, true))
       {
         return true;
       }

@@ -121,7 +121,7 @@ ecma_builtin_symbol_for_helper (ecma_value_t value_to_find) /**< symbol or ecma-
         {
           ecma_string_t *symbol_desc_p = ecma_get_symbol_description (value_p);
 
-          if (ecma_compare_ecma_strings (symbol_desc_p, string_p))
+          if (ecma_compare_ecma_strings (symbol_desc_p, string_p, true))
           {
             /* The current symbol's descriptor matches with the value_to_find,
                so the value is no longer needed. */

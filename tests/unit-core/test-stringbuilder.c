@@ -36,7 +36,7 @@ main (void)
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
     ecma_string_t *str_p = ecma_new_ecma_string_from_utf8 (string_data, sizeof (string_data) - 1);
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }
@@ -47,7 +47,7 @@ main (void)
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
     ecma_string_t *str_p = ecma_get_magic_string (LIT_MAGIC_STRING_STRING);
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
   }
 
   {
@@ -58,7 +58,7 @@ main (void)
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
     ecma_string_t *str_p = ecma_new_ecma_string_from_utf8 (string_data, sizeof (string_data) - 1);
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }
@@ -71,7 +71,7 @@ main (void)
     ecma_stringbuilder_append (&builder, str_p);
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }
@@ -82,7 +82,7 @@ main (void)
     ecma_stringbuilder_t builder = ecma_stringbuilder_create ();
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
   }
 
   {
@@ -95,7 +95,7 @@ main (void)
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
     ecma_string_t *str_p = ecma_new_ecma_string_from_utf8 (string_data, sizeof (string_data) - 1);
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }
@@ -108,7 +108,7 @@ main (void)
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
     ecma_string_t *str_p = ecma_new_ecma_string_from_uint32 (123);
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }
@@ -126,7 +126,7 @@ main (void)
 
     static const lit_utf8_byte_t expected_data[] = "1abc234string";
     ecma_string_t *str_p = ecma_new_ecma_string_from_utf8 (expected_data, sizeof (expected_data) - 1);
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }
@@ -165,7 +165,7 @@ main (void)
                                                 sizeof (string_data) - 1);
     }
 
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, expected_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, expected_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (expected_p);
   }
@@ -186,7 +186,7 @@ main (void)
 
     static const lit_utf8_byte_t expected_data[] = "1abc234string";
     ecma_string_t *str_p = ecma_new_ecma_string_from_utf8 (expected_data, sizeof (expected_data) - 1);
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
     ecma_deref_ecma_string (another_string);
@@ -203,7 +203,7 @@ main (void)
 
     static const lit_utf8_byte_t expected_data[] = "234abcstring";
     ecma_string_t *str_p = ecma_new_ecma_string_from_utf8 (expected_data, sizeof (expected_data) - 1);
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }
@@ -213,7 +213,7 @@ main (void)
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
     ecma_string_t *str_p = ecma_get_magic_string (LIT_MAGIC_STRING__EMPTY);
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }
@@ -223,7 +223,7 @@ main (void)
     ecma_stringbuilder_t builder = ecma_stringbuilder_create_from (str_p);
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }
@@ -233,7 +233,7 @@ main (void)
     ecma_stringbuilder_t builder = ecma_stringbuilder_create_from (str_p);
     ecma_string_t *result_p = ecma_stringbuilder_finalize (&builder);
 
-    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p));
+    TEST_ASSERT (ecma_compare_ecma_strings (result_p, str_p, true));
     ecma_deref_ecma_string (result_p);
     ecma_deref_ecma_string (str_p);
   }

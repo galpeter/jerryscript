@@ -103,7 +103,7 @@ ecma_op_abstract_equality_compare (ecma_value_t x, /**< first operand */
       ecma_string_t *x_str_p = ecma_get_string_from_value (x);
       ecma_string_t *y_str_p = ecma_get_string_from_value (y);
 
-      bool is_equal = ecma_compare_ecma_strings (x_str_p, y_str_p);
+      bool is_equal = ecma_compare_ecma_strings (x_str_p, y_str_p, true);
 
       return ecma_make_boolean_value (is_equal);
     }
@@ -251,7 +251,7 @@ ecma_op_strict_equality_compare (ecma_value_t x, /**< first operand */
     ecma_string_t *x_str_p = ecma_get_string_from_value (x);
     ecma_string_t *y_str_p = ecma_get_string_from_value (y);
 
-    return ecma_compare_ecma_strings (x_str_p, y_str_p);
+    return ecma_compare_ecma_strings (x_str_p, y_str_p, true);
   }
 
   if (!ecma_is_value_number (y))

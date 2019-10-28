@@ -636,7 +636,7 @@ ecma_find_named_property (ecma_object_t *obj_p, /**< object to find property in 
         property_name_cp = prop_pair_p->names_cp[0];
         ecma_string_t *prop_name_p = ECMA_GET_NON_NULL_POINTER (ecma_string_t, property_name_cp);
 
-        if (ecma_compare_ecma_non_direct_strings (name_p, prop_name_p))
+        if (ecma_compare_ecma_strings (name_p, prop_name_p, false))
         {
           property_p = prop_iter_p->types + 0;
           break;
@@ -648,7 +648,7 @@ ecma_find_named_property (ecma_object_t *obj_p, /**< object to find property in 
         property_name_cp = prop_pair_p->names_cp[1];
         ecma_string_t *prop_name_p = ECMA_GET_NON_NULL_POINTER (ecma_string_t, property_name_cp);
 
-        if (ecma_compare_ecma_non_direct_strings (name_p, prop_name_p))
+        if (ecma_compare_ecma_strings (name_p, prop_name_p, false))
         {
           property_p = prop_iter_p->types + 1;
           break;
