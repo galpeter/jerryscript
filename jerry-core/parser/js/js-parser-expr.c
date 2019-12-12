@@ -1283,6 +1283,22 @@ parser_parse_unary_expression (parser_context_t *context_p, /**< context */
     {
       /* After 'new' unary operators are not allowed. */
       new_was_seen = true;
+
+#if ENABLED (JERRY_ES2015)
+      /* Check if "new.target" is written here. */
+      if (scanner_try_scan_new_target (context_p))
+      {
+        if (!(context_p->status_flags & PARSER_IS_FUNCTION))
+        {
+          parser_raise_error (context_p, PARSER_ERR_NEW_TARGET_NOT_ALLOWED);
+        }
+
+        parser_emit_cbc_ext (context_p, CBC_EXT_PUSH_NEW_TARGET);
+        lexer_next_token (context_p);
+        /* Found "new.target" return here */
+        return false;
+      }
+#endif /* ENABLED (JERRY_ES2015) */
     }
     else if (new_was_seen
              || (*grouping_level_p == PARSE_EXPR_LEFT_HAND_SIDE)

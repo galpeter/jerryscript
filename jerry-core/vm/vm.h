@@ -258,6 +258,7 @@ typedef enum
   VM_OC_CREATE_GENERATOR,        /**< create a generator object */
   VM_OC_YIELD,                   /**< yield operation */
   VM_OC_EXT_RETURN,              /**< return which also clears the stack */
+  VM_OC_PUSH_NEW_TARGET,         /**< push new.target onto the stack */
 #endif /* ENABLED (JERRY_ES2015) */
   VM_OC_NONE,                    /**< a special opcode for unsupported byte codes */
 } vm_oc_types;
@@ -311,6 +312,7 @@ typedef enum
   VM_OC_CREATE_GENERATOR = VM_OC_NONE,        /**< create a generator object */
   VM_OC_YIELD = VM_OC_NONE,                   /**< yield operation */
   VM_OC_EXT_RETURN = VM_OC_NONE,              /**< return which also clears the stack */
+  VM_OC_PUSH_NEW_TARGET = VM_OC_NONE,         /**< push new.target onto the stack */
 #endif /* !ENABLED (JERRY_ES2015) */
 
   VM_OC_UNUSED = VM_OC_NONE                   /**< placeholder if the list is empty */

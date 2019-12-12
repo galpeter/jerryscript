@@ -1781,6 +1781,42 @@ scanner_is_global_context_needed (parser_context_t *context_p) /**< context */
   return false;
 } /* scanner_is_global_context_needed */
 
+/**
+ * Try to scan/parse the ".target" part in the "new.target" expression.
+ *
+ * Upon exiting with "true" the current token will point to the "target"
+ * literal.
+ *
+ * If the method returns with "false" the context and current token is
+ * restored to the "new" keyword.
+ *
+ * @returns true if the ".target" part was found, otherwise false.
+ */
+bool
+scanner_try_scan_new_target (parser_context_t *context_p) /**< parser/scanner context */
+{
+  lexer_token_t original_token = context_p->token;
+  JERRY_ASSERT (original_token.type == LEXER_KEYW_NEW);
+
+  scanner_location_t location;
+  scanner_get_location (&location, context_p);
+  lexer_next_token (context_p);
+
+  if (context_p->token.type == LEXER_DOT)
+  {
+    lexer_next_token (context_p);
+    if (lexer_token_is_identifier (context_p, "target", 6))
+    {
+      return true;
+    }
+  }
+
+  context_p->token = original_token;
+
+  scanner_set_location (context_p, &location);
+  return false;
+} /* scanner_try_scan_new_target */
+
 #endif /* ENABLED (JERRY_ES2015) */
 
 /**

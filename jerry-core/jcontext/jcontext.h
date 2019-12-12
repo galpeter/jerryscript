@@ -220,6 +220,10 @@ struct jerry_context_t
   /** hash table for caching the last access of properties */
   ecma_lcache_hash_entry_t lcache[ECMA_LCACHE_HASH_ROWS_COUNT][ECMA_LCACHE_HASH_ROW_LENGTH];
 #endif /* ENABLED (JERRY_LCACHE) */
+
+#if ENABLED (JERRY_ES2015)
+  ecma_object_t *current_new_target;
+#endif /* ENABLED (JERRY_ES2015) */
 };
 
 
