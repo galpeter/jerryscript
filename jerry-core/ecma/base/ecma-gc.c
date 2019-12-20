@@ -212,7 +212,8 @@ ecma_gc_mark_properties (ecma_property_pair_t *property_pair_p) /**< property pa
 static void JERRY_ATTR_NOINLINE
 ecma_gc_mark_bound_function_object (ecma_object_t *object_p) /**< bound function object */
 {
-  JERRY_ASSERT (ecma_get_object_type (object_p) == ECMA_OBJECT_TYPE_BOUND_FUNCTION);
+  JERRY_ASSERT (ecma_get_object_type (object_p) == ECMA_OBJECT_TYPE_BOUND_FUNCTION
+                || ecma_get_object_type (object_p) == ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION);
 
   ecma_extended_object_t *ext_function_p = (ecma_extended_object_t *) object_p;
 
@@ -592,6 +593,7 @@ ecma_gc_mark (ecma_object_t *object_p) /**< object to mark from */
         }
         break;
       }
+      case ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION:
       case ECMA_OBJECT_TYPE_BOUND_FUNCTION:
       {
         ecma_gc_mark_bound_function_object (object_p);
@@ -1230,6 +1232,7 @@ ecma_gc_free_object (ecma_object_t *object_p) /**< object to free */
 
       break;
     }
+    case ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION:
     case ECMA_OBJECT_TYPE_BOUND_FUNCTION:
     {
       ecma_extended_object_t *ext_function_p = (ecma_extended_object_t *) object_p;

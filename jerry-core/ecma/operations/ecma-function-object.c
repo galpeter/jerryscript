@@ -379,7 +379,7 @@ static ecma_value_t
 ecma_op_implicit_class_constructor_has_instance (ecma_object_t *func_obj_p, /**< Function object */
                                                  ecma_value_t value) /**< argument 'V' */
 {
-  JERRY_ASSERT (ecma_get_object_type (func_obj_p) == ECMA_OBJECT_TYPE_BOUND_FUNCTION);
+  JERRY_ASSERT (ecma_get_object_type (func_obj_p) == ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION);
 
   /* Since bound functions represents individual class constructor functions, we should check
      that the given value is instance of either of the bound function chain elements. */
@@ -428,7 +428,7 @@ ecma_op_implicit_class_constructor_has_instance (ecma_object_t *func_obj_p, /**<
     func_obj_p = ECMA_GET_INTERNAL_VALUE_POINTER (ecma_object_t,
                                                   ext_function_p->u.bound_function.target_function);
   }
-  while (ecma_get_object_type (func_obj_p) == ECMA_OBJECT_TYPE_BOUND_FUNCTION);
+  while (ecma_get_object_type (func_obj_p) == ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION);
 
   return ECMA_VALUE_FALSE;
 } /* ecma_op_implicit_class_constructor_has_instance */
@@ -452,6 +452,15 @@ ecma_op_function_has_instance (ecma_object_t *func_obj_p, /**< Function object *
   {
     return ECMA_VALUE_FALSE;
   }
+
+
+#if ENABLED (JERRY_ES2015)
+  ecma_object_type_t type = ecma_get_object_type (func_obj_p);
+  if (type == ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION)
+  {
+    return ecma_op_implicit_class_constructor_has_instance (func_obj_p, value);
+  }
+#endif /* ENABLED (JERRY_ES2015) */
 
   while (ecma_get_object_type (func_obj_p) == ECMA_OBJECT_TYPE_BOUND_FUNCTION)
   {
@@ -747,23 +756,13 @@ ecma_op_set_class_prototype (ecma_value_t completion_value, /**< completion_valu
  * @return the result of the function call.
  */
 static ecma_value_t
-ecma_op_function_call_simple (ecma_object_t *func_obj_p, /**< Function object */
+ecma_op_function_call_js (ecma_object_t *func_obj_p, /**< Function object */
                               ecma_value_t this_arg_value, /**< 'this' argument's value */
                               const ecma_value_t *arguments_list_p, /**< arguments list */
                               ecma_length_t arguments_list_len) /**< length of arguments list */
 {
   JERRY_ASSERT (ecma_get_object_type (func_obj_p) == ECMA_OBJECT_TYPE_FUNCTION);
-
-  if (JERRY_UNLIKELY (ecma_get_object_is_builtin (func_obj_p)))
-  {
-    JERRY_ASSERT (!ecma_op_function_has_construct_flag (arguments_list_p));
-    ecma_value_t ret_value = ecma_builtin_dispatch_call (func_obj_p,
-                                                         this_arg_value,
-                                                         arguments_list_p,
-                                                         arguments_list_len);
-
-    return ret_value;
-  }
+  JERRY_ASSERT (!ecma_get_object_is_builtin (func_obj_p));
 
   /* Entering Function Code (ECMA-262 v5, 10.4.3) */
   ecma_extended_object_t *ext_func_p = (ecma_extended_object_t *) func_obj_p;
@@ -945,7 +944,18 @@ ecma_op_function_call (ecma_object_t *func_obj_p, /**< Function object */
   {
     case ECMA_OBJECT_TYPE_FUNCTION:
     {
-      return ecma_op_function_call_simple (func_obj_p, this_arg_value, arguments_list_p, arguments_list_len);
+      if (JERRY_UNLIKELY (ecma_get_object_is_builtin (func_obj_p)))
+      {
+        JERRY_ASSERT (!ecma_op_function_has_construct_flag (arguments_list_p));
+        ecma_value_t ret_value = ecma_builtin_dispatch_call (func_obj_p,
+                                                             this_arg_value,
+                                                             arguments_list_p,
+                                                             arguments_list_len);
+
+        return ret_value;
+      }
+
+      return ecma_op_function_call_js (func_obj_p, this_arg_value, arguments_list_p, arguments_list_len);
     }
     case ECMA_OBJECT_TYPE_EXTERNAL_FUNCTION:
     {
@@ -1237,11 +1247,28 @@ ecma_op_function_construct (ecma_object_t *func_obj_p, /**< Function object */
     case ECMA_OBJECT_TYPE_FUNCTION:
     {
       arguments_list_p = ecma_op_function_set_construct_flag (arguments_list_p);
-      ret_value = ecma_op_function_call_simple (func_obj_p, this_arg_value, arguments_list_p, arguments_list_len);
+      ret_value = ecma_op_function_call_js (func_obj_p, this_arg_value, arguments_list_p, arguments_list_len);
       break;
     }
 #if ENABLED (JERRY_ES2015)
-    case ECMA_OBJECT_TYPE_BOUND_FUNCTION:
+    case ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION:
+    {
+      JERRY_ASSERT (!ecma_op_function_has_construct_flag (arguments_list_p));
+
+    ecma_extended_object_t *ext_function_p = (ecma_extended_object_t *) func_obj_p;
+
+    ecma_object_t* target_func_obj_p2 = ECMA_GET_INTERNAL_VALUE_POINTER (ecma_object_t,
+                                                         ext_function_p->u.bound_function.target_function);
+
+      JERRY_ASSERT (target_func_obj_p2 != NULL);
+      ret_value = ecma_op_function_construct (target_func_obj_p2,
+                                              this_arg_value,
+                                              arguments_list_p,
+                                              arguments_list_len);
+    break;
+
+    }
+/*    case ECMA_OBJECT_TYPE_BOUND_FUNCTION:
     {
       JERRY_ASSERT (!ecma_op_function_has_construct_flag (arguments_list_p));
       JERRY_ASSERT (target_func_obj_p != NULL);
@@ -1251,7 +1278,7 @@ ecma_op_function_construct (ecma_object_t *func_obj_p, /**< Function object */
                                               arguments_list_p,
                                               arguments_list_len);
       break;
-    }
+    }*/
     case ECMA_OBJECT_TYPE_GENERAL:
     {
       /* Catch the special case when a the class extends value in null

@@ -616,6 +616,7 @@ typedef enum
 #endif /* ENABLED (JERRY_ES2015) */
   ECMA_OBJECT_TYPE_BOUND_FUNCTION = 6, /**< Function objects (15.3), created through 15.3.4.5 routine */
   ECMA_OBJECT_TYPE_EXTERNAL_FUNCTION = 7, /**< External (host) function object */
+  ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION = 8, /**< arrow function objects */
   /* Types between 13-15 cannot have a built-in flag. See ecma_lexical_environment_type_t. */
 
   ECMA_OBJECT_TYPE__MAX /**< maximum value */

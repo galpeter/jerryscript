@@ -1757,8 +1757,9 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
           ecma_object_t *current_constructor_obj_p = ecma_get_object_from_value (stack_top_p[-2]);
 
           uint16_t type_flags_refs = current_constructor_obj_p->type_flags_refs;
-          const int new_type = ECMA_OBJECT_TYPE_BOUND_FUNCTION - ECMA_OBJECT_TYPE_EXTERNAL_FUNCTION;
-          current_constructor_obj_p->type_flags_refs = (uint16_t) (type_flags_refs + new_type);
+          const uint16_t new_type = ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION;
+          //const int new_type = ECMA_OBJECT_TYPE_BOUND_FUNCTION - ECMA_OBJECT_TYPE_EXTERNAL_FUNCTION;
+          current_constructor_obj_p->type_flags_refs = (uint16_t) ((uint16_t)(type_flags_refs & ~ECMA_OBJECT_TYPE_MASK) + new_type);
 
           ecma_extended_object_t *ext_function_p = (ecma_extended_object_t *) current_constructor_obj_p;
           ecma_object_t *super_obj_p = ecma_op_resolve_super_reference_value (frame_ctx_p->lex_env_p);
