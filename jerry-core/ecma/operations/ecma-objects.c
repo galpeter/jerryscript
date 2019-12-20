@@ -1781,8 +1781,7 @@ ecma_op_object_has_instance (ecma_object_t *obj_p, /**< the object */
 
   if (ecma_is_normal_or_arrow_function (type)
       || type == ECMA_OBJECT_TYPE_EXTERNAL_FUNCTION
-      || type == ECMA_OBJECT_TYPE_BOUND_FUNCTION
-      || type == ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION)
+      || type == ECMA_OBJECT_TYPE_BOUND_FUNCTION)
   {
     return ecma_op_function_has_instance (obj_p, value);
   }
@@ -2445,7 +2444,6 @@ ecma_object_get_class_name (ecma_object_t *obj_p) /**< object */
 #if ENABLED (JERRY_ES2015)
     case ECMA_OBJECT_TYPE_ARROW_FUNCTION:
 #endif /* ENABLED (JERRY_ES2015) */
-    case ECMA_OBJECT_TYPE_IMPLICIT_CONSTRUCTOR_FUNCTION:
     case ECMA_OBJECT_TYPE_EXTERNAL_FUNCTION:
     case ECMA_OBJECT_TYPE_BOUND_FUNCTION:
     {
