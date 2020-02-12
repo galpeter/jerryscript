@@ -262,11 +262,15 @@ vm_run_module (const ecma_compiled_code_t *bytecode_p, /**< pointer to bytecode 
 {
   ecma_object_t *glob_obj_p = ecma_builtin_get_global ();
 
-  return vm_run (bytecode_p,
-                 ecma_make_object_value (glob_obj_p),
-                 lex_env_p,
-                 NULL,
-                 0);
+  size_t frame_size = vm_calculate_frame_size (bytecode_p);
+  JERRY_VLA (uintptr_t, stack, frame_size);
+  vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
+  /* initialize frame context */
+  frame_ctx_p->bytecode_header_p = bytecode_p;
+  frame_ctx_p->lex_env_p = lex_env_p;
+  frame_ctx_p->this_binding = ecma_make_object_value (glob_obj_p);
+  // TODO: new target
+  return vm_run (frame_ctx_p, NULL, 0);
 } /* vm_run_module */
 #endif /* ENABLED (JERRY_ES2015_MODULE_SYSTEM) */
 
@@ -283,11 +287,15 @@ vm_run_global (const ecma_compiled_code_t *bytecode_p) /**< pointer to bytecode 
 {
   ecma_object_t *glob_obj_p = ecma_builtin_get_global ();
 
-  return vm_run (bytecode_p,
-                 ecma_make_object_value (glob_obj_p),
-                 ecma_get_global_environment (),
-                 NULL,
-                 0);
+  size_t frame_size = vm_calculate_frame_size (bytecode_p);
+  JERRY_VLA (uintptr_t, stack, frame_size);
+  vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
+  /* initialize frame context */
+  frame_ctx_p->bytecode_header_p = bytecode_p;
+  frame_ctx_p->lex_env_p = ecma_get_global_environment ();
+  frame_ctx_p->this_binding = ecma_make_object_value (glob_obj_p);
+  // TODO: new target
+  return vm_run (frame_ctx_p, NULL, 0);
 } /* vm_run_global */
 
 /**
@@ -346,12 +354,20 @@ vm_run_eval (ecma_compiled_code_t *bytecode_data_p, /**< byte-code data */
     lex_env_p = strict_lex_env_p;
   }
 
-  ecma_value_t completion_value = vm_run (bytecode_data_p,
-                                          this_binding,
-                                          lex_env_p,
-                                          (parse_opts & ECMA_PARSE_DIRECT_EVAL) ? VM_DIRECT_EVAL : NULL,
-                                          0);
-
+  ecma_value_t completion_value;
+  {
+    size_t frame_size = vm_calculate_frame_size (bytecode_data_p);
+    JERRY_VLA (uintptr_t, stack, frame_size);
+    vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
+    /* initialize frame context */
+    frame_ctx_p->bytecode_header_p = bytecode_data_p;
+    frame_ctx_p->lex_env_p = lex_env_p;
+    frame_ctx_p->this_binding = this_binding;
+    // TODO: new target
+    completion_value = vm_run (frame_ctx_p,
+                               (parse_opts & ECMA_PARSE_DIRECT_EVAL) ? VM_DIRECT_EVAL : NULL,
+                               0);
+  }
   ecma_deref_object (lex_env_p);
   ecma_free_value (this_binding);
 
@@ -4231,6 +4247,59 @@ vm_execute (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
   }
 } /* vm_execute */
 
+size_t
+vm_calculate_frame_size (const ecma_compiled_code_t *bytecode_header_p) /**< byte-code data header */
+{
+  size_t frame_size = 0;
+
+  if (bytecode_header_p->status_flags & CBC_CODE_FLAGS_UINT16_ARGUMENTS)
+  {
+    cbc_uint16_arguments_t *args_p = (cbc_uint16_arguments_t *) bytecode_header_p;
+    frame_size = (size_t) (args_p->register_end + args_p->stack_limit);
+  }
+  else
+  {
+    cbc_uint8_arguments_t *args_p = (cbc_uint8_arguments_t *) bytecode_header_p;
+    frame_size = (size_t) (args_p->register_end + args_p->stack_limit);
+  }
+
+  frame_size = frame_size * sizeof (ecma_value_t) + sizeof (vm_frame_ctx_t);
+  frame_size = (frame_size + sizeof (uintptr_t) - 1) / sizeof (uintptr_t);
+
+  return frame_size;
+} /* vm_calculate_frame_size */
+
+ecma_value_t
+vm_run (vm_frame_ctx_t *frame_ctx_p, /**< frame context to use */
+        const ecma_value_t *arg_list_p, /**< arguments list */
+        ecma_length_t arg_list_len) /**< length of arguments list */
+{
+#if ENABLED (JERRY_ES2015_MODULE_SYSTEM)
+  if (JERRY_CONTEXT (module_top_context_p) != NULL)
+  {
+    ecma_value_t ret_value = ecma_module_connect_imports ();
+
+    if (ecma_is_value_empty (ret_value))
+    {
+      ret_value = ecma_module_check_indirect_exports ();
+    }
+
+    ecma_module_cleanup ();
+
+    if (!ecma_is_value_empty (ret_value))
+    {
+      return ret_value;
+    }
+
+    JERRY_CONTEXT (module_top_context_p) = NULL;
+  }
+#endif /* ENABLED (JERRY_ES2015_MODULE_SYSTEM) */
+
+  vm_init_exec (frame_ctx_p, arg_list_p, arg_list_len);
+  return vm_execute (frame_ctx_p);
+}
+
+#if 0
 /**
  * Run the code.
  *
@@ -4293,6 +4362,7 @@ vm_run (const ecma_compiled_code_t *bytecode_header_p, /**< byte-code data heade
   vm_init_exec (frame_ctx_p, arg_list_p, arg_list_len);
   return vm_execute (frame_ctx_p);
 } /* vm_run */
+#endif
 
 /**
  * @}
