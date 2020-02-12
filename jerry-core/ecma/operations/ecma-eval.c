@@ -101,7 +101,8 @@ ecma_op_eval_chars_buffer (const lit_utf8_byte_t *code_p, /**< code characters b
   ECMA_CLEAR_SUPER_EVAL_PARSER_OPTS ();
 
   /* If a direct eval is used inside the function the info should be propagated. */
-  if (JERRY_CONTEXT (current_new_target) != JERRY_CONTEXT_INVALID_NEW_TARGET
+  if (//JERRY_CONTEXT (current_new_target) != JERRY_CONTEXT_INVALID_NEW_TARGET
+      JERRY_CONTEXT (vm_top_context_p)->new_target_p != JERRY_CONTEXT_INVALID_NEW_TARGET
       && (JERRY_CONTEXT (status_flags) & ECMA_STATUS_DIRECT_EVAL))
   {
     parse_opts |= ECMA_PARSE_FUNCTION;

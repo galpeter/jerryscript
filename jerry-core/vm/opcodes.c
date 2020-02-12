@@ -671,12 +671,19 @@ opfunc_resume_executable_object (vm_executable_object_t *executable_object_p, /*
   JERRY_CONTEXT (vm_top_context_p) = &executable_object_p->frame_ctx;
 
   /* inside the generators the "new.target" is always "undefined" as it can't be invoked with "new" */
+#if 0
   ecma_object_t *old_new_target = JERRY_CONTEXT (current_new_target);
   JERRY_CONTEXT (current_new_target) = NULL;
+#endif
+  // TODO: elecro move this to generator construct
+  executable_object_p->frame_ctx.new_target_p = NULL;
 
   ecma_value_t result = vm_execute (&executable_object_p->frame_ctx);
 
+#if 0
   JERRY_CONTEXT (current_new_target) = old_new_target;
+#endif
+
   executable_object_p->extended_object.u.class_prop.extra_info &= (uint16_t) ~ECMA_EXECUTABLE_OBJECT_RUNNING;
 
   if (executable_object_p->frame_ctx.call_operation != VM_EXEC_RETURN)

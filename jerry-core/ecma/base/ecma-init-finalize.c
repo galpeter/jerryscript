@@ -61,7 +61,9 @@ ecma_init (void)
 #endif /* ENABLED (JERRY_ES2015_BUILTIN_PROMISE) */
 
 #if ENABLED (JERRY_ES2015)
+#if 0
   JERRY_CONTEXT (current_new_target) = JERRY_CONTEXT_INVALID_NEW_TARGET;
+#endif
   JERRY_CONTEXT (current_function_obj_p) = NULL;
 #endif /* ENABLED (JERRY_ES2015) */
 } /* ecma_init */
@@ -73,7 +75,9 @@ void
 ecma_finalize (void)
 {
 #if ENABLED (JERRY_ES2015)
+#if 0
   JERRY_ASSERT (JERRY_CONTEXT (current_new_target) == JERRY_CONTEXT_INVALID_NEW_TARGET);
+#endif
   JERRY_ASSERT (JERRY_CONTEXT (current_function_obj_p) == NULL);
 #endif /* ENABLED (JERRY_ES2015) */
 

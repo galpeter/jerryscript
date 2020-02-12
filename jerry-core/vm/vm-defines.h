@@ -47,6 +47,13 @@ typedef struct vm_frame_ctx_t
   ecma_value_t *literal_start_p;                      /**< literal list start pointer */
   ecma_object_t *lex_env_p;                           /**< current lexical environment */
   struct vm_frame_ctx_t *prev_context_p;              /**< previous context */
+
+  ecma_object_t *function_obj_p; /** currently invoked function object */
+// TODO: elecro guard
+#if ENABLED (JERRY_ES2015)
+  ecma_object_t *new_target_p;
+#endif /* ENABLED (JERRY_ES2015) */
+
   ecma_value_t this_binding;                          /**< this binding */
   ecma_value_t block_result;                          /**< block result */
 #if ENABLED (JERRY_LINE_INFO) || ENABLED (JERRY_ES2015_MODULE_SYSTEM)

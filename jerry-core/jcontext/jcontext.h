@@ -228,7 +228,7 @@ struct jerry_context_t
    * * JERRY_CONTEXT_INVALID_NEW_TARGET (0x1): the current "new.target" is invalid, that is outside of a method.
    * * Any other valid function object pointer: the current "new.target" is valid and it is constructor call.
    */
-  ecma_object_t *current_new_target;
+//  ecma_object_t *current_new_target;
   ecma_object_t *current_function_obj_p; /** currently invoked function object
                                              (Note: currently used only in generator functions) */
 #endif /* ENABLED (JERRY_ES2015) */

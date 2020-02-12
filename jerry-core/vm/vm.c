@@ -294,7 +294,9 @@ vm_run_global (const ecma_compiled_code_t *bytecode_p) /**< pointer to bytecode 
   frame_ctx_p->bytecode_header_p = bytecode_p;
   frame_ctx_p->lex_env_p = ecma_get_global_environment ();
   frame_ctx_p->this_binding = ecma_make_object_value (glob_obj_p);
-  // TODO: new target
+#if ENABLED (JERRY_ES2015)
+  frame_ctx_p->new_target_p = JERRY_CONTEXT_INVALID_NEW_TARGET;
+#endif /* ENABLED (JERRY_ES2015) */
   return vm_run (frame_ctx_p, NULL, 0);
 } /* vm_run_global */
 
@@ -363,7 +365,10 @@ vm_run_eval (ecma_compiled_code_t *bytecode_data_p, /**< byte-code data */
     frame_ctx_p->bytecode_header_p = bytecode_data_p;
     frame_ctx_p->lex_env_p = lex_env_p;
     frame_ctx_p->this_binding = this_binding;
-    // TODO: new target
+#if ENABLED (JERRY_ES2015)
+    frame_ctx_p->new_target_p = (parse_opts & ECMA_PARSE_DIRECT_EVAL) ? JERRY_CONTEXT (vm_top_context_p)->new_target_p : NULL;
+#endif /* ENABLED (JERRY_ES2015) */
+
     completion_value = vm_run (frame_ctx_p,
                                (parse_opts & ECMA_PARSE_DIRECT_EVAL) ? VM_DIRECT_EVAL : NULL,
                                0);
@@ -2167,7 +2172,7 @@ vm_loop (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
         }
         case VM_OC_PUSH_NEW_TARGET:
         {
-          ecma_object_t *new_target_object = JERRY_CONTEXT (current_new_target);
+          ecma_object_t *new_target_object = frame_ctx_p->new_target_p;
           if (new_target_object == NULL)
           {
             *stack_top_p++ = ECMA_VALUE_UNDEFINED;
