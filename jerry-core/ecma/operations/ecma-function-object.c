@@ -1049,7 +1049,9 @@ ecma_op_function_call_simple (ecma_object_t *func_obj_p, /**< Function object */
   ecma_value_t ret_value;
   {
     size_t frame_size = vm_calculate_frame_size (bytecode_data_p);
-    JERRY_VLA (uintptr_t, stack, frame_size);
+    //JERRY_VLA (uintptr_t, stack, frame_size);
+   JMEM_DEFINE_LOCAL_ARRAY (stack, frame_size, uintptr_t);
+
     vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
     /* initialize frame context */
     frame_ctx_p->bytecode_header_p = bytecode_data_p;
@@ -1057,6 +1059,7 @@ ecma_op_function_call_simple (ecma_object_t *func_obj_p, /**< Function object */
     frame_ctx_p->this_binding = this_binding;
     // TODO: new target
     ret_value = vm_run (frame_ctx_p, arguments_list_p, arguments_list_len);
+    JMEM_FINALIZE_LOCAL_ARRAY (stack);
   }
 
 #if ENABLED (JERRY_ES2015)
