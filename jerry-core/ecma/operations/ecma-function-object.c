@@ -1317,10 +1317,24 @@ ecma_op_function_call (ecma_object_t *func_obj_p, /**< Function object */
 #endif /* ENABLED (JERRY_ES2015) */
 #endif
 
+#if ENABLED (JERRY_ES2015)
+      vm_frame_ctx_t frame_ctx;
+      frame_ctx.function_obj_p = func_obj_p;
+      frame_ctx.new_target_p = NULL;
+
+      frame_ctx.prev_context_p = JERRY_CONTEXT (vm_top_context_p);
+      JERRY_CONTEXT (vm_top_context_p) = &frame_ctx;
+#endif /*  ENABLED (JERRY_ES2015) */
+
       jerry_value_t result = ecma_op_function_call_external (func_obj_p,
                                                              this_arg_value,
                                                              arguments_list_p,
                                                              arguments_list_len);
+
+#if ENABLED (JERRY_ES2015)
+     JERRY_CONTEXT (vm_top_context_p) = frame_ctx.prev_context_p;
+#endif /*  ENABLED (JERRY_ES2015) */
+
 #if 0
 #if ENABLED (JERRY_ES2015)
       JERRY_CONTEXT (current_new_target) = old_new_target;
@@ -1700,7 +1714,18 @@ ecma_op_function_construct (ecma_object_t *func_obj_p, /**< Function object */
         break;
       }
 #endif /* ENABLED (JERRY_ES2015) */
+#if ENABLED (JERRY_ES2015)
+      vm_frame_ctx_t frame_ctx;
+      frame_ctx.function_obj_p = func_obj_p;
+      frame_ctx.new_target_p = func_obj_p;
+
+      frame_ctx.prev_context_p = JERRY_CONTEXT (vm_top_context_p);
+      JERRY_CONTEXT (vm_top_context_p) = &frame_ctx;
+#endif /*  ENABLED (JERRY_ES2015) */
+
       ret_value = ecma_op_function_call_external (func_obj_p, this_arg_value, arguments_list_p, arguments_list_len);
+
+      JERRY_CONTEXT (vm_top_context_p) = frame_ctx.prev_context_p;
 
       break;
     }
