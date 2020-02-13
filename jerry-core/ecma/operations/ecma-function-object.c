@@ -1081,36 +1081,46 @@ ecma_op_function_call_simple (ecma_object_t *func_obj_p, /**< Function object */
 } /* ecma_op_function_call_simple */
 #endif
 
+      typedef struct {
+        ecma_object_t *function_object_p;
+        ecma_value_t this_binding;
+        const ecma_value_t *arguments_list_p;
+        ecma_length_t arguments_list_len;
+#if  ENABLED (JERRY_ES2015)
+        ecma_object_t *new_target_p;
+#endif /*  ENABLED (JERRY_ES2015) */
+      } ecma_function_call_t;
+
+
+
 static ecma_value_t
-ecma_op_function_call_simple_SS (vm_frame_ctx_t *frame_ctx_p,
-                                 const ecma_value_t *arguments_list_p, /**< arguments list */
-                                 ecma_length_t arguments_list_len) /**< length of arguments list */
+ecma_op_function_call_simple_SS (ecma_function_call_t *call_args_p)
 {
   // TODO check frame_ctx_p
-  if (JERRY_UNLIKELY (ecma_get_object_is_builtin (frame_ctx_p->function_obj_p)))
+  if (JERRY_UNLIKELY (ecma_get_object_is_builtin (call_args_p->function_object_p)))
   {
-    JERRY_ASSERT (!ecma_op_function_has_construct_flag (arguments_list_p));
-    ecma_value_t ret_value = ecma_builtin_dispatch_call (frame_ctx_p->function_obj_p,
-                                                         frame_ctx_p->this_binding,
-                                                         arguments_list_p,
-                                                         arguments_list_len);
+    //JERRY_ASSERT (!ecma_op_function_has_construct_flag (arguments_list_p));
+    ecma_value_t ret_value = ecma_builtin_dispatch_call (call_args_p->function_object_p,
+                                                         call_args_p->this_binding,
+                                                         call_args_p->arguments_list_p,
+                                                         call_args_p->arguments_list_len);
 
     return ret_value;
   }
 
 
   /* Entering Function Code (ECMA-262 v5, 10.4.3) */
-  ecma_extended_object_t *ext_func_p = (ecma_extended_object_t *) frame_ctx_p->function_obj_p;
+  ecma_extended_object_t *ext_func_p = (ecma_extended_object_t *) call_args_p->function_object_p;
   ecma_object_t *scope_p = ECMA_GET_INTERNAL_VALUE_POINTER (ecma_object_t,
                                                             ext_func_p->u.function.scope_cp);
 
-  const ecma_compiled_code_t *bytecode_data_p = frame_ctx_p->bytecode_header_p;
+  const ecma_compiled_code_t *bytecode_data_p = ecma_op_function_get_compiled_code (ext_func_p);
   uint16_t status_flags = bytecode_data_p->status_flags;
 
 #if ENABLED (JERRY_ES2015)
   if (JERRY_UNLIKELY (status_flags & (CBC_CODE_FLAGS_CONSTRUCTOR | CBC_CODE_FLAGS_GENERATOR)))
   {
-    bool is_construct_call = (frame_ctx_p->new_target_p != NULL);
+    bool is_construct_call = (call_args_p->new_target_p != NULL);
 
     if (!is_construct_call && (status_flags & CBC_CODE_FLAGS_CONSTRUCTOR))
     {
@@ -1124,7 +1134,7 @@ ecma_op_function_call_simple_SS (vm_frame_ctx_t *frame_ctx_p,
         return ecma_raise_type_error (ECMA_ERR_MSG ("Generator functions cannot be invoked with 'new'."));
       }
 
-      JERRY_CONTEXT (current_function_obj_p) = frame_ctx_p->function_obj_p;
+      JERRY_CONTEXT (current_function_obj_p) = call_args_p->function_object_p;
     }
   }
 #endif /* ENABLED (JERRY_ES2015) */
@@ -1132,7 +1142,7 @@ ecma_op_function_call_simple_SS (vm_frame_ctx_t *frame_ctx_p,
   /* 1. */
 
   /* 8. */
-  ecma_value_t this_binding = frame_ctx_p->this_binding;
+  ecma_value_t this_binding = call_args_p->this_binding;
   bool free_this_binding = false;
   if (!(status_flags & CBC_CODE_FLAGS_STRICT_MODE))
   {
@@ -1150,8 +1160,6 @@ ecma_op_function_call_simple_SS (vm_frame_ctx_t *frame_ctx_p,
 
       JERRY_ASSERT (!ECMA_IS_VALUE_ERROR (this_binding));
     }
-
-    frame_ctx_p->this_binding = this_binding;
   }
 
   /* 5. */
@@ -1165,10 +1173,10 @@ ecma_op_function_call_simple_SS (vm_frame_ctx_t *frame_ctx_p,
     local_env_p = ecma_create_decl_lex_env (scope_p);
     if (bytecode_data_p->status_flags & CBC_CODE_FLAGS_IS_ARGUMENTS_NEEDED)
     {
-      ecma_op_create_arguments_object (frame_ctx_p->function_obj_p,
+      ecma_op_create_arguments_object (call_args_p->function_object_p,
                                        local_env_p,
-                                       arguments_list_p,
-                                       arguments_list_len,
+                                       call_args_p->arguments_list_p,
+                                       call_args_p->arguments_list_len,
                                        bytecode_data_p);
     }
 #if ENABLED (JERRY_ES2015)
@@ -1179,8 +1187,18 @@ ecma_op_function_call_simple_SS (vm_frame_ctx_t *frame_ctx_p,
 #endif /* ENABLED (JERRY_ES2015) */
   }
 
-  frame_ctx_p->lex_env_p = local_env_p;
-  ecma_value_t ret_value = vm_run (frame_ctx_p, arguments_list_p, arguments_list_len);
+      vm_frame_ctx_t *frame_ctx_p;
+      size_t frame_size = vm_calculate_frame_size (bytecode_data_p);
+      JERRY_VLA (uintptr_t, stack, frame_size);
+      frame_ctx_p = (vm_frame_ctx_t *) stack;
+      frame_ctx_p->bytecode_header_p = bytecode_data_p;
+      frame_ctx_p->this_binding = call_args_p->this_binding;
+      frame_ctx_p->function_obj_p = call_args_p->function_object_p;
+      frame_ctx_p->lex_env_p = local_env_p;
+#if ENABLED (JERRY_ES2015)
+      frame_ctx_p->new_target_p = call_args_p->new_target_p;
+#endif /*  ENABLED (JERRY_ES2015) */
+   ecma_value_t ret_value = vm_run (frame_ctx_p, call_args_p->arguments_list_p, call_args_p->arguments_list_len);
 
 #if ENABLED (JERRY_ES2015)
   if (JERRY_UNLIKELY (status_flags & CBC_CODE_FLAGS_GENERATOR))
@@ -1278,6 +1296,7 @@ ecma_op_function_call (ecma_object_t *func_obj_p, /**< Function object */
 #endif /* ENABLED (JERRY_ES2015) */
 #endif
 
+#if 0
       ecma_extended_object_t *ext_func_p = (ecma_extended_object_t *) func_obj_p;
       const ecma_compiled_code_t *bytecode_p =
             JERRY_UNLIKELY (ecma_get_object_is_builtin (func_obj_p)) ? NULL : ecma_op_function_get_compiled_code (ext_func_p);
@@ -1293,10 +1312,21 @@ ecma_op_function_call (ecma_object_t *func_obj_p, /**< Function object */
       frame_ctx_p->new_target_p =
         (JERRY_CONTEXT (status_flags) & ECMA_STATUS_DIRECT_EVAL) == 0 ? NULL : JERRY_CONTEXT (vm_top_context_p)->new_target_p;
 #endif /*  ENABLED (JERRY_ES2015) */
+#endif
 
-      ecma_value_t result = ecma_op_function_call_simple_SS (frame_ctx_p, arguments_list_p, arguments_list_len);
+      ecma_function_call_t call_args = {
+        func_obj_p,
+        this_arg_value,
+        arguments_list_p,
+        arguments_list_len,
+#if  ENABLED (JERRY_ES2015)
+        (JERRY_CONTEXT (status_flags) & ECMA_STATUS_DIRECT_EVAL) == 0 ? NULL : JERRY_CONTEXT (vm_top_context_p)->new_target_p,
+#endif /*  ENABLED (JERRY_ES2015) */
+      };
+
+      ecma_value_t result = ecma_op_function_call_simple_SS (&call_args);
 /*
-      jerry_value_t result = ecma_op_function_call_simple (func_obj_p,
+jerry_value_t result = ecma_op_function_call_simple (func_obj_p,
                                                            this_arg_value,
                                                            arguments_list_p,
                                                            arguments_list_len);
@@ -1651,29 +1681,17 @@ ecma_op_function_construct (ecma_object_t *func_obj_p, /**< Function object */
       /*
       arguments_list_p = ecma_op_function_set_construct_flag (arguments_list_p);
       ret_value = ecma_op_function_call_simple (func_obj_p, this_arg_value, arguments_list_p, arguments_list_len);*/
-      ecma_extended_object_t *ext_func_p = (ecma_extended_object_t *) func_obj_p;
-      const ecma_compiled_code_t *bytecode_p = ecma_op_function_get_compiled_code (ext_func_p);
-
-      vm_frame_ctx_t *frame_ctx_p;
-      size_t frame_size = vm_calculate_frame_size (bytecode_p);
-      JERRY_VLA (uintptr_t, stack, frame_size);
-      frame_ctx_p = (vm_frame_ctx_t *) stack;
-      frame_ctx_p->bytecode_header_p = bytecode_p;
-      frame_ctx_p->this_binding = this_arg_value;
-      frame_ctx_p->function_obj_p = func_obj_p;
+      ecma_function_call_t call_args = {
+        func_obj_p,
+        this_arg_value,
+        arguments_list_p,
+        arguments_list_len,
 #if  ENABLED (JERRY_ES2015)
-      if (JERRY_LIKELY (new_this_obj_p != NULL))
-      {
-        frame_ctx_p->new_target_p = func_obj_p;
-      }
-      else
-      {
-        // super call, inherit the new_target from parent
-        frame_ctx_p->new_target_p = JERRY_CONTEXT(vm_top_context_p)->new_target_p;
-      }
+        JERRY_LIKELY (new_this_obj_p != NULL) ? func_obj_p : JERRY_CONTEXT(vm_top_context_p)->new_target_p,
 #endif /*  ENABLED (JERRY_ES2015) */
+      };
 
-      ret_value = ecma_op_function_call_simple_SS (frame_ctx_p, arguments_list_p, arguments_list_len);
+      ret_value = ecma_op_function_call_simple_SS (&call_args);
       break;
     }
 #if ENABLED (JERRY_ES2015)
@@ -1725,7 +1743,9 @@ ecma_op_function_construct (ecma_object_t *func_obj_p, /**< Function object */
 
       ret_value = ecma_op_function_call_external (func_obj_p, this_arg_value, arguments_list_p, arguments_list_len);
 
+#if ENABLED (JERRY_ES2015)
       JERRY_CONTEXT (vm_top_context_p) = frame_ctx.prev_context_p;
+#endif /*  ENABLED (JERRY_ES2015) */
 
       break;
     }
