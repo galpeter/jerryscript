@@ -906,6 +906,166 @@ ecma_gc_free_properties (ecma_object_t *object_p) /**< object */
   }
 } /* ecma_gc_free_properties */
 
+static void
+ecma_gc_free_object_class (ecma_extended_object_t *ext_object_p, size_t *ext_object_size_p)
+{
+  JERRY_ASSERT (ext_object_size_p != NULL);
+  JERRY_UNUSED (ext_object_size_p);
+
+      switch (ext_object_p->u.class_prop.class_id)
+      {
+#if ENABLED (JERRY_ES2015)
+        case LIT_MAGIC_STRING_SYMBOL_UL:
+#endif /* ENABLED (JERRY_ES2015) */
+        case LIT_MAGIC_STRING_STRING_UL:
+        case LIT_MAGIC_STRING_NUMBER_UL:
+        {
+          ecma_free_value (ext_object_p->u.class_prop.u.value);
+          break;
+        }
+
+        case LIT_MAGIC_STRING_DATE_UL:
+        {
+          ecma_number_t *num_p = ECMA_GET_INTERNAL_VALUE_POINTER (ecma_number_t,
+                                                                  ext_object_p->u.class_prop.u.value);
+          ecma_dealloc_number (num_p);
+          break;
+        }
+
+        case LIT_MAGIC_STRING_REGEXP_UL:
+        {
+          ecma_compiled_code_t *bytecode_p;
+          bytecode_p = ECMA_GET_INTERNAL_VALUE_ANY_POINTER (ecma_compiled_code_t,
+                                                            ext_object_p->u.class_prop.u.value);
+
+          if (bytecode_p != NULL)
+          {
+            ecma_bytecode_deref (bytecode_p);
+          }
+          break;
+        }
+#if ENABLED (JERRY_ES2015_BUILTIN_TYPEDARRAY)
+        case LIT_MAGIC_STRING_ARRAY_BUFFER_UL:
+        {
+          ecma_length_t arraybuffer_length = ext_object_p->u.class_prop.u.length;
+
+          if (ECMA_ARRAYBUFFER_HAS_EXTERNAL_MEMORY (ext_object_p))
+          {
+            *ext_object_size_p = sizeof (ecma_arraybuffer_external_info);
+
+            /* Call external free callback if any. */
+            ecma_arraybuffer_external_info *array_p = (ecma_arraybuffer_external_info *) ext_object_p;
+            JERRY_ASSERT (array_p != NULL);
+
+            if (array_p->free_cb != NULL)
+            {
+              (array_p->free_cb) (array_p->buffer_p);
+            }
+          }
+          else
+          {
+            *ext_object_size_p += arraybuffer_length;
+          }
+
+          break;
+        }
+#endif /* ENABLED (JERRY_ES2015_BUILTIN_TYPEDARRAY) */
+#if ENABLED (JERRY_ES2015_BUILTIN_PROMISE)
+        case LIT_MAGIC_STRING_PROMISE_UL:
+        {
+          ecma_free_value_if_not_object (ext_object_p->u.class_prop.u.value);
+          ecma_collection_free_if_not_object (((ecma_promise_object_t *) ext_object_p)->fulfill_reactions);
+          ecma_collection_free_if_not_object (((ecma_promise_object_t *) ext_object_p)->reject_reactions);
+          *ext_object_size_p = sizeof (ecma_promise_object_t);
+          break;
+        }
+#endif /* ENABLED (JERRY_ES2015_BUILTIN_PROMISE) */
+#if ENABLED (JERRY_ES2015_BUILTIN_CONTAINER)
+#if ENABLED (JERRY_ES2015_BUILTIN_MAP)
+        case LIT_MAGIC_STRING_MAP_UL:
+#endif /* ENABLED (JERRY_ES2015_BUILTIN_MAP) */
+#if ENABLED (JERRY_ES2015_BUILTIN_SET)
+        case LIT_MAGIC_STRING_SET_UL:
+#endif /* ENABLED (JERRY_ES2015_BUILTIN_SET) */
+#if ENABLED (JERRY_ES2015_BUILTIN_WEAKMAP)
+        case LIT_MAGIC_STRING_WEAKMAP_UL:
+#endif /* ENABLED (JERRY_ES2015_BUILTIN_WEAKMAP) */
+#if ENABLED (JERRY_ES2015_BUILTIN_WEAKSET)
+        case LIT_MAGIC_STRING_WEAKSET_UL:
+#endif /* ENABLED (JERRY_ES2015_BUILTIN_WEAKSET) */
+        {
+          break;
+        }
+        case LIT_INTERNAL_MAGIC_STRING_CONTAINER:
+        {
+#if ENABLED (JERRY_ES2015_BUILTIN_WEAKMAP) || ENABLED (JERRY_ES2015_BUILTIN_WEAKSET)
+          if (ext_object_p->u.class_prop.extra_info & ECMA_CONTAINER_FLAGS_WEAK)
+          {
+            jmem_cpointer_t prop_iter_cp = ext_object_p->object.u1.property_list_cp;
+            while (prop_iter_cp != JMEM_CP_NULL)
+            {
+              ecma_property_header_t *prop_iter_p = ECMA_GET_NON_NULL_POINTER (ecma_property_header_t, prop_iter_cp);
+              JERRY_ASSERT (ECMA_PROPERTY_IS_PROPERTY_PAIR (prop_iter_p));
+
+              /* Both cannot be deleted. */
+              JERRY_ASSERT (prop_iter_p->types[0] != ECMA_PROPERTY_TYPE_DELETED
+                            || prop_iter_p->types[1] != ECMA_PROPERTY_TYPE_DELETED);
+
+              ecma_property_pair_t *prop_pair_p = (ecma_property_pair_t *) prop_iter_p;
+
+              for (int i = 0; i < ECMA_PROPERTY_PAIR_ITEM_COUNT; i++)
+              {
+                ecma_property_t *property_p = (ecma_property_t *) (prop_iter_p->types + i);
+
+                if (ECMA_PROPERTY_GET_NAME_TYPE (*property_p) == ECMA_DIRECT_STRING_PTR)
+                {
+                  jmem_cpointer_t name_cp = prop_pair_p->names_cp[i];
+                  ecma_string_t *prop_name_p = ECMA_GET_NON_NULL_POINTER (ecma_string_t, name_cp);
+
+                  if (JERRY_LIKELY (ECMA_STRING_GET_CONTAINER (prop_name_p) == ECMA_STRING_CONTAINER_MAP_KEY))
+                  {
+                    ecma_value_t key_arg = ((ecma_extended_string_t *) prop_name_p)->u.value;
+                    ecma_object_t *key_object_p = ecma_get_object_from_value (key_arg);
+
+                    ecma_op_container_unref_weak (key_object_p, ecma_make_object_value ((ecma_object_t *) ext_object_p));
+                  }
+                }
+              }
+
+              prop_iter_cp = prop_iter_p->next_property_cp;
+            }
+          }
+#endif /* ENABLED (JERRY_ES2015_BUILTIN_WEAKMAP) || ENABLED (JERRY_ES2015_BUILTIN_WEAKSET) */
+          break;
+        }
+#endif /* ENABLED (JERRY_ES2015_BUILTIN_CONTAINER) */
+#if ENABLED (JERRY_ES2015_BUILTIN_DATAVIEW)
+        case LIT_MAGIC_STRING_DATAVIEW_UL:
+        {
+          *ext_object_size_p = sizeof (ecma_dataview_object_t);
+          break;
+        }
+#endif /* ENABLED (JERRY_ES2015_BUILTIN_DATAVIEW) */
+#if ENABLED (JERRY_ES2015)
+        case LIT_MAGIC_STRING_GENERATOR_UL:
+        {
+          *ext_object_size_p = ecma_gc_free_executable_object ((ecma_object_t *) ext_object_p);
+          break;
+        }
+#endif /* ENABLED (JERRY_ES2015) */
+        default:
+        {
+          /* The undefined id represents an uninitialized class. */
+          JERRY_ASSERT (ext_object_p->u.class_prop.class_id == LIT_MAGIC_STRING_UNDEFINED
+                        || ext_object_p->u.class_prop.class_id == LIT_MAGIC_STRING_ARGUMENTS_UL
+                        || ext_object_p->u.class_prop.class_id == LIT_MAGIC_STRING_BOOLEAN_UL
+                        || ext_object_p->u.class_prop.class_id == LIT_MAGIC_STRING_ERROR_UL
+                        || ext_object_p->u.class_prop.class_id == LIT_INTERNAL_MAGIC_STRING_INTERNAL_OBJECT);
+          break;
+        }
+      }
+}
+
 /**
  * Free specified object.
  */
@@ -979,6 +1139,10 @@ ecma_gc_free_object (ecma_object_t *object_p) /**< object to free */
     }
     case ECMA_OBJECT_TYPE_CLASS:
     {
+      ecma_gc_free_object_class ((ecma_extended_object_t *) object_p, &ext_object_size);
+
+
+#if 0
       ecma_extended_object_t *ext_object_p = (ecma_extended_object_t *) object_p;
 
       switch (ext_object_p->u.class_prop.class_id)
@@ -1135,6 +1299,8 @@ ecma_gc_free_object (ecma_object_t *object_p) /**< object to free */
           break;
         }
       }
+#endif
+
 
       break;
     }
