@@ -4197,7 +4197,7 @@ error:
  * @return ECMA_VALUE_ERROR - if the initialization fails
  *         ECMA_VALUE_EMPTY - otherwise
  */
-static void JERRY_ATTR_NOINLINE
+static void JERRY_ATTR_ALWAYS_INLINE
 vm_init_exec (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
               const ecma_value_t *arg_p, /**< arguments list */
               ecma_length_t arg_list_len) /**< length of arguments list */
