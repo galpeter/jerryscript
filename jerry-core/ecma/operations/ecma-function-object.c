@@ -1114,7 +1114,8 @@ ecma_op_function_call_simple (ecma_object_t *func_obj_p, /**< Function object */
     frame_ctx_p->lex_env_p = local_env_p;
     frame_ctx_p->this_binding = this_binding;
 
-    ret_value = vm_run (frame_ctx_p, arguments_list_p, arguments_list_len);
+  vm_init_exec (frame_ctx_p, arguments_list_p, arguments_list_len);
+    ret_value = vm_execute (frame_ctx_p);
   }
 /*
   ecma_value_t ret_value = vm_run (bytecode_data_p,

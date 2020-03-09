@@ -430,6 +430,10 @@ ecma_value_t vm_run (vm_frame_ctx_t *frame_ctx_p, const ecma_value_t *arg_list_p
 ecma_value_t vm_run (const ecma_compiled_code_t *bytecode_header_p, ecma_value_t this_binding_value,
                      ecma_object_t *lex_env_p, const ecma_value_t *arg_list_p, ecma_length_t arg_list_len);
 #endif
+void
+vm_init_exec (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
+              const ecma_value_t *arg_p, /**< arguments list */
+              ecma_length_t arg_list_len); /**< length of arguments list */
 ecma_value_t vm_execute (vm_frame_ctx_t *frame_ctx_p);
 
 bool vm_is_strict_mode (void);

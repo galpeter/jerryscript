@@ -276,7 +276,8 @@ vm_run_module (const ecma_compiled_code_t *bytecode_p, /**< pointer to bytecode 
     frame_ctx_p->lex_env_p = lex_env_p;
     frame_ctx_p->this_binding = ECMA_VALUE_UNDEFINED;
 
-    return vm_run (frame_ctx_p, NULL, 0);
+    vm_init_exec (frame_ctx_p, NULL, 0);
+    return vm_execute (frame_ctx_p);
 
 #if 0
   return vm_run (bytecode_p,
@@ -341,7 +342,9 @@ vm_run_global (const ecma_compiled_code_t *bytecode_p) /**< pointer to bytecode 
     frame_ctx_p->lex_env_p = global_scope_p;
     frame_ctx_p->this_binding = ecma_make_object_value (glob_obj_p);
 
-    return vm_run (frame_ctx_p, NULL, 0);
+    vm_init_exec (frame_ctx_p, NULL, 0);
+
+    return vm_execute (frame_ctx_p);
 #if 0
   return vm_run (bytecode_p,
                  ecma_make_object_value (glob_obj_p),
@@ -429,9 +432,11 @@ vm_run_eval (ecma_compiled_code_t *bytecode_data_p, /**< byte-code data */
     frame_ctx_p->lex_env_p = lex_env_p;
     frame_ctx_p->this_binding = this_binding;
 
-    completion_value = vm_run (frame_ctx_p,
-                               (parse_opts & ECMA_PARSE_DIRECT_EVAL) ? VM_DIRECT_EVAL : NULL,
-                               0);
+    vm_init_exec (frame_ctx_p,
+                  (parse_opts & ECMA_PARSE_DIRECT_EVAL) ? VM_DIRECT_EVAL : NULL,
+                  0);
+
+    completion_value = vm_execute (frame_ctx_p);
   }
 #if 0
   ecma_value_t completion_value = vm_run (bytecode_data_p,
@@ -4197,7 +4202,7 @@ error:
  * @return ECMA_VALUE_ERROR - if the initialization fails
  *         ECMA_VALUE_EMPTY - otherwise
  */
-static void JERRY_ATTR_ALWAYS_INLINE
+void /* JERRY_ATTR_ALWAYS_INLINE */
 vm_init_exec (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
               const ecma_value_t *arg_p, /**< arguments list */
               ecma_length_t arg_list_len) /**< length of arguments list */
@@ -4387,7 +4392,7 @@ vm_calculate_frame_size (const ecma_compiled_code_t *bytecode_header_p) /**< byt
   frame_size = (frame_size + sizeof (uintptr_t) - 1) / sizeof (uintptr_t);
   return frame_size;
 }
-
+#if 0
 ecma_value_t
 vm_run (vm_frame_ctx_t *frame_ctx_p,
         const ecma_value_t *arg_list_p, /**< arguments list */
@@ -4396,6 +4401,7 @@ vm_run (vm_frame_ctx_t *frame_ctx_p,
   vm_init_exec (frame_ctx_p, arg_list_p, arg_list_len);
   return vm_execute (frame_ctx_p);
 }
+#endif 
 #if 0
 /**
  * Run the code.
