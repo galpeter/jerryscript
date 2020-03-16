@@ -271,10 +271,12 @@ vm_run_module (const ecma_compiled_code_t *bytecode_p, /**< pointer to bytecode 
     JERRY_VLA (uintptr_t, stack, frame_size);
 
     vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
-
+/*
     frame_ctx_p->bytecode_header_p = bytecode_p;
     frame_ctx_p->lex_env_p = lex_env_p;
     frame_ctx_p->this_binding = ECMA_VALUE_UNDEFINED;
+*/
+    vm_init_frame (frame_ctx_p, bytecode_p, lex_env_p, ECMA_VALUE_UNDEFINED);
 
     vm_init_exec (frame_ctx_p, NULL, 0);
     return vm_execute (frame_ctx_p);
@@ -300,7 +302,7 @@ vm_run_module (const ecma_compiled_code_t *bytecode_p, /**< pointer to bytecode 
 ecma_value_t
 vm_run_global (const ecma_compiled_code_t *bytecode_p) /**< pointer to bytecode to run */
 {
-  ecma_object_t *glob_obj_p = ecma_builtin_get_global ();
+  ecma_object_t *global_obj_p = ecma_builtin_get_global ();
 
 #if ENABLED (JERRY_ES2015)
   if (bytecode_p->status_flags & CBC_CODE_FLAGS_LEXICAL_BLOCK_NEEDED)
@@ -337,10 +339,12 @@ vm_run_global (const ecma_compiled_code_t *bytecode_p) /**< pointer to bytecode 
     JERRY_VLA (uintptr_t, stack, frame_size);
 
     vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
-
+/*
     frame_ctx_p->bytecode_header_p = bytecode_p;
     frame_ctx_p->lex_env_p = global_scope_p;
     frame_ctx_p->this_binding = ecma_make_object_value (glob_obj_p);
+*/
+    vm_init_frame (frame_ctx_p, bytecode_p, global_scope_p, ecma_make_object_value (global_obj_p));
 
     vm_init_exec (frame_ctx_p, NULL, 0);
 
@@ -427,10 +431,13 @@ vm_run_eval (ecma_compiled_code_t *bytecode_data_p, /**< byte-code data */
     JERRY_VLA (uintptr_t, stack, frame_size);
 
     vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
-
+/*
     frame_ctx_p->bytecode_header_p = bytecode_data_p;
     frame_ctx_p->lex_env_p = lex_env_p;
     frame_ctx_p->this_binding = this_binding;
+*/
+
+    vm_init_frame (frame_ctx_p, bytecode_data_p, lex_env_p, this_binding);
 
     vm_init_exec (frame_ctx_p,
                   (parse_opts & ECMA_PARSE_DIRECT_EVAL) ? VM_DIRECT_EVAL : NULL,
@@ -4392,6 +4399,18 @@ vm_calculate_frame_size (const ecma_compiled_code_t *bytecode_header_p) /**< byt
   frame_size = (frame_size + sizeof (uintptr_t) - 1) / sizeof (uintptr_t);
   return frame_size;
 }
+
+void
+vm_init_frame (vm_frame_ctx_t *frame_ctx_p,
+               const ecma_compiled_code_t *bytecode_header_p, /**< byte-code data header */
+               ecma_object_t *lex_env_p, /**< lexical environment to use */
+               ecma_value_t this_binding) /**< value of 'ThisBinding' */
+{
+  frame_ctx_p->bytecode_header_p = bytecode_header_p;
+  frame_ctx_p->lex_env_p = lex_env_p;
+  frame_ctx_p->this_binding = this_binding;
+} /* vm_init_frame */
+
 #if 0
 ecma_value_t
 vm_run (vm_frame_ctx_t *frame_ctx_p,

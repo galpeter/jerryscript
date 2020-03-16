@@ -1110,9 +1110,10 @@ ecma_op_function_call_simple (ecma_object_t *func_obj_p, /**< Function object */
 
     vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
 
-    frame_ctx_p->bytecode_header_p = bytecode_data_p;
+    vm_init_frame (frame_ctx_p, bytecode_data_p, local_env_p, this_binding);
+    /*frame_ctx_p->bytecode_header_p = bytecode_data_p;
     frame_ctx_p->lex_env_p = local_env_p;
-    frame_ctx_p->this_binding = this_binding;
+    frame_ctx_p->this_binding = this_binding;*/
 
   vm_init_exec (frame_ctx_p, arguments_list_p, arguments_list_len);
     ret_value = vm_execute (frame_ctx_p);

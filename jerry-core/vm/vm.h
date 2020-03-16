@@ -434,6 +434,11 @@ void
 vm_init_exec (vm_frame_ctx_t *frame_ctx_p, /**< frame context */
               const ecma_value_t *arg_p, /**< arguments list */
               ecma_length_t arg_list_len); /**< length of arguments list */
+void
+vm_init_frame (vm_frame_ctx_t *frame_ctx_p,
+               const ecma_compiled_code_t *bytecode_header_p, /**< byte-code data header */
+               ecma_object_t *lex_env_p, /**< lexical environment to use */
+               ecma_value_t this_binding_value); /**< value of 'ThisBinding' */
 ecma_value_t vm_execute (vm_frame_ctx_t *frame_ctx_p);
 
 bool vm_is_strict_mode (void);

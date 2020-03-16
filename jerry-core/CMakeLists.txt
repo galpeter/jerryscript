@@ -43,7 +43,7 @@ set(JERRY_GC_LIMIT                  "(0)"   CACHE STRING "Heap usage limit to tr
 set(JERRY_STACK_LIMIT               "(0)"   CACHE STRING "Maximum stack usage size, in kilobytes")
 set(JERRY_GC_MARK_LIMIT             "(8)"   CACHE STRING "Maximum depth of recursion during GC mark phase")
 
-set(JERRY_PROFILE "es2015-subset")
+#set(JERRY_PROFILE "es2015-subset")
 
 # Option overrides
 if(USING_MSVC)
