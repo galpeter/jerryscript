@@ -1102,29 +1102,17 @@ ecma_op_function_call_simple (ecma_object_t *func_obj_p, /**< Function object */
 #endif /* ENABLED (JERRY_ES2015) */
   }
 
-  ecma_value_t ret_value;
+  ecma_value_t execute_result;
   {
     size_t frame_size = vm_calculate_frame_size (bytecode_data_p);
-    /* Use JERRY_MAX() to avoid array declaration with size 0. */
     JERRY_VLA (uintptr_t, stack, frame_size);
 
     vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
-
     vm_init_frame (frame_ctx_p, bytecode_data_p, local_env_p, this_binding);
-    /*frame_ctx_p->bytecode_header_p = bytecode_data_p;
-    frame_ctx_p->lex_env_p = local_env_p;
-    frame_ctx_p->this_binding = this_binding;*/
-
-  vm_init_exec (frame_ctx_p, arguments_list_p, arguments_list_len);
-    ret_value = vm_execute (frame_ctx_p);
+    vm_init_exec (frame_ctx_p, arguments_list_p, arguments_list_len);
+    execute_result = vm_execute (frame_ctx_p);
   }
-/*
-  ecma_value_t ret_value = vm_run (bytecode_data_p,
-                                   this_binding,
-                                   local_env_p,
-                                   arguments_list_p,
-                                   arguments_list_len);
-*/
+
 #if ENABLED (JERRY_ES2015)
   if (JERRY_UNLIKELY (status_flags & CBC_CODE_FLAGS_GENERATOR))
   {
@@ -1144,7 +1132,7 @@ ecma_op_function_call_simple (ecma_object_t *func_obj_p, /**< Function object */
     ecma_free_value (this_binding);
   }
 
-  return ret_value;
+  return execute_result;
 } /* ecma_op_function_call_simple */
 
 /**
