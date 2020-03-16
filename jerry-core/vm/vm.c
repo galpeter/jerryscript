@@ -4361,7 +4361,7 @@ vm_calculate_frame_size (const ecma_compiled_code_t *bytecode_header_p) /**< byt
 /**
  * Initialize the given frame context with the required data for execution.
  */
-void
+void JERRY_ATTR_ALWAYS_INLINE
 vm_init_frame (vm_frame_ctx_t *frame_ctx_p, /**< frame context to initilaize */
                const ecma_compiled_code_t *bytecode_header_p, /**< byte-code data header */
                ecma_object_t *lex_env_p, /**< lexical environment to use */
