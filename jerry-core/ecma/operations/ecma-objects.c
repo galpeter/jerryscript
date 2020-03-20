@@ -1125,11 +1125,17 @@ ecma_op_object_put (ecma_object_t *object_p, /**< the object */
                     ecma_value_t value, /**< ecma value */
                     bool is_throw) /**< flag that controls failure handling */
 {
-  return ecma_op_object_put_with_receiver (object_p,
+  ecma_value_t result = ecma_op_object_put_with_receiver (object_p,
                                            property_name_p,
                                            value,
-                                           ecma_make_object_value (object_p),
-                                           is_throw);
+                                           ecma_make_object_value (object_p)/*,
+                                           is_throw*/);
+  if (result == ECMA_VALUE_FALSE)
+  {
+    return ecma_reject (is_throw);
+  }
+
+  return result;
 } /* ecma_op_object_put */
 
 /**
@@ -1154,8 +1160,8 @@ ecma_value_t
 ecma_op_object_put_with_receiver (ecma_object_t *object_p, /**< the object */
                                   ecma_string_t *property_name_p, /**< property name */
                                   ecma_value_t value, /**< ecma value */
-                                  ecma_value_t receiver, /**< receiver */
-                                  bool is_throw) /**< flag that controls failure handling */
+                                  ecma_value_t receiver /**< receiver */
+                                  /*bool is_throw*/) /**< flag that controls failure handling */
 {
   JERRY_ASSERT (object_p != NULL
                 && !ecma_is_lexical_environment (object_p));
@@ -1183,14 +1189,14 @@ ecma_op_object_put_with_receiver (ecma_object_t *object_p, /**< the object */
           return ecma_op_array_object_set_length (object_p, value, 0);
         }
 
-        return ecma_reject (is_throw);
+        return /*ecma_reject (is_throw)*/ ECMA_VALUE_FALSE;
       }
 
       if (JERRY_LIKELY (ecma_op_array_is_fast_array (ext_object_p)))
       {
         if (JERRY_UNLIKELY (!ecma_op_ordinary_object_is_extensible (object_p)))
         {
-          return ecma_reject (is_throw);
+          return ECMA_VALUE_FALSE; /*ecma_reject (is_throw);*/
         }
 
         uint32_t index = ecma_string_get_array_index (property_name_p);
@@ -1258,14 +1264,14 @@ ecma_op_object_put_with_receiver (ecma_object_t *object_p, /**< the object */
           if (ECMA_IS_VALUE_ERROR (error))
           {
             jcontext_release_exception ();
-            return ecma_reject (is_throw);
+            return ECMA_VALUE_FALSE; /*ecma_reject (is_throw);*/
           }
 
           ecma_typedarray_info_t info = ecma_typedarray_get_info (object_p);
 
           if (array_index >= info.length)
           {
-            return ecma_reject (is_throw);
+            return ECMA_VALUE_FALSE; /*ecma_reject (is_throw);*/
           }
 
           ecma_length_t byte_pos = array_index << info.shift;
@@ -1281,7 +1287,7 @@ ecma_op_object_put_with_receiver (ecma_object_t *object_p, /**< the object */
         {
           ecma_deref_ecma_string (num_to_str);
 
-          return ecma_reject (is_throw);
+          return ECMA_VALUE_FALSE; /* ecma_reject (is_throw);*/
         }
 
         ecma_deref_ecma_string (num_to_str);
@@ -1314,7 +1320,7 @@ ecma_op_object_put_with_receiver (ecma_object_t *object_p, /**< the object */
 
           if (index < ecma_string_get_length (prim_value_str_p))
           {
-            return ecma_reject (is_throw);
+            return ECMA_VALUE_FALSE; /*ecma_reject (is_throw);*/
           }
         }
       }
@@ -1331,12 +1337,12 @@ ecma_op_object_put_with_receiver (ecma_object_t *object_p, /**< the object */
       if ((ecma_string_is_length (property_name_p))
           && (!ECMA_GET_FIRST_BIT_FROM_POINTER_TAG (((ecma_extended_object_t *) object_p)->u.function.scope_cp)))
       {
-        return ecma_reject (is_throw);
+        return ECMA_VALUE_FALSE; /*ecma_reject (is_throw);*/
       }
 #else /* !ENABLED (JERRY_ES2015) */
       if (ecma_string_is_length (property_name_p))
       {
-        return ecma_reject (is_throw);
+        return ECMA_VALUE_FALSE; /*ecma_reject (is_throw);*/
       }
 #endif /* ENABLED (JERRY_ES2015) */
 
@@ -1438,7 +1444,7 @@ ecma_op_object_put_with_receiver (ecma_object_t *object_p, /**< the object */
         {
           if (!ecma_is_property_writable (ext_object_p->u.array.u.length_prop))
           {
-            return ecma_reject (is_throw);
+            return ECMA_VALUE_FALSE; /*ecma_reject (is_throw)*/;
           }
 
           ext_object_p->u.array.length = index + 1;
@@ -1459,7 +1465,7 @@ ecma_op_object_put_with_receiver (ecma_object_t *object_p, /**< the object */
 
   if (setter_cp == JMEM_CP_NULL)
   {
-    return ecma_reject (is_throw);
+    return ECMA_VALUE_FALSE; /*ecma_reject (is_throw)*/;
   }
 
   ecma_value_t ret_value = ecma_op_function_call (ECMA_GET_NON_NULL_POINTER (ecma_object_t, setter_cp),
