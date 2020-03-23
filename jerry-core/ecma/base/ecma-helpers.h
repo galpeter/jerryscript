@@ -434,9 +434,9 @@ ecma_object_t *ecma_clone_decl_lexical_environment (ecma_object_t *lex_env_p, bo
 ecma_property_value_t *
 ecma_create_named_data_property (ecma_object_t *object_p, ecma_string_t *name_p, uint8_t prop_attributes,
                                  ecma_property_t **out_prop_p);
-ecma_property_value_t *
+ecma_property_t *
 ecma_create_named_accessor_property (ecma_object_t *object_p, ecma_string_t *name_p, ecma_object_t *get_p,
-                                     ecma_object_t *set_p, uint8_t prop_attributes, ecma_property_t **out_prop_p);
+                                     ecma_object_t *set_p, uint8_t prop_attributes);
 ecma_property_t *
 ecma_find_named_property (ecma_object_t *obj_p, ecma_string_t *name_p);
 ecma_property_value_t *

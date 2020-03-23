@@ -874,12 +874,11 @@ ecma_builtin_try_to_instantiate_property (ecma_object_t *object_p, /**< object *
 
   if (is_accessor)
   {
-    ecma_create_named_accessor_property (object_p,
-                                         string_p,
-                                         getter_p,
-                                         setter_p,
-                                         curr_property_p->attributes,
-                                         &prop_p);
+    prop_p = ecma_create_named_accessor_property (object_p,
+                                                  string_p,
+                                                  getter_p,
+                                                  setter_p,
+                                                  curr_property_p->attributes);
 
     if (setter_p)
     {

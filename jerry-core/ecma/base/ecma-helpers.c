@@ -533,14 +533,12 @@ ecma_create_named_data_property (ecma_object_t *object_p, /**< object */
  *
  * @return pointer to the newly created property value
  */
-ecma_property_value_t *
+ecma_property_t *
 ecma_create_named_accessor_property (ecma_object_t *object_p, /**< object */
                                      ecma_string_t *name_p, /**< property name */
                                      ecma_object_t *get_p, /**< getter */
                                      ecma_object_t *set_p, /**< setter */
-                                     uint8_t prop_attributes, /**< property attributes */
-                                     ecma_property_t **out_prop_p) /**< [out] the property is also returned
-                                                                    *         if this field is non-NULL */
+                                     uint8_t prop_attributes) /**< property attributes */
 {
   JERRY_ASSERT (object_p != NULL && name_p != NULL);
   JERRY_ASSERT (ecma_is_lexical_environment (object_p)
@@ -563,13 +561,7 @@ ecma_create_named_accessor_property (ecma_object_t *object_p, /**< object */
 #endif /* ENABLED (JERRY_CPOINTER_32_BIT) */
 
   ecma_property_t *property_p = ecma_create_property (object_p, name_p, type_and_flags, value);
-
-  if (out_prop_p != NULL)
-  {
-    *out_prop_p = property_p;
-  }
-
-  return ECMA_PROPERTY_VALUE_PTR (property_p);
+  return property_p;
 } /* ecma_create_named_accessor_property */
 
 /**

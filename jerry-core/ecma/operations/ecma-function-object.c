@@ -1409,16 +1409,12 @@ ecma_op_function_try_to_lazy_instantiate_property (ecma_object_t *object_p, /**<
     if (bytecode_data_p->status_flags & CBC_CODE_FLAGS_STRICT_MODE)
     {
       ecma_object_t *thrower_p = ecma_builtin_get (ECMA_BUILTIN_ID_TYPE_ERROR_THROWER);
-
-      ecma_property_t *caller_prop_p;
       /* The property_name_p argument contans the name. */
-      ecma_create_named_accessor_property (object_p,
-                                           property_name_p,
-                                           thrower_p,
-                                           thrower_p,
-                                           ECMA_PROPERTY_FIXED,
-                                           &caller_prop_p);
-      return caller_prop_p;
+      return ecma_create_named_accessor_property (object_p,
+                                                  property_name_p,
+                                                  thrower_p,
+                                                  thrower_p,
+                                                  ECMA_PROPERTY_FIXED);
     }
 #endif /* ENABLED (JERRY_ES2015) */
 
@@ -1512,16 +1508,12 @@ ecma_op_bound_function_try_to_lazy_instantiate_property (ecma_object_t *object_p
       || ecma_compare_ecma_string_to_magic_id (property_name_p, LIT_MAGIC_STRING_ARGUMENTS))
   {
     ecma_object_t *thrower_p = ecma_builtin_get (ECMA_BUILTIN_ID_TYPE_ERROR_THROWER);
-
-    ecma_property_t *caller_prop_p;
     /* The string_p argument contans the name. */
-    ecma_create_named_accessor_property (object_p,
-                                         property_name_p,
-                                         thrower_p,
-                                         thrower_p,
-                                         ECMA_PROPERTY_FIXED,
-                                         &caller_prop_p);
-    return caller_prop_p;
+    return ecma_create_named_accessor_property (object_p,
+                                                property_name_p,
+                                                thrower_p,
+                                                thrower_p,
+                                                ECMA_PROPERTY_FIXED);
   }
 
   return NULL;
