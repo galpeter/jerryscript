@@ -370,15 +370,13 @@ ecma_clone_decl_lexical_environment (ecma_object_t *lex_env_p, /**< declarative 
  * Create a property in an object and link it into
  * the object's properties' linked-list (at start of the list).
  *
- * @return pointer to the newly created property value
+ * @return pointer to the newly created property
  */
-static ecma_property_value_t *
+static ecma_property_t *
 ecma_create_property (ecma_object_t *object_p, /**< the object */
                       ecma_string_t *name_p, /**< property name */
                       uint8_t type_and_flags, /**< type and flags, see ecma_property_info_t */
-                      ecma_property_value_t value, /**< property value */
-                      ecma_property_t **out_prop_p) /**< [out] the property is also returned
-                                                     *         if this field is non-NULL */
+                      ecma_property_value_t value) /**< property value */
 {
   JERRY_ASSERT (ECMA_PROPERTY_PAIR_ITEM_COUNT == 2);
   JERRY_ASSERT (name_p != NULL);
@@ -419,11 +417,6 @@ ecma_create_property (ecma_object_t *object_p, /**< the object */
 
       JERRY_ASSERT (ECMA_PROPERTY_VALUE_PTR (property_p) == first_property_pair_p->values + 0);
 
-      if (out_prop_p != NULL)
-      {
-        *out_prop_p = property_p;
-      }
-
       first_property_pair_p->values[0] = value;
 
 #if ENABLED (JERRY_PROPRETY_HASHMAP)
@@ -441,7 +434,7 @@ ecma_create_property (ecma_object_t *object_p, /**< the object */
       }
 #endif /* ENABLED (JERRY_PROPRETY_HASHMAP) */
 
-      return first_property_pair_p->values + 0;
+      return property_p;
     }
   }
 
@@ -484,11 +477,6 @@ ecma_create_property (ecma_object_t *object_p, /**< the object */
 
   JERRY_ASSERT (ECMA_PROPERTY_VALUE_PTR (property_p) == first_property_pair_p->values + 1);
 
-  if (out_prop_p != NULL)
-  {
-    *out_prop_p = property_p;
-  }
-
   first_property_pair_p->values[1] = value;
 
 #if ENABLED (JERRY_PROPRETY_HASHMAP)
@@ -503,7 +491,7 @@ ecma_create_property (ecma_object_t *object_p, /**< the object */
   }
 #endif /* ENABLED (JERRY_PROPRETY_HASHMAP) */
 
-  return first_property_pair_p->values + 1;
+  return property_p;
 } /* ecma_create_property */
 
 /**
@@ -530,7 +518,14 @@ ecma_create_named_data_property (ecma_object_t *object_p, /**< object */
   ecma_property_value_t value;
   value.value = ECMA_VALUE_UNDEFINED;
 
-  return ecma_create_property (object_p, name_p, type_and_flags, value, out_prop_p);
+  ecma_property_t *property_p = ecma_create_property (object_p, name_p, type_and_flags, value);
+
+  if (out_prop_p != NULL)
+  {
+    *out_prop_p = property_p;
+  }
+
+  return ECMA_PROPERTY_VALUE_PTR (property_p);
 } /* ecma_create_named_data_property */
 
 /**
@@ -567,7 +562,14 @@ ecma_create_named_accessor_property (ecma_object_t *object_p, /**< object */
   ECMA_SET_POINTER (value.getter_setter_pair.setter_cp, set_p);
 #endif /* ENABLED (JERRY_CPOINTER_32_BIT) */
 
-  return ecma_create_property (object_p, name_p, type_and_flags, value, out_prop_p);
+  ecma_property_t *property_p = ecma_create_property (object_p, name_p, type_and_flags, value);
+
+  if (out_prop_p != NULL)
+  {
+    *out_prop_p = property_p;
+  }
+
+  return ECMA_PROPERTY_VALUE_PTR (property_p);
 } /* ecma_create_named_accessor_property */
 
 /**
