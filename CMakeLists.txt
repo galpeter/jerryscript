@@ -54,7 +54,7 @@ set(DOCTESTS                OFF CACHE BOOL "Build doc tests?")
 
 # Optional build settings
 set(BUILD_SHARED_LIBS  OFF CACHE BOOL "Build shared libraries?")
-set(ENABLE_LTO         ON  CACHE BOOL "Enable LTO build?")
+set(ENABLE_LTO         OFF CACHE BOOL "Enable LTO build?")
 set(ENABLE_STRIP       ON  CACHE BOOL "Enable stripping all symbols from release binary?")
 
 # Option overrides
