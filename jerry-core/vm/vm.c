@@ -4155,6 +4155,24 @@ vm_init_frame (vm_frame_ctx_t *frame_ctx_p, /**< frame context to initilaize */
   frame_ctx_p->this_binding = this_binding;
 } /* vm_init_frame */
 
+
+inline JERRY_ATTR_ALWAYS_INLINE ecma_value_t
+vm_run (const ecma_compiled_code_t *bytecode_p, /**< byte-code data header */
+        ecma_object_t *lex_env_p, /**< lexical environment to use */
+        ecma_value_t this_binding,
+        const ecma_value_t *args,
+        ecma_length_t length) /**< value of 'ThisBinding' */
+{
+  size_t frame_size = vm_calculate_frame_size (bytecode_p);
+  JERRY_VLA (uintptr_t, stack, frame_size);
+
+  vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
+  vm_init_frame (frame_ctx_p, bytecode_p, lex_env_p, this_binding);
+  vm_init_exec (frame_ctx_p, args, length);
+  return vm_execute (frame_ctx_p);
+}
+
+
 /**
  * @}
  * @}

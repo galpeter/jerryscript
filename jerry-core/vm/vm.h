@@ -430,6 +430,12 @@ size_t vm_calculate_frame_size (const ecma_compiled_code_t *bytecode_header_p);
 void vm_init_frame (vm_frame_ctx_t *frame_ctx_p, const ecma_compiled_code_t *bytecode_header_p,
                     ecma_object_t *lex_env_p, ecma_value_t this_binding_value);
 void vm_init_exec (vm_frame_ctx_t *frame_ctx_p, const ecma_value_t *arg_p, ecma_length_t arg_list_len);
+ecma_value_t vm_run (const ecma_compiled_code_t *bytecode_p, /**< byte-code data header */
+        ecma_object_t *lex_env_p, /**< lexical environment to use */
+        ecma_value_t this_binding,
+        const ecma_value_t *args,
+        ecma_length_t length); /**< value of 'ThisBinding' */
+
 ecma_value_t vm_execute (vm_frame_ctx_t *frame_ctx_p);
 
 bool vm_is_strict_mode (void);
