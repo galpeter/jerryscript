@@ -276,13 +276,11 @@ vm_run_module (const ecma_compiled_code_t *bytecode_p, /**< pointer to bytecode 
     return module_init_result;
   }
 
-  size_t frame_size = vm_calculate_frame_size (bytecode_p);
-  JERRY_VLA (uintptr_t, stack, frame_size);
-
-  vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
-  vm_init_frame (frame_ctx_p, bytecode_p, lex_env_p, ECMA_VALUE_UNDEFINED);
-  vm_init_exec (frame_ctx_p, NULL, 0);
-  return vm_execute (frame_ctx_p);
+  return vm_run (bytecode_p,
+                 ECMA_VALUE_UNDEFINED,
+                 lex_env_p,
+                 NULL,
+                 0);
 } /* vm_run_module */
 #endif /* ENABLED (JERRY_ES2015_MODULE_SYSTEM) */
 
@@ -297,7 +295,7 @@ vm_run_module (const ecma_compiled_code_t *bytecode_p, /**< pointer to bytecode 
 ecma_value_t
 vm_run_global (const ecma_compiled_code_t *bytecode_p) /**< pointer to bytecode to run */
 {
-  ecma_object_t *global_obj_p = ecma_builtin_get_global ();
+  ecma_object_t *glob_obj_p = ecma_builtin_get_global ();
 
 #if ENABLED (JERRY_ES2015)
   if (bytecode_p->status_flags & CBC_CODE_FLAGS_LEXICAL_BLOCK_NEEDED)
@@ -329,13 +327,11 @@ vm_run_global (const ecma_compiled_code_t *bytecode_p) /**< pointer to bytecode 
   }
 #endif /* ENABLED (JERRY_ES2015_MODULE_SYSTEM) */
 
-  size_t frame_size = vm_calculate_frame_size (bytecode_p);
-  JERRY_VLA (uintptr_t, stack, frame_size);
-
-  vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
-  vm_init_frame (frame_ctx_p, bytecode_p, global_scope_p, ecma_make_object_value (global_obj_p));
-  vm_init_exec (frame_ctx_p, NULL, 0);
-  return vm_execute (frame_ctx_p);
+  return vm_run (bytecode_p,
+                 ecma_make_object_value (glob_obj_p),
+                 global_scope_p,
+                 NULL,
+                 0);
 } /* vm_run_global */
 
 /**
@@ -404,16 +400,11 @@ vm_run_eval (ecma_compiled_code_t *bytecode_data_p, /**< byte-code data */
     lex_env_p = lex_block_p;
   }
 
-  ecma_value_t execute_result;
-  {
-    size_t frame_size = vm_calculate_frame_size (bytecode_data_p);
-    JERRY_VLA (uintptr_t, stack, frame_size);
-
-    vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
-    vm_init_frame (frame_ctx_p, bytecode_data_p, lex_env_p, this_binding);
-    vm_init_exec (frame_ctx_p, (parse_opts & ECMA_PARSE_DIRECT_EVAL) ? VM_DIRECT_EVAL : NULL, 0);
-    execute_result = vm_execute (frame_ctx_p);
-  }
+  ecma_value_t completion_value = vm_run (bytecode_data_p,
+                                          this_binding,
+                                          lex_env_p,
+                                          (parse_opts & ECMA_PARSE_DIRECT_EVAL) ? VM_DIRECT_EVAL : NULL,
+                                          0);
 
   ecma_deref_object (lex_env_p);
   ecma_free_value (this_binding);
@@ -427,7 +418,7 @@ vm_run_eval (ecma_compiled_code_t *bytecode_data_p, /**< byte-code data */
   ecma_bytecode_deref (bytecode_data_p);
 #endif /* ENABLED (JERRY_SNAPSHOT_EXEC) */
 
-  return execute_result;
+  return completion_value;
 } /* vm_run_eval */
 
 /**
@@ -4155,23 +4146,21 @@ vm_init_frame (vm_frame_ctx_t *frame_ctx_p, /**< frame context to initilaize */
   frame_ctx_p->this_binding = this_binding;
 } /* vm_init_frame */
 
-
 inline JERRY_ATTR_ALWAYS_INLINE ecma_value_t
 vm_run (const ecma_compiled_code_t *bytecode_p, /**< byte-code data header */
+        ecma_value_t this_binding_value, /**< value of 'ThisBinding' */
         ecma_object_t *lex_env_p, /**< lexical environment to use */
-        ecma_value_t this_binding,
-        const ecma_value_t *args,
-        ecma_length_t length) /**< value of 'ThisBinding' */
+        const ecma_value_t *arg_list_p, /**< arguments list */
+        ecma_length_t arg_list_len) /**< length of arguments list */
 {
   size_t frame_size = vm_calculate_frame_size (bytecode_p);
   JERRY_VLA (uintptr_t, stack, frame_size);
 
   vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
-  vm_init_frame (frame_ctx_p, bytecode_p, lex_env_p, this_binding);
-  vm_init_exec (frame_ctx_p, args, length);
+  vm_init_frame (frame_ctx_p, bytecode_p, lex_env_p, this_binding_value);
+  vm_init_exec (frame_ctx_p, arg_list_p, arg_list_len);
   return vm_execute (frame_ctx_p);
-}
-
+} /* vm_run */
 
 /**
  * @}
