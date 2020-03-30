@@ -4132,20 +4132,6 @@ vm_calculate_frame_size (const ecma_compiled_code_t *bytecode_header_p) /**< byt
   return frame_size;
 } /* vm_calculate_frame_size */
 
-/**
- * Initialize the given frame context with the required data for execution.
- */
-inline JERRY_ATTR_ALWAYS_INLINE void
-vm_init_frame (vm_frame_ctx_t *frame_ctx_p, /**< frame context to initilaize */
-               const ecma_compiled_code_t *bytecode_header_p, /**< byte-code data header */
-               ecma_object_t *lex_env_p, /**< lexical environment to use */
-               ecma_value_t this_binding) /**< value of 'ThisBinding' */
-{
-  frame_ctx_p->bytecode_header_p = bytecode_header_p;
-  frame_ctx_p->lex_env_p = lex_env_p;
-  frame_ctx_p->this_binding = this_binding;
-} /* vm_init_frame */
-
 inline JERRY_ATTR_ALWAYS_INLINE ecma_value_t
 vm_run (const ecma_compiled_code_t *bytecode_p, /**< byte-code data header */
         ecma_value_t this_binding_value, /**< value of 'ThisBinding' */
@@ -4157,7 +4143,11 @@ vm_run (const ecma_compiled_code_t *bytecode_p, /**< byte-code data header */
   JERRY_VLA (uintptr_t, stack, frame_size);
 
   vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
-  vm_init_frame (frame_ctx_p, bytecode_p, lex_env_p, this_binding_value);
+
+  frame_ctx_p->bytecode_header_p = bytecode_p;
+  frame_ctx_p->lex_env_p = lex_env_p;
+  frame_ctx_p->this_binding = this_binding_value;
+
   vm_init_exec (frame_ctx_p, arg_list_p, arg_list_len);
   return vm_execute (frame_ctx_p);
 } /* vm_run */
