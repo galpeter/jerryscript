@@ -4105,33 +4105,6 @@ vm_execute (vm_frame_ctx_t *frame_ctx_p) /**< frame context */
   }
 } /* vm_execute */
 
-/**
- * Calculate the vm frame size required for the given byte-code.
- *
- * @returns the number of bytes required for the vm frame context.
- */
-size_t
-vm_calculate_frame_size (const ecma_compiled_code_t *bytecode_header_p) /**< byte-code data header */
-{
-  size_t args_size;
-
-  if (bytecode_header_p->status_flags & CBC_CODE_FLAGS_UINT16_ARGUMENTS)
-  {
-    cbc_uint16_arguments_t *args_p = (cbc_uint16_arguments_t *) bytecode_header_p;
-    args_size = (size_t) (args_p->register_end + args_p->stack_limit);
-  }
-  else
-  {
-    cbc_uint8_arguments_t *args_p = (cbc_uint8_arguments_t *) bytecode_header_p;
-    args_size = (size_t) (args_p->register_end + args_p->stack_limit);
-  }
-
-  size_t frame_size = args_size * sizeof (ecma_value_t) + sizeof (vm_frame_ctx_t);
-  frame_size = (frame_size + sizeof (uintptr_t) - 1) / sizeof (uintptr_t);
-  JERRY_ASSERT (frame_size >= (sizeof (vm_frame_ctx_t) / sizeof (uintptr_t)));
-  return frame_size;
-} /* vm_calculate_frame_size */
-
 inline JERRY_ATTR_ALWAYS_INLINE ecma_value_t
 vm_run (const ecma_compiled_code_t *bytecode_p, /**< byte-code data header */
         ecma_value_t this_binding_value, /**< value of 'ThisBinding' */
@@ -4139,7 +4112,26 @@ vm_run (const ecma_compiled_code_t *bytecode_p, /**< byte-code data header */
         const ecma_value_t *arg_list_p, /**< arguments list */
         ecma_length_t arg_list_len) /**< length of arguments list */
 {
-  size_t frame_size = vm_calculate_frame_size (bytecode_p);
+  size_t frame_size;
+
+  {
+    size_t args_size;
+
+    if (bytecode_p->status_flags & CBC_CODE_FLAGS_UINT16_ARGUMENTS)
+    {
+      cbc_uint16_arguments_t *args_p = (cbc_uint16_arguments_t *) bytecode_p;
+      args_size = (size_t) (args_p->register_end + args_p->stack_limit);
+    }
+    else
+    {
+      cbc_uint8_arguments_t *args_p = (cbc_uint8_arguments_t *) bytecode_p;
+      args_size = (size_t) (args_p->register_end + args_p->stack_limit);
+    }
+
+    size_t size = args_size * sizeof (ecma_value_t) + sizeof (vm_frame_ctx_t);
+    frame_size = (size + sizeof (uintptr_t) - 1) / sizeof (uintptr_t);
+  }
+
   JERRY_VLA (uintptr_t, stack, frame_size);
 
   vm_frame_ctx_t *frame_ctx_p = (vm_frame_ctx_t *) stack;
