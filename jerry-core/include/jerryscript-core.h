@@ -27,6 +27,9 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+#define JERRY_API_NAMECHANGE(NEW_NAME) JERRY_ATTR_DEPRECATED ("API changed, use: " NEW_NAME)
+
+
 /** \addtogroup jerry Jerry engine interface
  * @{
  */
@@ -497,7 +500,8 @@ double jerry_get_number_value (const jerry_value_t value);
 /**
  * Functions for string values.
  */
-jerry_size_t jerry_get_string_size (const jerry_value_t value);
+
+jerry_size_t jerry_get_string_size (const jerry_value_t value) JERRY_API_NAMECHANGE("jerry_string_get_size");
 jerry_size_t jerry_get_utf8_string_size (const jerry_value_t value);
 jerry_length_t jerry_get_string_length (const jerry_value_t value);
 jerry_length_t jerry_get_utf8_string_length (const jerry_value_t value);

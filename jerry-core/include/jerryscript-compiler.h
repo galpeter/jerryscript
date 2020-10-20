@@ -27,13 +27,15 @@ extern "C"
 
 #ifdef __GNUC__
 
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
+
 /*
  * Compiler-specific macros relevant for GCC.
  */
 #define JERRY_ATTR_ALIGNED(ALIGNMENT) __attribute__((aligned(ALIGNMENT)))
 #define JERRY_ATTR_ALWAYS_INLINE __attribute__((always_inline))
 #define JERRY_ATTR_CONST __attribute__((const))
-#define JERRY_ATTR_DEPRECATED __attribute__((deprecated))
+#define JERRY_ATTR_DEPRECATED(TEXT) __attribute__((deprecated(TEXT)))
 #define JERRY_ATTR_FORMAT(...) __attribute__((format(__VA_ARGS__)))
 #define JERRY_ATTR_HOT __attribute__((hot))
 #define JERRY_ATTR_NOINLINE __attribute__((noinline))
@@ -54,6 +56,7 @@ extern "C"
 #define JERRY_ATTR_DEPRECATED __declspec(deprecated)
 #define JERRY_ATTR_NOINLINE __declspec(noinline)
 #define JERRY_ATTR_NORETURN __declspec(noreturn)
+#define JERRY_ATTR_DEPRECATED(TEXT) __declspec(deprecated(TEXT))
 
 /*
  * Microsoft Visual C/C++ Compiler doesn't support for VLA, using _alloca
@@ -171,6 +174,13 @@ void * __cdecl _alloca (size_t _Size);
 #ifndef JERRY_VLA
 #define JERRY_VLA(type, name, size) type name[size]
 #endif /* !JERRY_VLA */
+
+/**
+ * Attribute to mark deprecation for functions.
+ */
+#ifndef JERRY_ATTR_DEPRECATED
+#define JERRY_ATTR_DEPRECATED
+#endif
 
 /**
  * @}
