@@ -197,6 +197,10 @@ struct jerry_context_t
   uintptr_t stack_base;  /**< stack base marker */
 #endif /* (JERRY_STACK_LIMIT != 0) */
 
+#if ENABLED (JERRY_BUILTIN_PROXY)
+  uint32_t proxy_depth;
+#endif
+
 #if ENABLED (JERRY_DEBUGGER)
   uint8_t debugger_send_buffer[JERRY_DEBUGGER_TRANSPORT_MAX_BUFFER_SIZE]; /**< buffer for sending messages */
   uint8_t debugger_receive_buffer[JERRY_DEBUGGER_TRANSPORT_MAX_BUFFER_SIZE]; /**< buffer for receiving messages */

@@ -63,6 +63,10 @@ ecma_init (void)
 #if ENABLED (JERRY_ESNEXT)
   JERRY_CONTEXT (current_new_target_p) = NULL;
 #endif /* ENABLED (JERRY_ESNEXT) */
+
+#if ENABLED (JERRY_BUILTIN_PROXY)
+  JERRY_CONTEXT (proxy_depth) = 0;
+#endif /* ENABLED (JERRY_BUILTIN_PROXY) */
 } /* ecma_init */
 
 /**

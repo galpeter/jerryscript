@@ -251,6 +251,37 @@ ecma_validate_proxy_object (ecma_value_t handler, /**< proxy handler */
 /* Interal operations */
 
 /**
+ * Limit for the Proxy interal methods' recursion depth.
+ *
+ * Depends on JERRY_STACK_LIMIT, but the minimum value is 2048.
+ */
+#define ECMA_CONFIG_PROXY_RECURSION_DEPTH ((JERRY_STACK_LIMIT * 10) + 2048)
+
+/**
+ * Macro to handle checking Proxy internal methods recursion depth.
+ *
+ * Usage: Must be be placed at the start of all Proxy internal methods.
+ */
+#define ECMA_PROXY_CHECK_RECURSION_DEPTH() do \
+{ \
+  if (++JERRY_CONTEXT (proxy_depth) > ECMA_CONFIG_PROXY_RECURSION_DEPTH) \
+  { \
+    return ecma_raise_range_error (ECMA_ERR_MSG ("Maximum call stack size exceeded.")); \
+  } \
+} while (0)
+
+/**
+ * Macro to help the Proxy recursion depth calcuation.
+ *
+ * Usage: Must be placed before all(!) "return" statement in Proxy internal methods.
+ */
+#define ECMA_PROXY_EXIT() do \
+{ \
+  --JERRY_CONTEXT (proxy_depth); \
+} while (0)
+
+
+/**
  * The Proxy object [[GetPrototypeOf]] internal routine
  *
  * See also:
@@ -263,6 +294,7 @@ ecma_value_t
 ecma_proxy_object_get_prototype_of (ecma_object_t *obj_p) /**< proxy object */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -275,6 +307,7 @@ ecma_proxy_object_get_prototype_of (ecma_object_t *obj_p) /**< proxy object */
   /* 6. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -284,7 +317,9 @@ ecma_proxy_object_get_prototype_of (ecma_object_t *obj_p) /**< proxy object */
   /* 7. */
   if (ecma_is_value_undefined (trap))
   {
-    return ecma_builtin_object_object_get_prototype_of (target_obj_p);
+    ecma_value_t result = ecma_builtin_object_object_get_prototype_of (target_obj_p);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   ecma_object_t *func_obj_p = ecma_get_object_from_value (trap);
@@ -297,6 +332,7 @@ ecma_proxy_object_get_prototype_of (ecma_object_t *obj_p) /**< proxy object */
   /* 9. */
   if (ECMA_IS_VALUE_ERROR (handler_proto))
   {
+    ECMA_PROXY_EXIT ();
     return handler_proto;
   }
 
@@ -305,6 +341,7 @@ ecma_proxy_object_get_prototype_of (ecma_object_t *obj_p) /**< proxy object */
   {
     ecma_free_value (handler_proto);
 
+    ECMA_PROXY_EXIT ();
     return ecma_raise_type_error (ECMA_ERR_MSG ("Trap returned neither object nor null."));
   }
 
@@ -316,12 +353,14 @@ ecma_proxy_object_get_prototype_of (ecma_object_t *obj_p) /**< proxy object */
   {
     ecma_free_value (handler_proto);
 
+    ECMA_PROXY_EXIT ();
     return extensible_target;
   }
 
   /* 13. */
   if (ecma_is_value_true (extensible_target))
   {
+    ECMA_PROXY_EXIT ();
     return handler_proto;
   }
 
@@ -331,6 +370,7 @@ ecma_proxy_object_get_prototype_of (ecma_object_t *obj_p) /**< proxy object */
   /* 15. */
   if (ECMA_IS_VALUE_ERROR (target_proto))
   {
+    ECMA_PROXY_EXIT ();
     return target_proto;
   }
 
@@ -348,6 +388,7 @@ ecma_proxy_object_get_prototype_of (ecma_object_t *obj_p) /**< proxy object */
   ecma_free_value (target_proto);
 
   /* 17. */
+  ECMA_PROXY_EXIT ();
   return ret_value;
 } /* ecma_proxy_object_get_prototype_of */
 
@@ -367,6 +408,7 @@ ecma_proxy_object_set_prototype_of (ecma_object_t *obj_p, /**< proxy object */
                                     ecma_value_t proto) /**< new prototype object */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   /* 1. */
   JERRY_ASSERT (ecma_is_value_object (proto) || ecma_is_value_null (proto));
@@ -382,6 +424,7 @@ ecma_proxy_object_set_prototype_of (ecma_object_t *obj_p, /**< proxy object */
   /* 7.*/
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -393,10 +436,13 @@ ecma_proxy_object_set_prototype_of (ecma_object_t *obj_p, /**< proxy object */
   {
     if (ECMA_OBJECT_IS_PROXY (target_obj_p))
     {
-      return ecma_proxy_object_set_prototype_of (target_obj_p, proto);
+      ecma_value_t result = ecma_proxy_object_set_prototype_of (target_obj_p, proto);
+      ECMA_PROXY_EXIT ();
+      return result;
     }
-
-    return ecma_op_ordinary_object_set_prototype_of (target_obj_p, proto);
+    ecma_value_t result = ecma_op_ordinary_object_set_prototype_of (target_obj_p, proto);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   ecma_object_t *func_obj_p = ecma_get_object_from_value (trap);
@@ -410,6 +456,7 @@ ecma_proxy_object_set_prototype_of (ecma_object_t *obj_p, /**< proxy object */
   /* 10. */
   if (ECMA_IS_VALUE_ERROR (trap_result))
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -423,12 +470,14 @@ ecma_proxy_object_set_prototype_of (ecma_object_t *obj_p, /**< proxy object */
   /* 12. */
   if (ECMA_IS_VALUE_ERROR (extensible_target))
   {
+    ECMA_PROXY_EXIT ();
     return extensible_target;
   }
 
   /* 13. */
   if (ecma_is_value_true (extensible_target))
   {
+    ECMA_PROXY_EXIT ();
     return ecma_make_boolean_value (boolean_trap_result);
   }
 
@@ -438,6 +487,7 @@ ecma_proxy_object_set_prototype_of (ecma_object_t *obj_p, /**< proxy object */
   /* 15. */
   if (ECMA_IS_VALUE_ERROR (target_proto))
   {
+    ECMA_PROXY_EXIT ();
     return target_proto;
   }
 
@@ -453,6 +503,7 @@ ecma_proxy_object_set_prototype_of (ecma_object_t *obj_p, /**< proxy object */
   ecma_free_value (target_proto);
 
   /* 17. */
+  ECMA_PROXY_EXIT ();
   return ret_value;
 } /* ecma_proxy_object_set_prototype_of */
 
@@ -471,6 +522,7 @@ ecma_value_t
 ecma_proxy_object_is_extensible (ecma_object_t *obj_p) /**< proxy object */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -483,6 +535,7 @@ ecma_proxy_object_is_extensible (ecma_object_t *obj_p) /**< proxy object */
   /* 6. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -492,7 +545,9 @@ ecma_proxy_object_is_extensible (ecma_object_t *obj_p) /**< proxy object */
   /* 7. */
   if (ecma_is_value_undefined (trap))
   {
-    return ecma_builtin_object_object_is_extensible (target_obj_p);
+    ecma_value_t result = ecma_builtin_object_object_is_extensible (target_obj_p);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   ecma_object_t *func_obj_p = ecma_get_object_from_value (trap);
@@ -505,6 +560,7 @@ ecma_proxy_object_is_extensible (ecma_object_t *obj_p) /**< proxy object */
   /* 9. */
   if (ECMA_IS_VALUE_ERROR (trap_result))
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -521,6 +577,7 @@ ecma_proxy_object_is_extensible (ecma_object_t *obj_p) /**< proxy object */
 
     if (ECMA_IS_VALUE_ERROR (proxy_is_ext))
     {
+      ECMA_PROXY_EXIT ();
       return proxy_is_ext;
     }
 
@@ -530,6 +587,9 @@ ecma_proxy_object_is_extensible (ecma_object_t *obj_p) /**< proxy object */
   {
     target_result = ecma_op_ordinary_object_is_extensible (target_obj_p);
   }
+
+  /* Proxy recurse exit macro can be here as below there are no possible ways to trigger Proxy calls. */
+  ECMA_PROXY_EXIT ();
 
   /* 12. */
   if (boolean_trap_result != target_result)
@@ -555,6 +615,7 @@ ecma_value_t
 ecma_proxy_object_prevent_extensions (ecma_object_t *obj_p) /**< proxy object */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -567,6 +628,7 @@ ecma_proxy_object_prevent_extensions (ecma_object_t *obj_p) /**< proxy object */
   /* 6. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -580,11 +642,13 @@ ecma_proxy_object_prevent_extensions (ecma_object_t *obj_p) /**< proxy object */
 
     if (ECMA_IS_VALUE_ERROR (ret_value))
     {
+      ECMA_PROXY_EXIT ();
       return ret_value;
     }
 
-    ecma_deref_object (target_obj_p);
+    ecma_deref_object (target_obj_p); // TODO: is this ok here?
 
+    ECMA_PROXY_EXIT ();
     return ECMA_VALUE_TRUE;
   }
 
@@ -598,6 +662,7 @@ ecma_proxy_object_prevent_extensions (ecma_object_t *obj_p) /**< proxy object */
   /* 9. */
   if (ECMA_IS_VALUE_ERROR (trap_result))
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -612,16 +677,19 @@ ecma_proxy_object_prevent_extensions (ecma_object_t *obj_p) /**< proxy object */
 
     if (ECMA_IS_VALUE_ERROR (target_is_ext))
     {
+      ECMA_PROXY_EXIT ();
       return target_is_ext;
     }
 
     if (ecma_is_value_true (target_is_ext))
     {
+      ECMA_PROXY_EXIT ();
       return ecma_raise_type_error (ECMA_ERR_MSG ("Trap result does not reflect inextensibility of proxy target"));
     }
   }
 
   /* 11. */
+  ECMA_PROXY_EXIT ();
   return ecma_make_boolean_value (boolean_trap_result);
 } /* ecma_proxy_object_prevent_extensions */
 
@@ -643,6 +711,8 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
                                                ecma_property_descriptor_t *prop_desc_p) /**< [out] property
                                                                                          *   descriptor */
 {
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
+
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
   /* 2. */
@@ -656,6 +726,7 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
   /* 7. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -664,7 +735,10 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
   /* 8. */
   if (ecma_is_value_undefined (trap))
   {
-    return ecma_op_object_get_own_property_descriptor (target_obj_p, prop_name_p, prop_desc_p);
+    ecma_value_t result = ecma_op_object_get_own_property_descriptor (target_obj_p, prop_name_p, prop_desc_p);
+
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   ecma_object_t *func_obj_p = ecma_get_object_from_value (trap);
@@ -678,6 +752,7 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
   /* 10. */
   if (ECMA_IS_VALUE_ERROR (trap_result))
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -685,6 +760,8 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
   if (!ecma_is_value_object (trap_result) && !ecma_is_value_undefined (trap_result))
   {
     ecma_free_value (trap_result);
+
+    ECMA_PROXY_EXIT ();
     return ecma_raise_type_error (ECMA_ERR_MSG ("Trap is not object nor undefined."));
   }
 
@@ -696,21 +773,25 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
   if (ECMA_IS_VALUE_ERROR (target_status))
   {
     ecma_free_value (trap_result);
+
+    ECMA_PROXY_EXIT ();
     return target_status;
   }
 
   /* 14. */
-  if (ecma_is_value_undefined (trap_result))
+  if (ecma_is_value_undefined (trap_result))    // TODO: reorganize this
   {
     /* .a */
     if (ecma_is_value_false (target_status))
     {
+      ECMA_PROXY_EXIT ();
       return ECMA_VALUE_FALSE;
     }
     /* .b */
     if (!(target_desc.flags & ECMA_PROP_IS_CONFIGURABLE))
     {
       ecma_free_property_descriptor (&target_desc);
+      ECMA_PROXY_EXIT ();
       return ecma_raise_type_error (ECMA_ERR_MSG ("Given property is a non-configurable"
                                                   " data property on the proxy target"));
     }
@@ -722,6 +803,7 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
     /* .d */
     if (ECMA_IS_VALUE_ERROR (extensible_target))
     {
+      ECMA_PROXY_EXIT ();
       return extensible_target;
     }
 
@@ -731,10 +813,12 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
     /* .f */
     if (ecma_is_value_false (extensible_target))
     {
+      ECMA_PROXY_EXIT ();
       return ecma_raise_type_error (ECMA_ERR_MSG ("Target not extensible."));
     }
 
     /* .g */
+    ECMA_PROXY_EXIT ();
     return ECMA_VALUE_FALSE;
   }
 
@@ -749,6 +833,8 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
       ecma_free_property_descriptor (&target_desc);
     }
     ecma_free_value (trap_result);
+
+    ECMA_PROXY_EXIT ();
     return extensible_target;
   }
 
@@ -765,6 +851,8 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
     {
       ecma_free_property_descriptor (&target_desc);
     }
+
+    ECMA_PROXY_EXIT ();
     return result_val;
   }
 
@@ -789,6 +877,7 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
   if (!is_valid)
   {
     ecma_free_property_descriptor (prop_desc_p);
+    ECMA_PROXY_EXIT ();
     return ecma_raise_type_error (ECMA_ERR_MSG ("The two descriptors are not compatible."));
   }
 
@@ -798,6 +887,7 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
     if (!target_has_desc || target_is_configurable)
     {
       ecma_free_property_descriptor (prop_desc_p);
+      ECMA_PROXY_EXIT ();
       return ecma_raise_type_error (ECMA_ERR_MSG ("Not compatible."));
     }
 
@@ -806,9 +896,12 @@ ecma_proxy_object_get_own_property_descriptor (ecma_object_t *obj_p, /**< proxy 
         && target_is_writable)
     {
       ecma_free_property_descriptor (prop_desc_p);
+      ECMA_PROXY_EXIT ();
       return ecma_raise_type_error (ECMA_ERR_MSG ("Not compatible."));
     }
   }
+
+  ECMA_PROXY_EXIT ();
   return ECMA_VALUE_TRUE;
 } /* ecma_proxy_object_get_own_property_descriptor */
 
@@ -829,6 +922,7 @@ ecma_proxy_object_define_own_property (ecma_object_t *obj_p, /**< proxy object *
                                        const ecma_property_descriptor_t *prop_desc_p) /**< property descriptor */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -841,6 +935,7 @@ ecma_proxy_object_define_own_property (ecma_object_t *obj_p, /**< proxy object *
   /* 7. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -850,7 +945,9 @@ ecma_proxy_object_define_own_property (ecma_object_t *obj_p, /**< proxy object *
   /* 8. */
   if (ecma_is_value_undefined (trap))
   {
-    return ecma_op_object_define_own_property (target_obj_p, prop_name_p, prop_desc_p);
+    ecma_value_t result = ecma_op_object_define_own_property (target_obj_p, prop_name_p, prop_desc_p);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   /* 9. */
@@ -870,6 +967,7 @@ ecma_proxy_object_define_own_property (ecma_object_t *obj_p, /**< proxy object *
   /* 11. */
   if (ECMA_IS_VALUE_ERROR (trap_result))
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -880,6 +978,7 @@ ecma_proxy_object_define_own_property (ecma_object_t *obj_p, /**< proxy object *
   /* 12. */
   if (!boolean_trap_result)
   {
+    ECMA_PROXY_EXIT ();
     return ECMA_VALUE_FALSE;
   }
 
@@ -891,6 +990,7 @@ ecma_proxy_object_define_own_property (ecma_object_t *obj_p, /**< proxy object *
   /* 14. */
   if (ECMA_IS_VALUE_ERROR (status))
   {
+    ECMA_PROXY_EXIT ();
     return status;
   }
 
@@ -909,6 +1009,7 @@ ecma_proxy_object_define_own_property (ecma_object_t *obj_p, /**< proxy object *
       ecma_free_property_descriptor (&target_desc);
     }
 
+    ECMA_PROXY_EXIT ();
     return extensible_target;
   }
 
@@ -921,12 +1022,14 @@ ecma_proxy_object_define_own_property (ecma_object_t *obj_p, /**< proxy object *
   {
     if (!is_target_ext)
     {
+      ECMA_PROXY_EXIT ();
       return ecma_raise_type_error (ECMA_ERR_MSG ("Trap returned truish for adding property "
                                                   "to the non-extensible target"));
     }
 
     if (setting_config_false)
     {
+      ECMA_PROXY_EXIT ();
       return ecma_raise_type_error (ECMA_ERR_MSG ("Trap returned truish for defining non-configurable property "
                                                   "which is non-existent in the target"));
     }
@@ -961,10 +1064,12 @@ ecma_proxy_object_define_own_property (ecma_object_t *obj_p, /**< proxy object *
 
     if (ECMA_IS_VALUE_ERROR (ret_value))
     {
+      ECMA_PROXY_EXIT ();
       return ret_value;
     }
   }
 
+  ECMA_PROXY_EXIT ();
   return ECMA_VALUE_TRUE;
 } /* ecma_proxy_object_define_own_property */
 
@@ -984,7 +1089,7 @@ ecma_proxy_object_has (ecma_object_t *obj_p, /**< proxy object */
                        ecma_string_t *prop_name_p) /**< property name */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
-  ECMA_CHECK_STACK_USAGE ();
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -997,6 +1102,7 @@ ecma_proxy_object_has (ecma_object_t *obj_p, /**< proxy object */
   /* 7. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -1006,7 +1112,9 @@ ecma_proxy_object_has (ecma_object_t *obj_p, /**< proxy object */
   /* 8. */
   if (ecma_is_value_undefined (trap))
   {
-    return ecma_op_object_has_property (target_obj_p, prop_name_p);
+    ecma_value_t result = ecma_op_object_has_property (target_obj_p, prop_name_p);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   ecma_object_t *func_obj_p = ecma_get_object_from_value (trap);
@@ -1021,6 +1129,7 @@ ecma_proxy_object_has (ecma_object_t *obj_p, /**< proxy object */
   /* 10. */
   if (ECMA_IS_VALUE_ERROR (trap_result))
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -1037,6 +1146,7 @@ ecma_proxy_object_has (ecma_object_t *obj_p, /**< proxy object */
 
     if (ECMA_IS_VALUE_ERROR (status))
     {
+      ECMA_PROXY_EXIT ();
       return status;
     }
 
@@ -1048,6 +1158,7 @@ ecma_proxy_object_has (ecma_object_t *obj_p, /**< proxy object */
 
       if (!prop_is_configurable)
       {
+        ECMA_PROXY_EXIT ();
         return ecma_raise_type_error (ECMA_ERR_MSG ("Trap returned falsish for property which exists "
                                                     "in the proxy target as non-configurable"));
       }
@@ -1056,11 +1167,13 @@ ecma_proxy_object_has (ecma_object_t *obj_p, /**< proxy object */
 
       if (ECMA_IS_VALUE_ERROR (extensible_target))
       {
+        ECMA_PROXY_EXIT ();
         return extensible_target;
       }
 
       if (ecma_is_value_false (extensible_target))
       {
+        ECMA_PROXY_EXIT ();
         return ecma_raise_type_error (ECMA_ERR_MSG ("Trap returned falsish for property but "
                                                     "the proxy target is not extensible"));
       }
@@ -1068,6 +1181,7 @@ ecma_proxy_object_has (ecma_object_t *obj_p, /**< proxy object */
   }
 
   /* 12. */
+  ECMA_PROXY_EXIT ();
   return ecma_make_boolean_value (boolean_trap_result);
 } /* ecma_proxy_object_has */
 
@@ -1088,7 +1202,8 @@ ecma_proxy_object_get (ecma_object_t *obj_p, /**< proxy object */
                        ecma_value_t receiver) /**< receiver to invoke getter function */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
-  ECMA_CHECK_STACK_USAGE ();
+//  ECMA_CHECK_STACK_USAGE ();
+  ECMA_PROXY_CHECK_RECURSION_DEPTH();
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -1101,6 +1216,7 @@ ecma_proxy_object_get (ecma_object_t *obj_p, /**< proxy object */
   /* 7. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -1108,7 +1224,10 @@ ecma_proxy_object_get (ecma_object_t *obj_p, /**< proxy object */
   if (ecma_is_value_undefined (trap))
   {
     ecma_object_t *target_obj_p = ecma_get_object_from_value (proxy_obj_p->target);
-    return ecma_op_object_get_with_receiver (target_obj_p, prop_name_p, receiver);
+    ecma_value_t result = ecma_op_object_get_with_receiver (target_obj_p, prop_name_p, receiver);
+
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   ecma_object_t *func_obj_p = ecma_get_object_from_value (trap);
@@ -1123,6 +1242,7 @@ ecma_proxy_object_get (ecma_object_t *obj_p, /**< proxy object */
   /* 10. */
   if (ECMA_IS_VALUE_ERROR (trap_result))
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -1134,6 +1254,7 @@ ecma_proxy_object_get (ecma_object_t *obj_p, /**< proxy object */
   if (ECMA_IS_VALUE_ERROR (status))
   {
     ecma_free_value (trap_result);
+    ECMA_PROXY_EXIT ();
     return status;
   }
 
@@ -1165,11 +1286,13 @@ ecma_proxy_object_get (ecma_object_t *obj_p, /**< proxy object */
     {
       ecma_free_value (trap_result);
 
+      ECMA_PROXY_EXIT ();
       return ret_value;
     }
   }
 
   /* 14. */
+  ECMA_PROXY_EXIT ();
   return trap_result;
 } /* ecma_proxy_object_get */
 
@@ -1192,7 +1315,7 @@ ecma_proxy_object_set (ecma_object_t *obj_p, /**< proxy object */
                        bool is_strict) /**< indicate strict mode */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
-  ECMA_CHECK_STACK_USAGE ();
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -1205,6 +1328,7 @@ ecma_proxy_object_set (ecma_object_t *obj_p, /**< proxy object */
   /* 7. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -1214,7 +1338,9 @@ ecma_proxy_object_set (ecma_object_t *obj_p, /**< proxy object */
   /* 8. */
   if (ecma_is_value_undefined (trap))
   {
-    return ecma_op_object_put_with_receiver (target_obj_p, prop_name_p, value, receiver, is_strict);
+    ecma_value_t result = ecma_op_object_put_with_receiver (target_obj_p, prop_name_p, value, receiver, is_strict);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   ecma_object_t *func_obj_p = ecma_get_object_from_value (trap);
@@ -1229,6 +1355,7 @@ ecma_proxy_object_set (ecma_object_t *obj_p, /**< proxy object */
   /* 10. */
   if (ECMA_IS_VALUE_ERROR (trap_result))
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -1239,6 +1366,8 @@ ecma_proxy_object_set (ecma_object_t *obj_p, /**< proxy object */
   /* 11. */
   if (!boolean_trap_result)
   {
+    ECMA_PROXY_EXIT ();
+
     if (is_strict)
     {
       return ecma_raise_type_error (ECMA_ERR_MSG ("Proxy trap returned falsish"));
@@ -1255,6 +1384,7 @@ ecma_proxy_object_set (ecma_object_t *obj_p, /**< proxy object */
   /* 13. */
   if (ECMA_IS_VALUE_ERROR (status))
   {
+    ECMA_PROXY_EXIT ();
     return status;
   }
 
@@ -1284,11 +1414,13 @@ ecma_proxy_object_set (ecma_object_t *obj_p, /**< proxy object */
 
     if (ECMA_IS_VALUE_ERROR (ret_value))
     {
+      ECMA_PROXY_EXIT ();
       return ret_value;
     }
   }
 
   /* 15. */
+  ECMA_PROXY_EXIT ();
   return ECMA_VALUE_TRUE;
 } /* ecma_proxy_object_set */
 
@@ -1309,6 +1441,7 @@ ecma_proxy_object_delete_property (ecma_object_t *obj_p, /**< proxy object */
                                    bool is_strict) /**< delete in strict mode? */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -1321,6 +1454,7 @@ ecma_proxy_object_delete_property (ecma_object_t *obj_p, /**< proxy object */
   /* 7. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -1330,7 +1464,9 @@ ecma_proxy_object_delete_property (ecma_object_t *obj_p, /**< proxy object */
   /* 8. */
   if (ecma_is_value_undefined (trap))
   {
-    return ecma_op_object_delete (target_obj_p, prop_name_p, is_strict);
+    ecma_value_t result = ecma_op_object_delete (target_obj_p, prop_name_p, is_strict);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   ecma_object_t *func_obj_p = ecma_get_object_from_value (trap);
@@ -1345,6 +1481,7 @@ ecma_proxy_object_delete_property (ecma_object_t *obj_p, /**< proxy object */
   /* 10. */
   if (ECMA_IS_VALUE_ERROR (trap_result))
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -1355,6 +1492,7 @@ ecma_proxy_object_delete_property (ecma_object_t *obj_p, /**< proxy object */
   /* 11. */
   if (!boolean_trap_result)
   {
+    ECMA_PROXY_EXIT ();
     return ECMA_VALUE_FALSE;
   }
 
@@ -1366,12 +1504,14 @@ ecma_proxy_object_delete_property (ecma_object_t *obj_p, /**< proxy object */
   /* 13. */
   if (ECMA_IS_VALUE_ERROR (status))
   {
+    ECMA_PROXY_EXIT ();
     return status;
   }
 
   /* 14. */
   if (ecma_is_value_false (status))
   {
+    ECMA_PROXY_EXIT ();
     return ECMA_VALUE_TRUE;
   }
 
@@ -1394,6 +1534,7 @@ ecma_proxy_object_delete_property (ecma_object_t *obj_p, /**< proxy object */
   ecma_free_property_descriptor (&target_desc);
 
   /* 16. */
+  ECMA_PROXY_EXIT ();
   return ret_value;
 } /* ecma_proxy_object_delete_property */
 
@@ -1526,6 +1667,11 @@ ecma_collection_t *
 ecma_proxy_object_own_property_keys (ecma_object_t *obj_p) /**< proxy object */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
+  if (++JERRY_CONTEXT (proxy_depth) > ECMA_CONFIG_PROXY_RECURSION_DEPTH)
+  {
+    ecma_raise_range_error (ECMA_ERR_MSG ("Maximum call stack size exceeded."));
+    return NULL;
+  }
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -1537,6 +1683,7 @@ ecma_proxy_object_own_property_keys (ecma_object_t *obj_p) /**< proxy object */
 
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return NULL;
   }
 
@@ -1546,7 +1693,9 @@ ecma_proxy_object_own_property_keys (ecma_object_t *obj_p) /**< proxy object */
   /* 6. */
   if (ecma_is_value_undefined (trap))
   {
-    return ecma_op_object_own_property_keys (target_obj_p);
+    ecma_collection_t *result = ecma_op_object_own_property_keys (target_obj_p);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   ecma_object_t *func_obj_p = ecma_get_object_from_value (trap);
@@ -1558,6 +1707,7 @@ ecma_proxy_object_own_property_keys (ecma_object_t *obj_p) /**< proxy object */
 
   if (ECMA_IS_VALUE_ERROR (trap_result_array))
   {
+    ECMA_PROXY_EXIT ();
     return NULL;
   }
 
@@ -1568,6 +1718,7 @@ ecma_proxy_object_own_property_keys (ecma_object_t *obj_p) /**< proxy object */
 
   if (trap_result == NULL)
   {
+    ECMA_PROXY_EXIT ();
     return trap_result;
   }
 
@@ -1576,6 +1727,7 @@ ecma_proxy_object_own_property_keys (ecma_object_t *obj_p) /**< proxy object */
   {
     ecma_collection_free (trap_result);
     ecma_raise_type_error (ECMA_ERR_MSG ("Trap returned duplicate entries"));
+    ECMA_PROXY_EXIT ();
     return NULL;
   }
 
@@ -1585,6 +1737,7 @@ ecma_proxy_object_own_property_keys (ecma_object_t *obj_p) /**< proxy object */
   if (ECMA_IS_VALUE_ERROR (extensible_target))
   {
     ecma_collection_free (trap_result);
+    ECMA_PROXY_EXIT ();
     return NULL;
   }
 
@@ -1594,6 +1747,7 @@ ecma_proxy_object_own_property_keys (ecma_object_t *obj_p) /**< proxy object */
   if (target_keys == NULL)
   {
     ecma_collection_free (trap_result);
+    ECMA_PROXY_EXIT ();
     return target_keys;
   }
 
@@ -1664,6 +1818,8 @@ free_target_collections:
   ecma_collection_free (target_configurable_keys);
   ecma_collection_free (target_non_configurable_keys);
 
+  ECMA_PROXY_EXIT ();
+
   /* 23. */
   return ret_value;
 } /* ecma_proxy_object_own_property_keys */
@@ -1686,6 +1842,7 @@ ecma_proxy_object_call (ecma_object_t *obj_p, /**< proxy object */
                         uint32_t argc) /**< number of arguments */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   ecma_proxy_object_t *proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -1698,6 +1855,7 @@ ecma_proxy_object_call (ecma_object_t *obj_p, /**< proxy object */
   /* 6. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -1707,7 +1865,9 @@ ecma_proxy_object_call (ecma_object_t *obj_p, /**< proxy object */
   if (ecma_is_value_undefined (trap))
   {
     ecma_object_t *target_obj_p = ecma_get_object_from_value (target);
-    return ecma_op_function_call (target_obj_p, this_argument, args_p, argc);
+    ecma_value_t result = ecma_op_function_call (target_obj_p, this_argument, args_p, argc);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   /* 8. */
@@ -1719,6 +1879,7 @@ ecma_proxy_object_call (ecma_object_t *obj_p, /**< proxy object */
   ecma_deref_object (func_obj_p);
   ecma_free_object (args_array);
 
+  ECMA_PROXY_EXIT ();
   return ret_value;
 } /* ecma_proxy_object_call */
 
@@ -1740,6 +1901,7 @@ ecma_proxy_object_construct (ecma_object_t *obj_p, /**< proxy object */
                              uint32_t argc) /**< number of arguments */
 {
   JERRY_ASSERT (ECMA_OBJECT_IS_PROXY (obj_p));
+  ECMA_PROXY_CHECK_RECURSION_DEPTH ();
 
   ecma_proxy_object_t * proxy_obj_p = (ecma_proxy_object_t *) obj_p;
 
@@ -1752,6 +1914,7 @@ ecma_proxy_object_construct (ecma_object_t *obj_p, /**< proxy object */
   /* 6. */
   if (ECMA_IS_VALUE_ERROR (trap))
   {
+    ECMA_PROXY_EXIT ();
     return trap;
   }
 
@@ -1763,7 +1926,9 @@ ecma_proxy_object_construct (ecma_object_t *obj_p, /**< proxy object */
   {
     JERRY_ASSERT (ecma_object_is_constructor (target_obj_p));
 
-    return ecma_op_function_construct (target_obj_p, new_target_p, args_p, argc);
+    ecma_value_t result = ecma_op_function_construct (target_obj_p, new_target_p, args_p, argc);
+    ECMA_PROXY_EXIT ();
+    return result;
   }
 
   /* 8. */
@@ -1782,6 +1947,7 @@ ecma_proxy_object_construct (ecma_object_t *obj_p, /**< proxy object */
   /* 10 .*/
   if (ECMA_IS_VALUE_ERROR (new_obj))
   {
+    ECMA_PROXY_EXIT ();
     return new_obj;
   }
 
@@ -1790,10 +1956,12 @@ ecma_proxy_object_construct (ecma_object_t *obj_p, /**< proxy object */
   {
     ecma_free_value (new_obj);
 
+    ECMA_PROXY_EXIT ();
     return ecma_raise_type_error (ECMA_ERR_MSG ("Trap returned non-object"));
   }
 
   /* 12. */
+  ECMA_PROXY_EXIT ();
   return new_obj;
 } /* ecma_proxy_object_construct */
 
